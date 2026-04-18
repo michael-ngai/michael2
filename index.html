@@ -1239,10 +1239,21 @@ async function renderDay(){
   document.getElementById('cal-dtitle').textContent=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   var de=evts.filter(function(e){return e.date===ds;}),html='';
   if(de.length===0){html='<div class="empty" style="padding:24px 0;">No events for this day</div>';}
-  else{de.forEach(function(e){
-    var et=e.type||'other';
-    html+='<div class="devtcard"><div class="devttype" style="color:var(--'+EACC[et]+');">'+( ELBL[et]||et)+'</div><div class="devttitle">'+e.title+'</div>'+(e.note?'<div class="devtnote">'+e.note+'</div>':'')+'<div style="margin-top:8px;"><button class="btn d" style="font-size:11px;padding:4px 10px;" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">Delete</button></div></div>';
-  });}
+  else{
+    html+='<div class="card">';
+    de.forEach(function(e){
+      var et=e.type||'other';
+      var ecol=ECOL[et]||'cd-other';
+      var elbl=ELBL[et]||et;
+      html+='<div class="evtrow" style="display:flex;align-items:center;gap:8px;">'
+        +'<div class="cdot '+ecol+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>'
+        +'<span style="font-size:13px;color:var(--text);flex:1;">'+e.title+'</span>'
+        +(e.note?'<span style="font-size:11px;color:var(--text3);font-family:monospace;">'+e.note+'</span>':'')
+        +'<span class="evtdel" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">&#215;</span>'
+        +'</div>';
+    });
+    html+='</div>';
+  }
   document.getElementById('cal-dbody').innerHTML=html;
 }
 
