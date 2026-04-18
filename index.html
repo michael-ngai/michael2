@@ -295,10 +295,10 @@ select option{background:var(--surface2);}
 <!-- CALENDAR + TIMETABLE -->
 <div class="panel" id="panel-calendar">
   <div class="subtabs">
-    <button class="subtab active" id="cl-sub-calendar" onclick="switchCalSub('calendar')">&#x1F4C5; Calendar</button>
-    <button class="subtab" id="cl-sub-timetable" onclick="switchCalSub('timetable')">&#x23F0; Timetable</button>
+    <button class="subtab active" id="cl-sub-timetable" onclick="switchCalSub('timetable')">&#x23F0; Timetable</button>
+    <button class="subtab" id="cl-sub-calendar" onclick="switchCalSub('calendar')">&#x1F4C5; Calendar</button>
   </div>
-  <div id="cl-view-calendar">
+  <div id="cl-view-calendar" style="display:none;">
 
   <div class="subtabs">
     <button class="subtab active" id="st-month" onclick="switchCal('month')">Month</button>
@@ -362,7 +362,7 @@ select option{background:var(--surface2);}
   </div>
 
   </div>
-  <div id="cl-view-timetable" style="display:none;">
+  <div id="cl-view-timetable">
 
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
     <button class="btn" onclick="shiftTTDate(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
@@ -647,7 +647,7 @@ window._switchTab=function(name){
     document.getElementById('panel-'+n).classList.toggle('active',n===name);
   });
   if(name==='todo'){window._switchTodoSub('routine');}
-  if(name==='calendar'){window._switchCalSub('calendar');renderCal();}
+  if(name==='calendar'){window._switchCalSub('timetable');renderTT();}
   if(name==='savings'){window._switchSavSub('savings');renderBudget();}
 };
 
@@ -1386,8 +1386,8 @@ window._switchTodoSub=function(name){
 window._switchCalSub=function(name){
   document.getElementById('cl-view-calendar').style.display=name==='calendar'?'':'none';
   document.getElementById('cl-view-timetable').style.display=name==='timetable'?'':'none';
-  document.getElementById('cl-sub-calendar').classList.toggle('active',name==='calendar');
   document.getElementById('cl-sub-timetable').classList.toggle('active',name==='timetable');
+  document.getElementById('cl-sub-calendar').classList.toggle('active',name==='calendar');
   if(name==='timetable')renderTT();
   if(name==='calendar')renderCal();
 };
