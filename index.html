@@ -1246,17 +1246,23 @@ async function renderWeek(){
     var de=evts.filter(function(e){return e.date===ds;});
     html+='<div class="wcol'+(isT?' today':'')+'"><div class="wcolhdr"><div class="wcolname" style="'+(isT?'color:var(--blue);':'')+'">'+dns[i]+'</div><div class="wcoldate">'+d.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+'</div></div>';
     if(de.length===0){html+='<div class="wnoevt">No events</div>';}
-    else{de.forEach(function(e){
+    else{html+='<div class="card" style="margin:4px 0;padding:4px 0;">';de.forEach(function(e){
         var et=e.type||'other';
         var ec=ECOL[et]||'cd-other';
-        var el=ELBL[et]||et;
-        html+='<div class="wevt">'
-          +'<div class="cdot '+ec+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>'
-          +'<div style="flex:1;">'
-          +'<div style="font-size:12px;color:var(--text);">'+e.title+'</div>'
-          +'<div style="font-size:11px;color:var(--text3);">'+el+(e.note?' · <span style=\'font-family:monospace;\'>'+e.note+'</span>':'')+'</div>'
-          +'</div></div>';
-    });}
+        var el2=ELBL[et]||et;
+        var ps=getPillStyle(et);
+        var isEditing=(calEditId===e.id);
+        html+='<div class="evtrow" style="flex-direction:column;align-items:stretch;gap:4px;">';
+        html+='<div style="display:flex;align-items:center;gap:7px;">';
+        html+='<div class="cdot '+ec+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>';
+        html+='<span style="'+ps+'padding:2px 7px;border-radius:20px;font-size:10px;font-family:monospace;white-space:nowrap;">'+el2+'</span>';
+        html+='<span style="color:var(--text);font-size:13px;flex:1;">'+e.title+'</span>';
+        if(e.note)html+='<span style="color:var(--text3);font-size:11px;font-family:monospace;white-space:nowrap;">'+e.note+'</span>';
+        html+='<button class="editbtn" data-eid="'+e.id+'" data-ds="'+'ds'+'" onclick="openCalEdit(this.dataset.eid,this.dataset.ds)">'+(isEditing?'close':'edit')+'</button>';
+        html+='<span class="evtdel" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">&#215;</span>';
+        html+='</div>';
+        html+='</div>';
+      });}
     html+='</div>';
   }
   document.getElementById('cal-wgrid').innerHTML=html;
@@ -1270,18 +1276,22 @@ async function renderDay(){
   else{
     html+='<div class="card">';
     de.forEach(function(e){
-      var et=e.type||'other';
-      var ecol=ECOL[et]||'cd-other';
-      var elbl=ELBL[et]||et;
-      html+='<div class="evtrow" style="display:flex;align-items:center;gap:8px;">'
-        +'<div class="cdot '+ecol+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>'
-        +'<span style="font-size:10px;padding:1px 6px;border-radius:20px;white-space:nowrap;font-family:monospace;"+getPillStyle(et)+">'+elbl+'</span>'
-        +'<span style="font-size:13px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;">'+e.title+'</span>'
-        +(e.note?'<span style="font-size:11px;color:var(--text3);font-family:monospace;">'+e.note+'</span>':'')
-        +'<button class="editbtn" data-eid="'+e.id+'" data-ds="'+ds+'" onclick="openCalEdit(this.dataset.eid,this.dataset.ds)">edit</button>'
-        +'<span class="evtdel" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">&#215;</span>'
-        +'</div>';
-    });
+        var et=e.type||'other';
+        var ec=ECOL[et]||'cd-other';
+        var el2=ELBL[et]||et;
+        var ps=getPillStyle(et);
+        var isEditing=(calEditId===e.id);
+        html+='<div class="evtrow" style="flex-direction:column;align-items:stretch;gap:4px;">';
+        html+='<div style="display:flex;align-items:center;gap:7px;">';
+        html+='<div class="cdot '+ec+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>';
+        html+='<span style="'+ps+'padding:2px 7px;border-radius:20px;font-size:10px;font-family:monospace;white-space:nowrap;">'+el2+'</span>';
+        html+='<span style="color:var(--text);font-size:13px;flex:1;">'+e.title+'</span>';
+        if(e.note)html+='<span style="color:var(--text3);font-size:11px;font-family:monospace;white-space:nowrap;">'+e.note+'</span>';
+        html+='<button class="editbtn" data-eid="'+e.id+'" data-ds="'+'ds'+'" onclick="openCalEdit(this.dataset.eid,this.dataset.ds)">'+(isEditing?'close':'edit')+'</button>';
+        html+='<span class="evtdel" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">&#215;</span>';
+        html+='</div>';
+        html+='</div>';
+      });
     html+='</div>';
   }
   document.getElementById('cal-dbody').innerHTML=html;
