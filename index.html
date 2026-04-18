@@ -1015,15 +1015,16 @@ window._saveCalEdit=async function(id,ds){
   var title=document.getElementById('cal-edit-title').value.trim();
   var start=document.getElementById('cal-edit-start').value;
   var end=document.getElementById('cal-edit-end').value;
-  // End time is optional - if only start, just show start time
   var note=start&&end?start+'–'+end:start?start:end?end:'';
   if(!title){alert('Please enter a title');return;}
   await fbDelDoc('events',id);
   await fbAddDoc('events',{date:ds,type:type,title:title,note:note});
-  evtCache=null;
+  evtCache=null;  // Force full reload from Firebase
   calEditId=null;
   CS.sel=ds;
-  renderCal();
+  CS.day=new Date(ds+'T00:00:00');
+  // Re-render after short delay to allow Firebase to settle
+  setTimeout(function(){renderCal();},300);
 };
 
 async function loadEvts(){
@@ -1036,39 +1037,18 @@ async function loadEvts(){
       title=ELBL[newType]||newType;
     return Object.assign({},e,{type:newType,title:title});
   });
-  // Sort by date, then match to timetable order for that day
-  function getTTIndex(evt){
-    if(!evt.date)return 999;
-    var d=new Date(evt.date+'T00:00:00');
-    var dow=d.getDay();
-    var sch=SCH[dow];
-    if(!sch)return 999;
-    var title=(evt.title||'').toLowerCase();
-    var note=(evt.note||'').toLowerCase();
-    // Match by title or note keywords to timetable item index
-    for(var i=0;i<sch.items.length;i++){
-      var item=sch.items[i];
-      var il=item.l.toLowerCase();
-      var it=item.t.toLowerCase();
-      // Match title to timetable label
-      if(title&&il.indexOf(title)>=0)return i;
-      if(title&&title.indexOf(il.split(' ')[0])>=0&&il.split(' ')[0].length>3)return i;
-      // Match by note time to timetable time
-      if(note&&it===note)return i;
-      if(note&&it.indexOf(note.split('–')[0].trim())>=0)return i;
-    }
-    // Fallback: use start time
-    var t=parseStartTime(evt.note);
-    if(t!==9999){
-      if(t>=0&&t<360)return 900+t; // after midnight = near end
-      return 500+t/10;
-    }
-    return 999;
+  // Sort by date, then by logical time (5am = day start, midnight-4:59am = late night)
+  function logicalSortTime(note){
+    var t=parseStartTime(note);
+    if(t===9999)return 9999;
+    // Times before 5am (0-299 mins) are late night - sort after 11pm (1380 mins)
+    if(t>=0&&t<300)return t+1440;
+    return t;
   }
   list.sort(function(a,b){
     var dateCmp=(a.date||'').localeCompare(b.date||'');
     if(dateCmp!==0)return dateCmp;
-    return getTTIndex(a)-getTTIndex(b);
+    return logicalSortTime(a.note)-logicalSortTime(b.note);
   });
   evtCache=list;
   return list;
@@ -2833,15 +2813,16 @@ window._saveCalEdit=async function(id,ds){
   var title=document.getElementById('cal-edit-title').value.trim();
   var start=document.getElementById('cal-edit-start').value;
   var end=document.getElementById('cal-edit-end').value;
-  // End time is optional - if only start, just show start time
   var note=start&&end?start+'–'+end:start?start:end?end:'';
   if(!title){alert('Please enter a title');return;}
   await fbDelDoc('events',id);
   await fbAddDoc('events',{date:ds,type:type,title:title,note:note});
-  evtCache=null;
+  evtCache=null;  // Force full reload from Firebase
   calEditId=null;
   CS.sel=ds;
-  renderCal();
+  CS.day=new Date(ds+'T00:00:00');
+  // Re-render after short delay to allow Firebase to settle
+  setTimeout(function(){renderCal();},300);
 };
 
 async function loadEvts(){
@@ -2854,39 +2835,18 @@ async function loadEvts(){
       title=ELBL[newType]||newType;
     return Object.assign({},e,{type:newType,title:title});
   });
-  // Sort by date, then match to timetable order for that day
-  function getTTIndex(evt){
-    if(!evt.date)return 999;
-    var d=new Date(evt.date+'T00:00:00');
-    var dow=d.getDay();
-    var sch=SCH[dow];
-    if(!sch)return 999;
-    var title=(evt.title||'').toLowerCase();
-    var note=(evt.note||'').toLowerCase();
-    // Match by title or note keywords to timetable item index
-    for(var i=0;i<sch.items.length;i++){
-      var item=sch.items[i];
-      var il=item.l.toLowerCase();
-      var it=item.t.toLowerCase();
-      // Match title to timetable label
-      if(title&&il.indexOf(title)>=0)return i;
-      if(title&&title.indexOf(il.split(' ')[0])>=0&&il.split(' ')[0].length>3)return i;
-      // Match by note time to timetable time
-      if(note&&it===note)return i;
-      if(note&&it.indexOf(note.split('–')[0].trim())>=0)return i;
-    }
-    // Fallback: use start time
-    var t=parseStartTime(evt.note);
-    if(t!==9999){
-      if(t>=0&&t<360)return 900+t; // after midnight = near end
-      return 500+t/10;
-    }
-    return 999;
+  // Sort by date, then by logical time (5am = day start, midnight-4:59am = late night)
+  function logicalSortTime(note){
+    var t=parseStartTime(note);
+    if(t===9999)return 9999;
+    // Times before 5am (0-299 mins) are late night - sort after 11pm (1380 mins)
+    if(t>=0&&t<300)return t+1440;
+    return t;
   }
   list.sort(function(a,b){
     var dateCmp=(a.date||'').localeCompare(b.date||'');
     if(dateCmp!==0)return dateCmp;
-    return getTTIndex(a)-getTTIndex(b);
+    return logicalSortTime(a.note)-logicalSortTime(b.note);
   });
   evtCache=list;
   return list;
