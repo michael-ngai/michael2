@@ -601,7 +601,19 @@ var SCH={
 function dstr(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');}
 function fm(n){return '$'+Math.round(n).toLocaleString();}
 var todayStr=dstr(new Date());
-var selectedDate=todayStr;
+
+function logicalDate(d){
+  // If time is between midnight and 5am, it belongs to yesterday
+  var hour=d.getHours();
+  if(hour<5){
+    var prev=new Date(d);
+    prev.setDate(prev.getDate()-1);
+    return dstr(prev);
+  }
+  return dstr(d);
+}
+var logicalToday=logicalDate(new Date());
+var selectedDate=logicalToday;
 var WEEKLY_HABITS=['mealprep','pcs','savings','anthro','housework'];
 
 var HABIT_CAL_MAP={
@@ -744,9 +756,9 @@ async function renderH(){
   });
   var wr=document.getElementById('week-row');wr.innerHTML='';
   var today=new Date(),selD=new Date(selectedDate+'T00:00:00');
-  // Always anchor week to TODAY, not selectedDate
-  var todayDow=today.getDay(),dfm=(todayDow===0)?6:todayDow-1;
-  var mon=new Date(today);mon.setDate(today.getDate()-dfm);
+  // Always anchor week to LOGICAL TODAY
+  var logicalTodayDate=new Date(logicalToday+'T00:00:00'),todayDow=logicalTodayDate.getDay(),dfm=(todayDow===0)?6:todayDow-1;
+  var mon=new Date(logicalTodayDate);mon.setDate(logicalTodayDate.getDate()-dfm);
   var DF_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   for(var i=0;i<7;i++){
     var d=new Date(mon);d.setDate(mon.getDate()+i);
@@ -754,7 +766,7 @@ async function renderH(){
     var dd=await loadHabits(ds2);
     var cnt=DH.filter(function(h){return dd[h];}).length;
     var isSel=d.toDateString()===selD.toDateString();
-    var isF=d>today;
+    var isF=d>logicalTodayDate;
     var cls='wdot de';
     if(!isF&&cnt===DH.length)cls='wdot df';
     else if(!isF&&cnt>0)cls='wdot dp';
@@ -767,7 +779,7 @@ async function renderH(){
 
 // ── TIMETABLE ──
 var ttEditIdx=null;
-var ttSelectedDate=todayStr;
+var ttSelectedDate=logicalToday;
 var ttCache={};
 
 async function loadTT(dateStr){
@@ -1509,8 +1521,8 @@ window._changeHabitDate=function(){
   renderH();
 };
 window._goToday=function(){
-  selectedDate=todayStr;
-  document.getElementById('habit-date-hidden').value=todayStr;
+  selectedDate=logicalToday;
+  document.getElementById('habit-date-hidden').value=logicalToday;
   updateDateDisplay();
   renderH();
 };
@@ -1534,8 +1546,8 @@ window._changeTTDate=function(){
   renderTT();
 };
 window._goTTToday=function(){
-  ttSelectedDate=todayStr;
-  document.getElementById('tt-date-hidden').value=todayStr;
+  ttSelectedDate=logicalToday;
+  document.getElementById('tt-date-hidden').value=logicalToday;
   updateTTDateDisplay();
   renderTT();
 };
@@ -1706,9 +1718,9 @@ async function renderHistory(){
 updHdr();
 setSyncStatus('loading');
 renderBudget();
-document.getElementById('habit-date-hidden').value=todayStr;
+document.getElementById('habit-date-hidden').value=logicalToday;
 updateDateDisplay();
-document.getElementById('tt-date-hidden').value=todayStr;
+document.getElementById('tt-date-hidden').value=logicalToday;
 updateTTDateDisplay();
 var timeLabels=['12:00am','12:15am','12:30am','12:45am'];
 for(var h=1;h<=11;h++){['00','15','30','45'].forEach(function(m){timeLabels.push(h+':'+m+'am');});}
