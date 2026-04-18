@@ -22,16 +22,14 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:0.5px solid var(--border);}
 .hdr-title{font-size:22px;font-weight:600;letter-spacing:-.5px;}
 .hdr-sub{font-size:12px;color:var(--text2);margin-top:3px;font-family:'DM Mono',monospace;}
-.hdr-date{text-align:right;font-size:11px;color:var(--text);font-family:'DM Mono',monospace;line-height:1.8;}
+.hdr-date{text-align:right;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.8;}
 .sync-status{font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block;}
 .sync-ok{background:var(--gdim);color:var(--green);}
 .sync-err{background:rgba(255,95,95,0.1);color:var(--red);}
 .sync-loading{background:var(--adim);color:var(--amber);}
 .tabs{display:flex;gap:3px;background:var(--surface);padding:3px;border-radius:var(--r);margin-bottom:18px;}
 .tab{flex:1;padding:7px 4px;text-align:center;font-size:11px;font-weight:500;border-radius:var(--rs);cursor:pointer;color:var(--text2);border:none;background:none;transition:all .15s;}
-.tab:hover{color:var(--green);border:0.5px solid var(--green) !important;}
 .tab.active{background:var(--surface2);color:var(--text);border:0.5px solid var(--border2);}
-.tab.active:hover{color:var(--green);border-color:var(--green) !important;}
 .panel{display:none;}
 .panel.active{display:block;}
 .card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
@@ -61,17 +59,15 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .tp{background:rgba(167,139,250,.1);color:var(--purple);}
 .to{background:rgba(249,115,22,.12);color:#f97316;}
 .wrow{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:14px;}
-.wday{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:6px 2px;text-align:center;transition:all .15s;}
-.wday:hover{background:var(--surface2);border-color:var(--green);color:var(--green);}
-.wday-n{font-size:7px;color:var(--text3);margin-bottom:4px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0;transition:color .15s;}
-.wday:hover .wday-n{color:var(--green);}
+.wday{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rs);padding:6px 2px;text-align:center;transition:background .1s;}
+.wday:hover{background:var(--surface2);}
+.wday-n{font-size:7px;color:var(--text3);margin-bottom:4px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0;}
 .wdot{width:24px;height:24px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;font-family:'DM Mono',monospace;}
 .de{background:var(--surface2);color:var(--text3);border:1px solid var(--border);}
 .df{background:var(--green);color:#0e0e0f;}
 .dp{background:var(--amber);color:#0e0e0f;}
 .dt{outline:2px solid var(--blue);outline-offset:2px;}
 input,select,textarea{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 11px;width:100%;outline:none;transition:border .15s;}
-input:hover,select:hover,textarea:hover{border-color:var(--green);color:var(--green);}
 input[type=date]{color-scheme:dark;}
 input:focus,select:focus,textarea:focus{border-color:var(--green);}
 select option{background:var(--surface2);}
@@ -81,7 +77,6 @@ select option{background:var(--surface2);}
 .btn.p{background:var(--gdim);border-color:var(--green);color:var(--green);}
 .btn.p:hover{background:var(--green);color:#0e0e0f;}
 .btn.d{color:var(--text3);}
-.btn.d:hover{color:var(--green);border-color:var(--green);}
 .brow{display:flex;gap:7px;padding:9px 14px 13px;}
 .prog-wrap{background:var(--surface2);border-radius:3px;height:6px;margin:7px 0 4px;overflow:hidden;}
 .prog-fill{height:100%;border-radius:3px;transition:width .4s;}
@@ -137,9 +132,7 @@ select option{background:var(--surface2);}
 .ttdone{opacity:.55;}
 .subtabs{display:flex;gap:3px;background:var(--surface);padding:3px;border-radius:var(--rs);margin-bottom:12px;}
 .subtab{flex:1;padding:6px;text-align:center;font-size:12px;font-weight:500;border-radius:var(--rs);cursor:pointer;color:var(--text2);border:none;background:none;transition:all .15s;}
-.subtab:hover{color:var(--green);border:0.5px solid var(--green) !important;background:var(--surface2);}
 .subtab.active{background:var(--surface2);color:var(--text);border:0.5px solid var(--border2);}
-.subtab.active:hover{color:var(--green);border-color:var(--green) !important;}
 .calview{display:none;}
 .calview.active{display:block;}
 .calnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}
@@ -220,13 +213,13 @@ select option{background:var(--surface2);}
   </div>
   <div class="wrow" id="week-row"></div>
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-    <button class="btn" onclick="shiftDate(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
-    <div style="flex:1;position:relative;">
-      <input type="text" id="habit-date-display" readonly onclick="document.getElementById('habit-date-hidden').showPicker()" style="width:100%;text-align:center;cursor:pointer;font-size:13px;height:38px;box-sizing:border-box;" placeholder="Pick a date"/>
-      <input type="date" id="habit-date-hidden" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;top:0;left:0;" onchange="changeHabitDate()"/>
+    <button class="btn" onclick="shiftDate(-1)" style="padding:6px 12px;font-size:16px;">&#8249;</button>
+    <div style="flex:1;text-align:center;">
+      <input type="date" id="habit-date-hidden" style="width:100%;text-align:center;font-size:13px;color-scheme:dark;" onchange="changeHabitDate()"/>
+      <div id="habit-date-display" style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;"></div>
     </div>
-    <button class="btn" onclick="shiftDate(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
-    <button class="btn p" onclick="goToday()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">Today</button>
+    <button class="btn" onclick="shiftDate(1)" style="padding:6px 12px;font-size:16px;">&#8250;</button>
+    <button class="btn p" onclick="goToday()" style="padding:6px 10px;font-size:11px;">Today</button>
   </div>
   <div class="card">
   <div class="card">
@@ -295,10 +288,10 @@ select option{background:var(--surface2);}
 <!-- CALENDAR + TIMETABLE -->
 <div class="panel" id="panel-calendar">
   <div class="subtabs">
-    <button class="subtab active" id="cl-sub-timetable" onclick="switchCalSub('timetable')">&#x23F0; Timetable</button>
-    <button class="subtab" id="cl-sub-calendar" onclick="switchCalSub('calendar')">&#x1F4C5; Calendar</button>
+    <button class="subtab active" id="cl-sub-calendar" onclick="switchCalSub('calendar')">&#x1F4C5; Calendar</button>
+    <button class="subtab" id="cl-sub-timetable" onclick="switchCalSub('timetable')">&#x23F0; Timetable</button>
   </div>
-  <div id="cl-view-calendar" style="display:none;">
+  <div id="cl-view-calendar">
 
   <div class="subtabs">
     <button class="subtab active" id="st-month" onclick="switchCal('month')">Month</button>
@@ -362,16 +355,16 @@ select option{background:var(--surface2);}
   </div>
 
   </div>
-  <div id="cl-view-timetable">
+  <div id="cl-view-timetable" style="display:none;">
 
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-    <button class="btn" onclick="shiftTTDate(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
-    <div style="flex:1;position:relative;">
-      <input type="text" id="tt-date-display" readonly onclick="document.getElementById('tt-date-hidden').showPicker()" style="width:100%;text-align:center;cursor:pointer;font-size:13px;height:38px;box-sizing:border-box;" placeholder="Pick a date"/>
-      <input type="date" id="tt-date-hidden" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;top:0;left:0;" onchange="changeTTDate()"/>
+    <button class="btn" onclick="shiftTTDate(-1)" style="padding:6px 12px;font-size:16px;">&#8249;</button>
+    <div style="flex:1;text-align:center;">
+      <input type="date" id="tt-date-hidden" style="width:100%;text-align:center;font-size:13px;color-scheme:dark;" onchange="changeTTDate()"/>
+      <div id="tt-date-display" style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;"></div>
     </div>
-    <button class="btn" onclick="shiftTTDate(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
-    <button class="btn p" onclick="goTTToday()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">Today</button>
+    <button class="btn" onclick="shiftTTDate(1)" style="padding:6px 12px;font-size:16px;">&#8250;</button>
+    <button class="btn p" onclick="goTTToday()" style="padding:6px 10px;font-size:11px;">Today</button>
   </div>
   <div class="card">
   <div class="card">
@@ -476,7 +469,7 @@ select option{background:var(--surface2);}
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, getDocsFromServer, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
@@ -522,11 +515,9 @@ async function fbSet(col,id,data){
     setSyncStatus('ok');
   }catch(e){lSet(col+'_'+id,data);setSyncStatus('err');}
 }
-async function fbGetCol(col,forceServer){
+async function fbGetCol(col){
   try{
-    var snap=forceServer
-      ?await getDocsFromServer(collection(db,col))
-      :await getDocs(collection(db,col));
+    var snap=await getDocs(collection(db,col));
     var result=[];
     snap.forEach(function(d){result.push({id:d.id,...d.data()});});
     return result;
@@ -603,19 +594,7 @@ var SCH={
 function dstr(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');}
 function fm(n){return '$'+Math.round(n).toLocaleString();}
 var todayStr=dstr(new Date());
-
-function logicalDate(d){
-  // If time is between midnight and 5am, it belongs to yesterday
-  var hour=d.getHours();
-  if(hour<5){
-    var prev=new Date(d);
-    prev.setDate(prev.getDate()-1);
-    return dstr(prev);
-  }
-  return dstr(d);
-}
-var logicalToday=logicalDate(new Date());
-var selectedDate=logicalToday;
+var selectedDate=todayStr;
 var WEEKLY_HABITS=['mealprep','pcs','savings','anthro','housework'];
 
 var HABIT_CAL_MAP={
@@ -661,7 +640,7 @@ window._switchTab=function(name){
     document.getElementById('panel-'+n).classList.toggle('active',n===name);
   });
   if(name==='todo'){window._switchTodoSub('routine');}
-  if(name==='calendar'){window._switchCalSub('timetable');renderTT();}
+  if(name==='calendar'){window._switchCalSub('calendar');renderCal();}
   if(name==='savings'){window._switchSavSub('savings');renderBudget();}
 };
 
@@ -685,13 +664,12 @@ async function loadHabits(dateStr){
 
 window._togH=async function(el){
   var id=el.dataset.id;
-  var nowTicked=false;
   if(WEEKLY_HABITS.indexOf(id)>=0){
     var wk=weekKey(selectedDate);
     var wdata=await fbGet('habits',wk)||{};
     wdata[id]=!wdata[id];
-    nowTicked=!!wdata[id];
     await fbSet('habits',wk,wdata);
+    // Clear cache for this week so all days reload with updated weekly state
     var wk2=weekKey(selectedDate);
     Object.keys(habitCache).forEach(function(k){
       if(k==='__wk_'+wk2||habitCache[k])delete habitCache[k];
@@ -700,23 +678,8 @@ window._togH=async function(el){
   } else {
     var data=await loadHabits(selectedDate);
     data[id]=!data[id];
-    nowTicked=!!data[id];
     habitCache[selectedDate]=data;
     await fbSet('habits',selectedDate,data);
-  }
-  // Auto-log/remove calendar event
-  var map=HABIT_CAL_MAP[id];
-  if(map){
-    var eventDate=logicalDate(new Date());
-    var evts=await loadEvts();
-    var existing=evts.find(function(e){return e.date===eventDate&&e.title===map.label;});
-    if(nowTicked&&!existing){
-      await fbAddDoc('events',{date:eventDate,type:map.type,title:map.label,note:''});
-      evtCache=null;
-    } else if(!nowTicked&&existing){
-      await fbDelDoc('events',existing.id);
-      evtCache=null;
-    }
   }
   renderH();
   renderHistory();
@@ -774,9 +737,9 @@ async function renderH(){
   });
   var wr=document.getElementById('week-row');wr.innerHTML='';
   var today=new Date(),selD=new Date(selectedDate+'T00:00:00');
-  // Always anchor week to LOGICAL TODAY
-  var logicalTodayDate=new Date(logicalToday+'T00:00:00'),todayDow=logicalTodayDate.getDay(),dfm=(todayDow===0)?6:todayDow-1;
-  var mon=new Date(logicalTodayDate);mon.setDate(logicalTodayDate.getDate()-dfm);
+  // Always anchor week to TODAY, not selectedDate
+  var todayDow=today.getDay(),dfm=(todayDow===0)?6:todayDow-1;
+  var mon=new Date(today);mon.setDate(today.getDate()-dfm);
   var DF_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   for(var i=0;i<7;i++){
     var d=new Date(mon);d.setDate(mon.getDate()+i);
@@ -784,7 +747,7 @@ async function renderH(){
     var dd=await loadHabits(ds2);
     var cnt=DH.filter(function(h){return dd[h];}).length;
     var isSel=d.toDateString()===selD.toDateString();
-    var isF=d>logicalTodayDate;
+    var isF=d>today;
     var cls='wdot de';
     if(!isF&&cnt===DH.length)cls='wdot df';
     else if(!isF&&cnt>0)cls='wdot dp';
@@ -797,7 +760,7 @@ async function renderH(){
 
 // ── TIMETABLE ──
 var ttEditIdx=null;
-var ttSelectedDate=logicalToday;
+var ttSelectedDate=todayStr;
 var ttCache={};
 
 async function loadTT(dateStr){
@@ -1029,44 +992,19 @@ window._openCalEdit=function(id,ds){
 };
 
 window._saveCalEdit=async function(id,ds){
-  // Read all form values immediately before any DOM changes
-  var typeEl=document.getElementById('cal-edit-type');
-  var titleEl=document.getElementById('cal-edit-title');
-  var startEl=document.getElementById('cal-edit-start');
-  var endEl=document.getElementById('cal-edit-end');
-  if(!typeEl||!titleEl){alert('Error: form not found');return;}
-  var type=typeEl.value;
-  var title=titleEl.value.trim();
-  var start=startEl?startEl.value:'';
-  var end=endEl?endEl.value:'';
+  var type=document.getElementById('cal-edit-type').value;
+  var title=document.getElementById('cal-edit-title').value.trim();
+  var start=document.getElementById('cal-edit-start').value;
+  var end=document.getElementById('cal-edit-end').value;
+  // End time is optional - if only start, just show start time
   var note=start&&end?start+'–'+end:start?start:end?end:'';
   if(!title){alert('Please enter a title');return;}
-  // Delete old event
   await fbDelDoc('events',id);
-  // Add new event
   await fbAddDoc('events',{date:ds,type:type,title:title,note:note});
-  // Force full cache clear and reload from Firebase
   evtCache=null;
   calEditId=null;
   CS.sel=ds;
-  CS.day=new Date(ds+'T00:00:00');
-  // Force fresh fetch from Firebase server (bypass local cache)
-  var list=await fbGetCol('events',true);
-  list=list.map(function(e){
-    var newType=migrateEvent(e);
-    var title=e.title||'';
-    if(!title||title==='tt'||title==='other'||title==='undefined'||title==='work'||title==='sleep')
-      title=ELBL[newType]||newType;
-    return Object.assign({},e,{type:newType,title:title});
-  });
-  list.sort(function(a,b){
-    var dc=(a.date||'').localeCompare(b.date||'');
-    if(dc!==0)return dc;
-    return logicalSortTime(a.note)-logicalSortTime(b.note);
-  });
-  evtCache=list;
   renderCal();
-  renderSelEvts();
 };
 
 async function loadEvts(){
@@ -1079,19 +1017,51 @@ async function loadEvts(){
       title=ELBL[newType]||newType;
     return Object.assign({},e,{type:newType,title:title});
   });
-  // Sort by date, then by logical time (5am = day start, midnight-4:59am = late night)
-  function logicalSortTime(note){
-    var t=parseStartTime(note);
-    if(t===9999)return 9999;
-    // Times before 5am (0-299 mins) are late night - sort after 11pm (1380 mins)
-    if(t>=0&&t<300)return t+1440;
-    return t;
+  // Sort by date, then match to timetable order for that day
+  function getTTIndex(evt){
+    if(!evt.date)return 999;
+    var d=new Date(evt.date+'T00:00:00');
+    var dow=d.getDay();
+    var sch=SCH[dow];
+    if(!sch)return 999;
+    var title=(evt.title||'').toLowerCase();
+    var note=(evt.note||'').toLowerCase();
+    // Match by title or note keywords to timetable item index
+    for(var i=0;i<sch.items.length;i++){
+      var item=sch.items[i];
+      var il=item.l.toLowerCase();
+      var it=item.t.toLowerCase();
+      // Match title to timetable label
+      if(title&&il.indexOf(title)>=0)return i;
+      if(title&&title.indexOf(il.split(' ')[0])>=0&&il.split(' ')[0].length>3)return i;
+      // Match by note time to timetable time
+      if(note&&it===note)return i;
+      if(note&&it.indexOf(note.split('–')[0].trim())>=0)return i;
+    }
+    // Fallback: use start time
+    var t=parseStartTime(evt.note);
+    if(t!==9999){
+      if(t>=0&&t<360)return 900+t; // after midnight = near end
+      return 500+t/10;
+    }
+    return 999;
   }
   list.sort(function(a,b){
     var dateCmp=(a.date||'').localeCompare(b.date||'');
     if(dateCmp!==0)return dateCmp;
-    return logicalSortTime(a.note)-logicalSortTime(b.note);
+    return getTTIndex(a)-getTTIndex(b);
   });
+  // Remove duplicates - same date+title, keep newest
+  var seen={};var dupeIds=[];
+  for(var i=list.length-1;i>=0;i--){
+    var key=(list[i].date||'')+'|'+(list[i].title||'').toLowerCase();
+    if(seen[key]){dupeIds.push(list[i].id);}
+    else{seen[key]=true;}
+  }
+  if(dupeIds.length>0){
+    dupeIds.forEach(function(did){fbDelDoc('events',did);});
+    list=list.filter(function(e){return dupeIds.indexOf(e.id)<0;});
+  }
   evtCache=list;
   return list;
 }
@@ -1146,22 +1116,6 @@ window._selDay=function(ds){
   if(window._updateCEDate)window._updateCEDate();
   renderMonth();
 };
-
-function getPillStyle(type){
-  var styles={
-    work:'background:var(--gdim);color:var(--green);',
-    sleep:'background:rgba(167,139,250,.12);color:#a78bfa;',
-    sports:'background:rgba(234,179,8,.12);color:#eab308;',
-    personal:'background:var(--bdim);color:var(--blue);',
-    learning:'background:var(--adim);color:var(--amber);',
-    meal:'background:rgba(249,115,22,.12);color:#f97316;',
-    michaels:'background:rgba(212,83,126,.12);color:#ed93b1;',
-    home:'background:rgba(148,163,184,.12);color:#94a3b8;',
-    travel:'background:rgba(107,114,128,.12);color:#9ca3af;',
-    other:'background:var(--surface2);color:var(--text3);'
-  };
-  return styles[type]||styles.other;
-}
 
 async function renderSelEvts(){
   var el=document.getElementById('cal-selbody');
@@ -1268,23 +1222,17 @@ async function renderWeek(){
     var de=evts.filter(function(e){return e.date===ds;});
     html+='<div class="wcol'+(isT?' today':'')+'"><div class="wcolhdr"><div class="wcolname" style="'+(isT?'color:var(--blue);':'')+'">'+dns[i]+'</div><div class="wcoldate">'+d.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+'</div></div>';
     if(de.length===0){html+='<div class="wnoevt">No events</div>';}
-    else{html+='<div class="card" style="margin:4px 0;padding:4px 0;">';de.forEach(function(e){
+    else{de.forEach(function(e){
         var et=e.type||'other';
         var ec=ECOL[et]||'cd-other';
-        var el2=ELBL[et]||et;
-        var ps=getPillStyle(et);
-        var isEditing=(calEditId===e.id);
-        html+='<div class="evtrow" style="flex-direction:column;align-items:stretch;gap:4px;">';
-        html+='<div style="display:flex;align-items:center;gap:7px;">';
-        html+='<div class="cdot '+ec+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>';
-        html+='<span style="'+ps+'padding:2px 7px;border-radius:20px;font-size:10px;font-family:monospace;white-space:nowrap;">'+el2+'</span>';
-        html+='<span style="color:var(--text);font-size:13px;flex:1;">'+e.title+'</span>';
-        if(e.note)html+='<span style="color:var(--text3);font-size:11px;font-family:monospace;white-space:nowrap;">'+e.note+'</span>';
-        html+='<button class="editbtn" data-eid="'+e.id+'" data-ds="'+'ds'+'" onclick="openCalEdit(this.dataset.eid,this.dataset.ds)">'+(isEditing?'close':'edit')+'</button>';
-        html+='<span class="evtdel" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">&#215;</span>';
-        html+='</div>';
-        html+='</div>';
-      });}
+        var el=ELBL[et]||et;
+        html+='<div class="wevt">'
+          +'<div class="cdot '+ec+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>'
+          +'<div style="flex:1;">'
+          +'<div style="font-size:12px;color:var(--text);">'+e.title+'</div>'
+          +'<div style="font-size:11px;color:var(--text3);">'+el+(e.note?' · <span style=\'font-family:monospace;\'>'+e.note+'</span>':'')+'</div>'
+          +'</div></div>';
+    });}
     html+='</div>';
   }
   document.getElementById('cal-wgrid').innerHTML=html;
@@ -1295,27 +1243,10 @@ async function renderDay(){
   document.getElementById('cal-dtitle').textContent=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   var de=evts.filter(function(e){return e.date===ds;}),html='';
   if(de.length===0){html='<div class="empty" style="padding:24px 0;">No events for this day</div>';}
-  else{
-    html+='<div class="card">';
-    de.forEach(function(e){
-        var et=e.type||'other';
-        var ec=ECOL[et]||'cd-other';
-        var el2=ELBL[et]||et;
-        var ps=getPillStyle(et);
-        var isEditing=(calEditId===e.id);
-        html+='<div class="evtrow" style="flex-direction:column;align-items:stretch;gap:4px;">';
-        html+='<div style="display:flex;align-items:center;gap:7px;">';
-        html+='<div class="cdot '+ec+'" style="width:8px;height:8px;border-radius:50%;flex-shrink:0;"></div>';
-        html+='<span style="'+ps+'padding:2px 7px;border-radius:20px;font-size:10px;font-family:monospace;white-space:nowrap;">'+el2+'</span>';
-        html+='<span style="color:var(--text);font-size:13px;flex:1;">'+e.title+'</span>';
-        if(e.note)html+='<span style="color:var(--text3);font-size:11px;font-family:monospace;white-space:nowrap;">'+e.note+'</span>';
-        html+='<button class="editbtn" data-eid="'+e.id+'" data-ds="'+'ds'+'" onclick="openCalEdit(this.dataset.eid,this.dataset.ds)">'+(isEditing?'close':'edit')+'</button>';
-        html+='<span class="evtdel" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">&#215;</span>';
-        html+='</div>';
-        html+='</div>';
-      });
-    html+='</div>';
-  }
+  else{de.forEach(function(e){
+    var et=e.type||'other';
+    html+='<div class="devtcard"><div class="devttype" style="color:var(--'+EACC[et]+');">'+( ELBL[et]||et)+'</div><div class="devttitle">'+e.title+'</div>'+(e.note?'<div class="devtnote">'+e.note+'</div>':'')+'<div style="margin-top:8px;"><button class="btn d" style="font-size:11px;padding:4px 10px;" data-eid="'+e.id+'" onclick="delEvt(this.dataset.eid)">Delete</button></div></div>';
+  });}
   document.getElementById('cal-dbody').innerHTML=html;
 }
 
@@ -1459,8 +1390,8 @@ window._switchTodoSub=function(name){
 window._switchCalSub=function(name){
   document.getElementById('cl-view-calendar').style.display=name==='calendar'?'':'none';
   document.getElementById('cl-view-timetable').style.display=name==='timetable'?'':'none';
-  document.getElementById('cl-sub-timetable').classList.toggle('active',name==='timetable');
   document.getElementById('cl-sub-calendar').classList.toggle('active',name==='calendar');
+  document.getElementById('cl-sub-timetable').classList.toggle('active',name==='timetable');
   if(name==='timetable')renderTT();
   if(name==='calendar')renderCal();
 };
@@ -1542,20 +1473,14 @@ function renderBudget(){
 function updateDateDisplay(){
   var d=new Date(selectedDate+'T00:00:00');
   var dayName=d.toLocaleDateString('en-AU',{weekday:'long'});
-  var dd=String(d.getDate()).padStart(2,'0');
-  var mm=String(d.getMonth()+1).padStart(2,'0');
-  var yyyy=d.getFullYear();
   var el=document.getElementById('habit-date-display');
-  if(el)el.value=dd+'/'+mm+'/'+yyyy+',  '+dayName;
+  if(el)el.textContent=dayName;
 }
 function updateTTDateDisplay(){
   var d=new Date(ttSelectedDate+'T00:00:00');
   var dayName=d.toLocaleDateString('en-AU',{weekday:'long'});
-  var dd=String(d.getDate()).padStart(2,'0');
-  var mm=String(d.getMonth()+1).padStart(2,'0');
-  var yyyy=d.getFullYear();
   var el=document.getElementById('tt-date-display');
-  if(el)el.value=dd+'/'+mm+'/'+yyyy+',  '+dayName;
+  if(el)el.textContent=dayName;
 }
 window._shiftDate=function(dir){
   var d=new Date(selectedDate+'T00:00:00');
@@ -1571,8 +1496,8 @@ window._changeHabitDate=function(){
   renderH();
 };
 window._goToday=function(){
-  selectedDate=logicalToday;
-  document.getElementById('habit-date-hidden').value=logicalToday;
+  selectedDate=todayStr;
+  document.getElementById('habit-date-hidden').value=todayStr;
   updateDateDisplay();
   renderH();
 };
@@ -1596,8 +1521,8 @@ window._changeTTDate=function(){
   renderTT();
 };
 window._goTTToday=function(){
-  ttSelectedDate=logicalToday;
-  document.getElementById('tt-date-hidden').value=logicalToday;
+  ttSelectedDate=todayStr;
+  document.getElementById('tt-date-hidden').value=todayStr;
   updateTTDateDisplay();
   renderTT();
 };
@@ -1768,9 +1693,9 @@ async function renderHistory(){
 updHdr();
 setSyncStatus('loading');
 renderBudget();
-document.getElementById('habit-date-hidden').value=logicalToday;
+document.getElementById('habit-date-hidden').value=todayStr;
 updateDateDisplay();
-document.getElementById('tt-date-hidden').value=logicalToday;
+document.getElementById('tt-date-hidden').value=todayStr;
 updateTTDateDisplay();
 var timeLabels=['12:00am','12:15am','12:30am','12:45am'];
 for(var h=1;h<=11;h++){['00','15','30','45'].forEach(function(m){timeLabels.push(h+':'+m+'am');});}
@@ -1841,6 +1766,7 @@ function switchSavSub(n){if(window._switchSavSub)window._switchSavSub(n);}
 function switchTodoSub(n){if(window._switchTodoSub)window._switchTodoSub(n);}
 function switchCalSub(n){if(window._switchCalSub)window._switchCalSub(n);}
 function tickTodo(id){if(window._tickTodo)window._tickTodo(id);}
+function deleteTodo(id,from){if(window._deleteTodo)window._deleteTodo(id,from);}
 </script>
 </body>
 </html>
