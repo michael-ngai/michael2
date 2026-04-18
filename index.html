@@ -685,12 +685,13 @@ async function loadHabits(dateStr){
 
 window._togH=async function(el){
   var id=el.dataset.id;
+  var nowTicked=false;
   if(WEEKLY_HABITS.indexOf(id)>=0){
     var wk=weekKey(selectedDate);
     var wdata=await fbGet('habits',wk)||{};
     wdata[id]=!wdata[id];
+    nowTicked=!!wdata[id];
     await fbSet('habits',wk,wdata);
-    // Clear cache for this week so all days reload with updated weekly state
     var wk2=weekKey(selectedDate);
     Object.keys(habitCache).forEach(function(k){
       if(k==='__wk_'+wk2||habitCache[k])delete habitCache[k];
@@ -699,8 +700,23 @@ window._togH=async function(el){
   } else {
     var data=await loadHabits(selectedDate);
     data[id]=!data[id];
+    nowTicked=!!data[id];
     habitCache[selectedDate]=data;
     await fbSet('habits',selectedDate,data);
+  }
+  // Auto-log/remove calendar event
+  var map=HABIT_CAL_MAP[id];
+  if(map){
+    var eventDate=logicalDate(new Date());
+    var evts=await loadEvts();
+    var existing=evts.find(function(e){return e.date===eventDate&&e.title===map.label;});
+    if(nowTicked&&!existing){
+      await fbAddDoc('events',{date:eventDate,type:map.type,title:map.label,note:''});
+      evtCache=null;
+    } else if(!nowTicked&&existing){
+      await fbDelDoc('events',existing.id);
+      evtCache=null;
+    }
   }
   renderH();
   renderHistory();
@@ -1013,10 +1029,16 @@ window._openCalEdit=function(id,ds){
 };
 
 window._saveCalEdit=async function(id,ds){
-  var type=document.getElementById('cal-edit-type').value;
-  var title=document.getElementById('cal-edit-title').value.trim();
-  var start=document.getElementById('cal-edit-start').value;
-  var end=document.getElementById('cal-edit-end').value;
+  // Read all form values immediately before any DOM changes
+  var typeEl=document.getElementById('cal-edit-type');
+  var titleEl=document.getElementById('cal-edit-title');
+  var startEl=document.getElementById('cal-edit-start');
+  var endEl=document.getElementById('cal-edit-end');
+  if(!typeEl||!titleEl){alert('Error: form not found');return;}
+  var type=typeEl.value;
+  var title=titleEl.value.trim();
+  var start=startEl?startEl.value:'';
+  var end=endEl?endEl.value:'';
   var note=start&&end?start+'–'+end:start?start:end?end:'';
   if(!title){alert('Please enter a title');return;}
   // Delete old event
