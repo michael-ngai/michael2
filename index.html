@@ -476,7 +476,7 @@ select option{background:var(--surface2);}
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, getDocsFromServer, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
@@ -522,9 +522,11 @@ async function fbSet(col,id,data){
     setSyncStatus('ok');
   }catch(e){lSet(col+'_'+id,data);setSyncStatus('err');}
 }
-async function fbGetCol(col){
+async function fbGetCol(col,forceServer){
   try{
-    var snap=await getDocs(collection(db,col));
+    var snap=forceServer
+      ?await getDocsFromServer(collection(db,col))
+      :await getDocs(collection(db,col));
     var result=[];
     snap.forEach(function(d){result.push({id:d.id,...d.data()});});
     return result;
@@ -1026,8 +1028,21 @@ window._saveCalEdit=async function(id,ds){
   calEditId=null;
   CS.sel=ds;
   CS.day=new Date(ds+'T00:00:00');
-  // Reload events fresh from Firebase then render
-  await loadEvts();
+  // Force fresh fetch from Firebase server (bypass local cache)
+  var list=await fbGetCol('events',true);
+  list=list.map(function(e){
+    var newType=migrateEvent(e);
+    var title=e.title||'';
+    if(!title||title==='tt'||title==='other'||title==='undefined'||title==='work'||title==='sleep')
+      title=ELBL[newType]||newType;
+    return Object.assign({},e,{type:newType,title:title});
+  });
+  list.sort(function(a,b){
+    var dc=(a.date||'').localeCompare(b.date||'');
+    if(dc!==0)return dc;
+    return logicalSortTime(a.note)-logicalSortTime(b.note);
+  });
+  evtCache=list;
   renderCal();
   renderSelEvts();
 };
@@ -2279,7 +2294,7 @@ select option{background:var(--surface2);}
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, getDocsFromServer, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
@@ -2325,9 +2340,11 @@ async function fbSet(col,id,data){
     setSyncStatus('ok');
   }catch(e){lSet(col+'_'+id,data);setSyncStatus('err');}
 }
-async function fbGetCol(col){
+async function fbGetCol(col,forceServer){
   try{
-    var snap=await getDocs(collection(db,col));
+    var snap=forceServer
+      ?await getDocsFromServer(collection(db,col))
+      :await getDocs(collection(db,col));
     var result=[];
     snap.forEach(function(d){result.push({id:d.id,...d.data()});});
     return result;
@@ -2829,8 +2846,21 @@ window._saveCalEdit=async function(id,ds){
   calEditId=null;
   CS.sel=ds;
   CS.day=new Date(ds+'T00:00:00');
-  // Reload events fresh from Firebase then render
-  await loadEvts();
+  // Force fresh fetch from Firebase server (bypass local cache)
+  var list=await fbGetCol('events',true);
+  list=list.map(function(e){
+    var newType=migrateEvent(e);
+    var title=e.title||'';
+    if(!title||title==='tt'||title==='other'||title==='undefined'||title==='work'||title==='sleep')
+      title=ELBL[newType]||newType;
+    return Object.assign({},e,{type:newType,title:title});
+  });
+  list.sort(function(a,b){
+    var dc=(a.date||'').localeCompare(b.date||'');
+    if(dc!==0)return dc;
+    return logicalSortTime(a.note)-logicalSortTime(b.note);
+  });
+  evtCache=list;
   renderCal();
   renderSelEvts();
 };
