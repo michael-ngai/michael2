@@ -68,6 +68,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .dp{background:var(--amber);color:#0e0e0f;}
 .dt{outline:2px solid var(--blue);outline-offset:2px;}
 input,select,textarea{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 11px;width:100%;outline:none;transition:border .15s;}
+input:hover,select:hover,textarea:hover{border-color:var(--green);}
 input[type=date]{color-scheme:dark;}
 input:focus,select:focus,textarea:focus{border-color:var(--green);}
 select option{background:var(--surface2);}
@@ -359,9 +360,9 @@ select option{background:var(--surface2);}
 
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
     <button class="btn" onclick="shiftTTDate(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
-    <div style="flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;">
-      <input type="date" id="tt-date-hidden" style="width:100%;text-align:center;font-size:13px;color-scheme:dark;" onchange="changeTTDate()"/>
-      <div id="tt-date-display" style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;"></div>
+    <div style="flex:1;position:relative;">
+      <input type="text" id="tt-date-display" readonly onclick="document.getElementById('tt-date-hidden').showPicker()" style="width:100%;text-align:center;cursor:pointer;font-size:13px;height:38px;box-sizing:border-box;" placeholder="Pick a date"/>
+      <input type="date" id="tt-date-hidden" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;top:0;left:0;" onchange="changeTTDate()"/>
     </div>
     <button class="btn" onclick="shiftTTDate(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
     <button class="btn p" onclick="goTTToday()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">Today</button>
