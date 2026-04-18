@@ -1466,7 +1466,7 @@ function updateDateDisplay(){
   var mm=String(d.getMonth()+1).padStart(2,'0');
   var yyyy=d.getFullYear();
   var el=document.getElementById('habit-date-display');
-  if(el)el.textContent=dd+'/'+mm+'/'+yyyy+',  '+dayName;
+  if(el)el.value=dd+'/'+mm+'/'+yyyy+',  '+dayName;
 }
 function updateTTDateDisplay(){
   var d=new Date(ttSelectedDate+'T00:00:00');
@@ -1475,7 +1475,7 @@ function updateTTDateDisplay(){
   var mm=String(d.getMonth()+1).padStart(2,'0');
   var yyyy=d.getFullYear();
   var el=document.getElementById('tt-date-display');
-  if(el)el.textContent=dd+'/'+mm+'/'+yyyy+',  '+dayName;
+  if(el)el.value=dd+'/'+mm+'/'+yyyy+',  '+dayName;
 }
 window._shiftDate=function(dir){
   var d=new Date(selectedDate+'T00:00:00');
