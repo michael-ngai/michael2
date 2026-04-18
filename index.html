@@ -213,13 +213,13 @@ select option{background:var(--surface2);}
   </div>
   <div class="wrow" id="week-row"></div>
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-    <button class="btn" onclick="shiftDate(-1)" style="padding:6px 12px;font-size:16px;">&#8249;</button>
-    <div style="flex:1;text-align:center;">
+    <button class="btn" onclick="shiftDate(-1)" style="padding:6px 12px;font-size:16px;line-height:1;align-self:center;" style="padding:6px 12px;font-size:16px;">&#8249;</button>
+    <div style="flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;">
       <input type="date" id="habit-date-hidden" style="width:100%;text-align:center;font-size:13px;color-scheme:dark;" onchange="changeHabitDate()"/>
       <div id="habit-date-display" style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;"></div>
     </div>
-    <button class="btn" onclick="shiftDate(1)" style="padding:6px 12px;font-size:16px;">&#8250;</button>
-    <button class="btn p" onclick="goToday()" style="padding:6px 10px;font-size:11px;">Today</button>
+    <button class="btn" onclick="shiftDate(1)" style="padding:8px 14px;font-size:18px;line-height:1;">&#8250;</button>
+    <button class="btn p" onclick="goToday()" style="padding:8px 10px;font-size:11px;line-height:1;">Today</button>
   </div>
   <div class="card">
   <div class="card">
@@ -358,13 +358,13 @@ select option{background:var(--surface2);}
   <div id="cl-view-timetable" style="display:none;">
 
   <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-    <button class="btn" onclick="shiftTTDate(-1)" style="padding:6px 12px;font-size:16px;">&#8249;</button>
-    <div style="flex:1;text-align:center;">
+    <button class="btn" onclick="shiftTTDate(-1)" style="padding:8px 14px;font-size:18px;line-height:1;">&#8249;</button>
+    <div style="flex:1;text-align:center;display:flex;flex-direction:column;justify-content:center;">
       <input type="date" id="tt-date-hidden" style="width:100%;text-align:center;font-size:13px;color-scheme:dark;" onchange="changeTTDate()"/>
       <div id="tt-date-display" style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;"></div>
     </div>
-    <button class="btn" onclick="shiftTTDate(1)" style="padding:6px 12px;font-size:16px;">&#8250;</button>
-    <button class="btn p" onclick="goTTToday()" style="padding:6px 10px;font-size:11px;">Today</button>
+    <button class="btn" onclick="shiftTTDate(1)" style="padding:8px 14px;font-size:18px;line-height:1;">&#8250;</button>
+    <button class="btn p" onclick="goTTToday()" style="padding:8px 10px;font-size:11px;line-height:1;">Today</button>
   </div>
   <div class="card">
   <div class="card">
@@ -1471,8 +1471,11 @@ function updateDateDisplay(){
 function updateTTDateDisplay(){
   var d=new Date(ttSelectedDate+'T00:00:00');
   var dayName=d.toLocaleDateString('en-AU',{weekday:'long'});
+  var dd=String(d.getDate()).padStart(2,'0');
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  var yyyy=d.getFullYear();
   var el=document.getElementById('tt-date-display');
-  if(el)el.textContent=dayName;
+  if(el)el.textContent=dayName+' '+dd+'/'+mm+'/'+yyyy;
 }
 window._shiftDate=function(dir){
   var d=new Date(selectedDate+'T00:00:00');
