@@ -1462,8 +1462,11 @@ function renderBudget(){
 function updateDateDisplay(){
   var d=new Date(selectedDate+'T00:00:00');
   var dayName=d.toLocaleDateString('en-AU',{weekday:'long'});
+  var dd=String(d.getDate()).padStart(2,'0');
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  var yyyy=d.getFullYear();
   var el=document.getElementById('habit-date-display');
-  if(el)el.textContent=dayName;
+  if(el)el.textContent=dayName+' '+dd+'/'+mm+'/'+yyyy;
 }
 function updateTTDateDisplay(){
   var d=new Date(ttSelectedDate+'T00:00:00');
