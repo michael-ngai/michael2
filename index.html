@@ -97,14 +97,14 @@ select option{background:var(--surface2);}
 .slbl{color:var(--text2);}
 .snote{font-size:11px;color:var(--text3);margin-top:1px;font-family:'DM Mono',monospace;}
 .sval{font-weight:500;font-family:'DM Mono',monospace;}
-.logrow{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:0.5px solid var(--border);font-size:12px;}
+.logrow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px 10px 12px;border-bottom:0.5px solid var(--border);font-size:12px;transition:background .15s;gap:8px;}.logrow:hover{background:rgba(255,255,255,0.03);}
 .logrow:last-child{border-bottom:none;}
 .logdate{color:var(--text3);min-width:70px;font-family:'DM Mono',monospace;}
 .logdesc{flex:1;color:var(--text2);padding:0 7px;}
 .logamt{font-weight:500;font-family:'DM Mono',monospace;color:var(--green);}
 .logamt.r{color:var(--red);}
 .logscroll{max-height:220px;overflow-y:auto;}
-.empty{padding:18px 14px;text-align:center;color:var(--text3);font-size:12px;font-family:'DM Mono',monospace;}
+.empty{padding:18px 14px;text-align:center;color:var(--text3);font-size:12px;font-family:'DM Mono',monospace;}.editbtn{font-size:10px;color:var(--text3);background:none;border:0.5px solid var(--border2);border-radius:4px;padding:2px 8px;cursor:pointer;transition:all .15s;font-family:'DM Mono',monospace;white-space:nowrap;}.editbtn:hover{color:var(--text);border-color:var(--text3);}.evtdel{cursor:pointer;color:var(--text3);font-size:16px;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:4px;transition:all .15s;}.evtdel:hover{color:var(--red);background:rgba(255,95,95,0.12);}
 .badge{font-size:10px;padding:2px 8px;border-radius:20px;font-family:'DM Mono',monospace;}
 .bg{background:var(--gdim);color:var(--green);}
 .ba{background:var(--adim);color:var(--amber);}
@@ -461,9 +461,7 @@ select option{background:var(--surface2);}
   </div>
 
   <!-- Expense History header + two tables -->
-  <div class="card-hdr" style="margin-top:14px;padding:0 2px 6px;">
-    <div class="card-title">Expense History</div>
-  </div>
+  <div style="margin:20px 0 10px;display:flex;align-items:center;gap:10px;"><span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:'DM Mono',monospace;">Expense History</span><div style="flex:1;height:0.5px;background:var(--border);"></div></div>
   <div style="display:flex;gap:10px;">
     <div class="card" style="flex:1;min-width:0;">
       <div class="card-hdr"><div class="card-title" style="color:var(--blue);">🔵 Regular</div><div class="card-meta" id="ex-reg-cnt">0</div></div>
@@ -1548,7 +1546,7 @@ async function renderEx(){
   // Split by type
   var reg=entries.filter(function(x){return x.type==='regular'||!x.type;});
   var unn=entries.filter(function(x){return x.type==='unnecessary';});
-  function makeRows(arr,elId,cntId){
+  function makeRows(arr,elId,cntId,accent){accent=accent||'var(--blue)';
     var el=document.getElementById(elId);
     var cnt=document.getElementById(cntId);
     if(!el)return;
@@ -1557,19 +1555,21 @@ async function renderEx(){
     // arr items have original indices in entries array
     el.innerHTML=arr.map(function(x){
       var idx=entries.indexOf(x);
-      return '<div class="logrow" style="font-size:12px;align-items:center;">'+
-        '<div style="flex:1;">'+
-          '<div class="logdate" style="font-size:10px;">'+x.date+'</div>'+
+      return '<div class="logrow" style="border-left:2px solid '+accent+';">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div class="logdate" style="font-size:10px;margin-bottom:2px;">'+x.date+'</div>'+
           '<div class="logdesc">'+x.cat+(x.note?' · '+x.note:'')+'</div>'+
         '</div>'+
-        '<div class="logamt r" style="margin-right:6px;">-'+fm(x.amount)+'</div>'+
-        '<button class="editbtn" onclick="editEx('+idx+')">edit</button>'+
-        '<span class="evtdel" onclick="delEx('+idx+')">&#215;</span>'+
+        '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">'+
+          '<span class="logamt r" style="color:'+accent+';">-'+fm(x.amount)+'</span>'+
+          '<button class="editbtn" onclick="editEx('+idx+')">edit</button>'+
+          '<span class="evtdel" onclick="delEx('+idx+')">&#215;</span>'+
+        '</div>'+
       '</div>';
     }).reverse().join('');
   }
-  makeRows(reg,'ex-reg-log','ex-reg-cnt');
-  makeRows(unn,'ex-unn-log','ex-unn-cnt');
+  makeRows(reg,'ex-reg-log','ex-reg-cnt','var(--blue)');
+  makeRows(unn,'ex-unn-log','ex-unn-cnt','var(--red)');
   // Summary
   var sumEl=document.getElementById('ex-summary');
   if(sumEl){
