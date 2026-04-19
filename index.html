@@ -1563,13 +1563,19 @@ async function renderEx(){
     if(!el)return;
     if(cnt)cnt.textContent=arr.length+' entries';
     if(arr.length===0){el.innerHTML='<div class="empty" style="padding:8px 0;">None yet</div>';return;}
-    el.innerHTML=arr.slice().reverse().map(function(x){
-      return '<div class="logrow" style="font-size:12px;">'+
-        '<div class="logdate" style="font-size:10px;">'+x.date+'</div>'+
-        '<div class="logdesc" style="flex:1;">'+x.cat+(x.note?' · '+x.note:'')+'</div>'+
-        '<div class="logamt r">-'+fm(x.amount)+'</div>'+
+    // arr items have original indices in entries array
+    el.innerHTML=arr.map(function(x){
+      var idx=entries.indexOf(x);
+      return '<div class="logrow" style="font-size:12px;align-items:center;">'+
+        '<div style="flex:1;">'+
+          '<div class="logdate" style="font-size:10px;">'+x.date+'</div>'+
+          '<div class="logdesc">'+x.cat+(x.note?' · '+x.note:'')+'</div>'+
+        '</div>'+
+        '<div class="logamt r" style="margin-right:6px;">-'+fm(x.amount)+'</div>'+
+        '<button class="editbtn" onclick="editEx('+idx+')">edit</button>'+
+        '<span class="evtdel" onclick="delEx('+idx+')">&#215;</span>'+
       '</div>';
-    }).join('');
+    }).reverse().join('');
   }
   makeRows(reg,'ex-reg-log','ex-reg-cnt');
   makeRows(unn,'ex-unn-log','ex-unn-cnt');
@@ -1993,6 +1999,9 @@ function switchTodoSub(n){if(window._switchTodoSub)window._switchTodoSub(n);}
 function switchCalSub(n){if(window._switchCalSub)window._switchCalSub(n);}
 function tickTodo(id){if(window._tickTodo)window._tickTodo(id);}
 function deleteTodo(id,from){if(window._deleteTodo)window._deleteTodo(id,from);}
+function delEx(idx){if(window._delEx)window._delEx(idx);}
+function editEx(idx){if(window._editEx)window._editEx(idx);}
+function updateEx(idx){if(window._updateEx)window._updateEx(idx);}
 </script>
 </body>
 </html>
