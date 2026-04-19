@@ -44,7 +44,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .stat-val{font-size:20px;font-weight:600;font-family:'DM Mono',monospace;color:var(--green);}
 .stat-val.w{color:var(--text);}
 .stat-val.a{color:var(--amber);}
-.hrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background .1s;}
+.hrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:all .15s;}
+.hrow:hover{border-color:var(--green);background:rgba(29,185,117,0.04);}
 .hrow:last-child{border-bottom:none;}
 .hrow:hover{background:var(--surface2);}
 .hrow.done{opacity:.5;}
@@ -74,6 +75,7 @@ input,select,textarea{background:var(--surface2);border:0.5px solid var(--border
 input[type=date]{color-scheme:dark;}
 input:focus,select:focus,textarea:focus{border-color:var(--green);}
 input:hover,select:hover,textarea:hover{border-color:var(--green);color:var(--green);}
+#habit-date-display:hover,#tt-date-display:hover{border-color:var(--green);color:var(--green);}
 select option{background:var(--surface2);}
 .irow{padding:7px 14px;display:flex;gap:7px;}
 .btn{background:var(--surface2);border:0.5px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:9px 14px;cursor:pointer;transition:all .15s;text-align:center;}
@@ -701,15 +703,6 @@ window._togH=async function(el){
     nowTicked=!!data[id];
     habitCache[selectedDate]=data;
     await fbSet('habits',selectedDate,data);
-  }
-  // Auto-log/remove calendar event
-  var map=HABIT_CAL_MAP[id];
-  if(map){
-    var eventDate=logicalDate(new Date());
-    var evts=await loadEvts();
-    var existing=evts.find(function(e){return e.date===eventDate&&e.title===map.label;});
-    if(nowTicked&&!existing){await fbAddDoc('events',{date:eventDate,type:map.type,title:map.label,note:''});evtCache=null;}
-    else if(!nowTicked&&existing){await fbDelDoc('events',existing.id);evtCache=null;}
   }
   renderH();
   renderHistory();
