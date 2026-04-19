@@ -469,7 +469,7 @@ select option{background:var(--surface2);}
 </div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, getDocsFromServer, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
@@ -515,9 +515,11 @@ async function fbSet(col,id,data){
     setSyncStatus('ok');
   }catch(e){lSet(col+'_'+id,data);setSyncStatus('err');}
 }
-async function fbGetCol(col){
+async function fbGetCol(col,forceServer){
   try{
-    var snap=await getDocs(collection(db,col));
+    var snap=forceServer
+      ?await getDocsFromServer(collection(db,col))
+      :await getDocs(collection(db,col));
     var result=[];
     snap.forEach(function(d){result.push({id:d.id,...d.data()});});
     return result;
@@ -594,7 +596,14 @@ var SCH={
 function dstr(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');}
 function fm(n){return '$'+Math.round(n).toLocaleString();}
 var todayStr=dstr(new Date());
-var selectedDate=todayStr;
+
+function logicalDate(d){
+  var hour=d.getHours();
+  if(hour<5){var prev=new Date(d);prev.setDate(prev.getDate()-1);return dstr(prev);}
+  return dstr(d);
+}
+var logicalToday=logicalDate(new Date());
+var selectedDate=logicalToday;
 var WEEKLY_HABITS=['mealprep','pcs','savings','anthro','housework'];
 
 var HABIT_CAL_MAP={
@@ -664,10 +673,12 @@ async function loadHabits(dateStr){
 
 window._togH=async function(el){
   var id=el.dataset.id;
+  var nowTicked=false;
   if(WEEKLY_HABITS.indexOf(id)>=0){
     var wk=weekKey(selectedDate);
     var wdata=await fbGet('habits',wk)||{};
     wdata[id]=!wdata[id];
+    nowTicked=!!wdata[id];
     await fbSet('habits',wk,wdata);
     // Clear cache for this week so all days reload with updated weekly state
     var wk2=weekKey(selectedDate);
@@ -678,8 +689,18 @@ window._togH=async function(el){
   } else {
     var data=await loadHabits(selectedDate);
     data[id]=!data[id];
+    nowTicked=!!data[id];
     habitCache[selectedDate]=data;
     await fbSet('habits',selectedDate,data);
+  }
+  // Auto-log/remove calendar event
+  var map=HABIT_CAL_MAP[id];
+  if(map){
+    var eventDate=logicalDate(new Date());
+    var evts=await loadEvts();
+    var existing=evts.find(function(e){return e.date===eventDate&&e.title===map.label;});
+    if(nowTicked&&!existing){await fbAddDoc('events',{date:eventDate,type:map.type,title:map.label,note:''});evtCache=null;}
+    else if(!nowTicked&&existing){await fbDelDoc('events',existing.id);evtCache=null;}
   }
   renderH();
   renderHistory();
@@ -985,6 +1006,46 @@ function parseStartTime(note){
 
 var calEditId=null;
 
+function buildCalEditPanel(e,ds){
+  var et=e.type||'other';
+  var h='<div style="padding:10px 0 6px;border-top:0.5px solid var(--border);margin-top:4px;">';
+  h+='<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Type</div>';
+  h+='<select id="cal-edit-type" style="margin-bottom:8px;">';
+  var types=[['work','🟢 Work'],['sleep','🟣 Sleep'],['sports','🔴 Sports'],['personal','🔵 Personal'],['learning','🟡 Learning'],['meal','🟠 Meal / food'],['michaels',"🌸 Michael's time"],['home','🏠 Home'],['travel','🔘 Travel'],['other','⚪ Other']];
+  types.forEach(function(t){h+='<option value="'+t[0]+'"'+(et===t[0]?' selected':'')+'>'+t[1]+'</option>';});
+  h+='</select>';
+  h+='<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Title</div>';
+  h+='<input type="text" id="cal-edit-title" value="'+e.title.replace(/"/g,'&quot;')+'" style="margin-bottom:8px;"/>';
+  h+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+  h+='<div style="flex:1;"><div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Start</div><select id="cal-edit-start"></select></div>';
+  h+='<div style="flex:1;"><div style="font-size:11px;color:var(--text3);margin-bottom:4px;">End</div><select id="cal-edit-end"></select></div>';
+  h+='</div>';
+  h+='<div style="display:flex;gap:7px;">';
+  h+='<button class="btn p" style="flex:1;padding:7px;" data-eid="'+e.id+'" data-ds="'+ds+'" onclick="saveCalEdit(this.dataset.eid,this.dataset.ds)">Save</button>';
+  h+='<button class="btn d" style="padding:7px 12px;" data-eid="'+e.id+'" data-ds="'+ds+'" onclick="openCalEdit(this.dataset.eid,this.dataset.ds)">Cancel</button>';
+  h+='</div></div>';
+  var cn=e.note||'';
+  setTimeout(function(){
+    var ts=document.getElementById('cal-edit-start');
+    var te=document.getElementById('cal-edit-end');
+    if(!ts||!te)return;
+    var tl=['12:00am','12:15am','12:30am','12:45am'];
+    for(var h2=1;h2<=11;h2++){['00','15','30','45'].forEach(function(m){tl.push(h2+':'+m+'am');});}
+    tl.push('12:00pm','12:15pm','12:30pm','12:45pm');
+    for(var h2=1;h2<=11;h2++){['00','15','30','45'].forEach(function(m){tl.push(h2+':'+m+'pm');});}
+    tl.push('11:00pm','11:15pm','11:30pm','11:45pm');
+    var parts=cn.split(/[–—\-]/);
+    var sv=parts[0]?parts[0].trim():'';
+    var ev2=parts[1]?parts[1].trim():'';
+    [ts,te].forEach(function(sel,ix){
+      var match=ix===0?sv:ev2;
+      sel.innerHTML='<option value="">-- time --</option>';
+      tl.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;if(t===match)o.selected=true;sel.appendChild(o);});
+    });
+  },50);
+  return h;
+}
+
 window._openCalEdit=function(id,ds){
   calEditId=(calEditId===id)?null:id;
   CS.sel=ds;
@@ -1046,10 +1107,16 @@ async function loadEvts(){
     }
     return 999;
   }
+  function logicalSortTime(note){
+    var t=parseStartTime(note);
+    if(t===9999)return 9999;
+    if(t>=0&&t<300)return t+1440;
+    return t;
+  }
   list.sort(function(a,b){
     var dateCmp=(a.date||'').localeCompare(b.date||'');
     if(dateCmp!==0)return dateCmp;
-    return getTTIndex(a)-getTTIndex(b);
+    return logicalSortTime(a.note)-logicalSortTime(b.note);
   });
   // Remove duplicates - same date+title, keep newest
   var seen={};var dupeIds=[];
@@ -1116,6 +1183,22 @@ window._selDay=function(ds){
   if(window._updateCEDate)window._updateCEDate();
   renderMonth();
 };
+
+function getPillStyle(type){
+  var s={
+    work:'background:var(--gdim);color:var(--green);',
+    sleep:'background:rgba(167,139,250,.12);color:#a78bfa;',
+    sports:'background:rgba(234,179,8,.12);color:#eab308;',
+    personal:'background:var(--bdim);color:var(--blue);',
+    learning:'background:var(--adim);color:var(--amber);',
+    meal:'background:rgba(249,115,22,.12);color:#f97316;',
+    michaels:'background:rgba(212,83,126,.12);color:#ed93b1;',
+    home:'background:rgba(148,163,184,.12);color:#94a3b8;',
+    travel:'background:rgba(107,114,128,.12);color:#9ca3af;',
+    other:'background:var(--surface2);color:var(--text3);'
+  };
+  return s[type]||s.other;
+}
 
 async function renderSelEvts(){
   var el=document.getElementById('cal-selbody');
@@ -1496,8 +1579,8 @@ window._changeHabitDate=function(){
   renderH();
 };
 window._goToday=function(){
-  selectedDate=todayStr;
-  document.getElementById('habit-date-hidden').value=todayStr;
+  selectedDate=logicalToday;
+  document.getElementById('habit-date-hidden').value=logicalToday;
   updateDateDisplay();
   renderH();
 };
@@ -1521,8 +1604,8 @@ window._changeTTDate=function(){
   renderTT();
 };
 window._goTTToday=function(){
-  ttSelectedDate=todayStr;
-  document.getElementById('tt-date-hidden').value=todayStr;
+  ttSelectedDate=logicalToday;
+  document.getElementById('tt-date-hidden').value=logicalToday;
   updateTTDateDisplay();
   renderTT();
 };
@@ -1693,9 +1776,9 @@ async function renderHistory(){
 updHdr();
 setSyncStatus('loading');
 renderBudget();
-document.getElementById('habit-date-hidden').value=todayStr;
+document.getElementById('habit-date-hidden').value=logicalToday;
 updateDateDisplay();
-document.getElementById('tt-date-hidden').value=todayStr;
+document.getElementById('tt-date-hidden').value=logicalToday;
 updateTTDateDisplay();
 var timeLabels=['12:00am','12:15am','12:30am','12:45am'];
 for(var h=1;h<=11;h++){['00','15','30','45'].forEach(function(m){timeLabels.push(h+':'+m+'am');});}
