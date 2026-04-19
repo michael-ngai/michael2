@@ -397,6 +397,7 @@ select option{background:var(--surface2);}
 <div class="panel" id="panel-savings">
   <div class="subtabs">
     <button class="subtab active" id="sv-sub-savings" onclick="switchSavSub('savings')">&#x1F3E6; Savings</button>
+    <button class="subtab" id="sv-sub-expenses" onclick="switchSavSub('expenses')">&#x1F4B8; Expenses</button>
     <button class="subtab" id="sv-sub-budget" onclick="switchSavSub('budget')">&#x1F4CA; Budget</button>
   </div>
   <div id="sv-view-savings">
@@ -440,22 +441,56 @@ select option{background:var(--surface2);}
     <div class="srow"><div><div class="slbl">Wise → HK investing</div><div class="snote">Long term · no deadline</div></div><div class="sval">$400</div></div>
     <div class="srow" style="background:var(--gdim);border-top:0.5px solid var(--green);border-bottom:0.5px solid var(--green);margin:4px 0;"><div><div class="slbl" style="color:var(--green);font-weight:600;">Total per payday</div><div class="snote" style="color:var(--green);opacity:0.7;">Top up $25 from buffer to hit $1,000</div></div><div class="sval" style="color:var(--green);font-size:18px;">$1,000</div></div>
   </div>
-  <div class="card" style="margin-top:6px;">
-    <div class="card-hdr"><div class="card-title">Extra spending</div><div class="card-meta" id="ex-tot">$0 this month</div></div>
-    <div class="irow"><select id="ex-cat" onchange="showOtherField()"><option value="Family / social">Family / social</option><option value="Personal">Personal</option><option value="Emergency / repair">Emergency / repair</option><option value="Health">Health</option><option value="Other">Other — specify below</option></select></div>
-    <div class="irow" id="ex-other-row" style="display:none;"><input type="text" id="ex-other-text" placeholder="Specify what it is..."/></div>
-    <div class="irow"><input type="number" id="ex-amt" placeholder="Amount $" min="0" step="1"/></div>
-    <div class="irow"><input type="text" id="ex-note" placeholder="What was it?"/></div>
-    <div class="brow"><button class="btn p" style="flex:1;" onclick="logEx()">Log expense</button><button class="btn d" onclick="clrEx()">Clear</button></div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">Extra spending history</div><div class="card-meta" id="ex-cnt">0 entries</div></div>
-    <div class="logscroll" id="ex-log"><div class="empty">No extra expenses logged yet</div></div>
-  </div>
 </div>
 <!-- TODO -->
 >
-  <div id="sv-view-budget" style="display:none;">
+  <div id="sv-view-expenses" style="display:none;">
+
+  <!-- Log form -->
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">Log expense</div><div class="card-meta" id="ex-tot">$0 this month</div></div>
+    <div class="irow" style="gap:8px;">
+      <select id="ex-type" style="flex:1;">
+        <option value="regular">🔵 Regular</option>
+        <option value="unnecessary">🔴 Unnecessary</option>
+      </select>
+    </div>
+    <div class="irow"><select id="ex-cat" onchange="showOtherField()">
+      <option value="Family / social">Family / social</option>
+      <option value="Food / dining">Food / dining</option>
+      <option value="Transport">Transport</option>
+      <option value="Health">Health</option>
+      <option value="Shopping">Shopping</option>
+      <option value="Entertainment">Entertainment</option>
+      <option value="Emergency / repair">Emergency / repair</option>
+      <option value="Other">Other — specify below</option>
+    </select></div>
+    <div class="irow" id="ex-other-row" style="display:none;"><input type="text" id="ex-other-text" placeholder="Specify what it is..."/></div>
+    <div class="irow"><input type="number" id="ex-amt" placeholder="Amount $" min="0" step="0.01"/></div>
+    <div class="irow"><input type="text" id="ex-note" placeholder="Notes (optional)"/></div>
+    <div class="brow"><button class="btn p" style="flex:1;" onclick="logEx()">Log expense</button><button class="btn d" onclick="clrEx()">Clear</button></div>
+  </div>
+
+  <!-- Two history tables side by side -->
+  <div style="display:flex;gap:10px;margin-top:10px;">
+    <div class="card" style="flex:1;min-width:0;">
+      <div class="card-hdr"><div class="card-title" style="color:var(--blue);">🔵 Regular</div><div class="card-meta" id="ex-reg-cnt">0</div></div>
+      <div id="ex-reg-log"><div class="empty">None yet</div></div>
+    </div>
+    <div class="card" style="flex:1;min-width:0;">
+      <div class="card-hdr"><div class="card-title" style="color:var(--red);">🔴 Unnecessary</div><div class="card-meta" id="ex-unn-cnt">0</div></div>
+      <div id="ex-unn-log"><div class="empty">None yet</div></div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="card" style="margin-top:10px;">
+    <div class="card-hdr"><div class="card-title">This month summary</div></div>
+    <div id="ex-summary" style="padding:4px 0;"></div>
+  </div>
+
+</div>
+<div id="sv-view-budget" style="display:none;">
     <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Fixed expenses overview</div>
     <div class="card" style="overflow-x:auto;">
       <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:504px;">
@@ -478,6 +513,8 @@ select option{background:var(--surface2);}
 
 
 </div>
+
+
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
@@ -1513,12 +1550,49 @@ window._clrEx=async function(){
 
 async function renderEx(){
   var d=await loadEx(),now=new Date();
-  var mt=(d.entries||[]).filter(function(x){try{var dd=new Date(x.date);return dd.getMonth()===now.getMonth()&&dd.getFullYear()===now.getFullYear();}catch(e){return false;}}).reduce(function(s,x){return s+x.amount;},0);
-  document.getElementById('ex-tot').textContent=fm(mt)+' this month';
-  document.getElementById('ex-cnt').textContent=(d.entries||[]).length+' entries';
-  var log=document.getElementById('ex-log');
-  if(!d.entries||d.entries.length===0){log.innerHTML='<div class="empty">No extra expenses logged yet</div>';return;}
-  log.innerHTML=d.entries.slice().reverse().map(function(x){return '<div class="logrow"><div class="logdate">'+x.date+'</div><div class="logdesc">'+x.cat+(x.note?' · '+x.note:'')+'</div><div class="logamt r">-'+fm(x.amount)+'</div></div>';}).join('');
+  var entries=d.entries||[];
+  var curMo=entries.filter(function(x){try{var dd=new Date(x.date);return dd.getMonth()===now.getMonth()&&dd.getFullYear()===now.getFullYear();}catch(e){return false;}});
+  var totMo=curMo.reduce(function(s,x){return s+(x.amount||0);},0);
+  document.getElementById('ex-tot').textContent=fm(totMo)+' this month';
+  // Split by type
+  var reg=entries.filter(function(x){return x.type==='regular'||!x.type;});
+  var unn=entries.filter(function(x){return x.type==='unnecessary';});
+  function makeRows(arr,elId,cntId){
+    var el=document.getElementById(elId);
+    var cnt=document.getElementById(cntId);
+    if(!el)return;
+    if(cnt)cnt.textContent=arr.length+' entries';
+    if(arr.length===0){el.innerHTML='<div class="empty" style="padding:8px 0;">None yet</div>';return;}
+    el.innerHTML=arr.slice().reverse().map(function(x){
+      return '<div class="logrow" style="font-size:12px;">'+
+        '<div class="logdate" style="font-size:10px;">'+x.date+'</div>'+
+        '<div class="logdesc" style="flex:1;">'+x.cat+(x.note?' · '+x.note:'')+'</div>'+
+        '<div class="logamt r">-'+fm(x.amount)+'</div>'+
+      '</div>';
+    }).join('');
+  }
+  makeRows(reg,'ex-reg-log','ex-reg-cnt');
+  makeRows(unn,'ex-unn-log','ex-unn-cnt');
+  // Summary
+  var sumEl=document.getElementById('ex-summary');
+  if(sumEl){
+    var regMo=curMo.filter(function(x){return x.type==='regular'||!x.type;});
+    var unnMo=curMo.filter(function(x){return x.type==='unnecessary';});
+    var regTot=regMo.reduce(function(s,x){return s+(x.amount||0);},0);
+    var unnTot=unnMo.reduce(function(s,x){return s+(x.amount||0);},0);
+    var pct=totMo>0?Math.round(unnTot/totMo*100):0;
+    sumEl.innerHTML=
+      '<div style="display:flex;gap:10px;margin-bottom:10px;">'+
+        '<div class="stat" style="flex:1;"><div class="stat-lbl">Regular</div><div class="stat-val" style="color:var(--blue);">'+fm(regTot)+'</div></div>'+
+        '<div class="stat" style="flex:1;"><div class="stat-lbl">Unnecessary</div><div class="stat-val" style="color:var(--red);">'+fm(unnTot)+'</div></div>'+
+        '<div class="stat" style="flex:1;"><div class="stat-lbl">Total</div><div class="stat-val">'+fm(totMo)+'</div></div>'+
+      '</div>'+
+      '<div style="margin-bottom:6px;font-size:11px;color:var(--text3);">Unnecessary spending</div>'+
+      '<div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;">'+
+        '<div style="width:'+pct+'%;height:100%;background:var(--red);border-radius:4px;transition:width .3s;"></div>'+
+      '</div>'+
+      '<div style="font-size:11px;color:var(--text3);margin-top:4px;">'+pct+'% of total this month</div>';
+  }
 }
 
 window._switchTodoSub=function(name){
@@ -1541,10 +1615,13 @@ window._switchCalSub=function(name){
 
 window._switchSavSub=function(name){
   document.getElementById('sv-view-savings').style.display=name==='savings'?'':'none';
+  document.getElementById('sv-view-expenses').style.display=name==='expenses'?'':'none';
   document.getElementById('sv-view-budget').style.display=name==='budget'?'':'none';
   document.getElementById('sv-sub-savings').classList.toggle('active',name==='savings');
+  document.getElementById('sv-sub-expenses').classList.toggle('active',name==='expenses');
   document.getElementById('sv-sub-budget').classList.toggle('active',name==='budget');
   if(name==='budget')renderBudget();
+  if(name==='expenses'){renderEx();}
 };
 
 // ── BUDGET ──
