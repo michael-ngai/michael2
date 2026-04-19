@@ -98,7 +98,7 @@ select option{background:var(--surface2);}
 .snote{font-size:11px;color:var(--text3);margin-top:1px;font-family:'DM Mono',monospace;}
 .sval{font-weight:500;font-family:'DM Mono',monospace;}
 .logrow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px 10px 12px;border-bottom:0.5px solid var(--border);font-size:12px;transition:background .15s;gap:8px;}.logrow:hover{background:rgba(255,255,255,0.03);}
-.logrow:last-child{border-bottom:none;}
+.logrow:last-child{border-bottom:none;}.budrow{transition:background .15s;}.budrow:hover{background:rgba(255,255,255,0.03);}
 .logdate{color:var(--text3);min-width:70px;font-family:'DM Mono',monospace;}
 .logdesc{flex:1;color:var(--text2);padding:0 7px;}
 .logamt{font-weight:500;font-family:'DM Mono',monospace;color:var(--green);}
@@ -482,6 +482,7 @@ select option{background:var(--surface2);}
 </div>
 <div id="sv-view-budget" style="display:none;">
     <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;">Fixed expenses overview</div>
+  <div id="bud-stats" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px;"></div>
     <div class="card" style="overflow-x:auto;">
       <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:504px;">
         <thead>
@@ -633,7 +634,7 @@ var SCH={
 
 // ── UTILS ──
 function dstr(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');}
-function fm(n){return '$'+Math.round(n).toLocaleString();}
+function fm(n){n=Number(n);return (isNaN(n)?'$0':'$'+Math.round(n).toLocaleString());}
 var todayStr=dstr(new Date());
 
 function logicalDate(d){
@@ -1449,7 +1450,7 @@ var savCache=null;
 async function loadSav(){
   if(savCache)return savCache;
   var data=await fbGet('savings','main');
-  savCache=data||{emergency:0,deposit:0,invest:0,entries:[]};
+  savCache=Object.assign({emergency:0,deposit:0,invest:0,entries:[]},data||{});
   return savCache;
 }
 function nextPay(){var b=new Date('2026-04-15'),n=new Date(),d=new Date(b);while(d<=n)d.setDate(d.getDate()+14);return d;}
@@ -1476,7 +1477,7 @@ window._clrSav=async function(){
 };
 
 async function renderSav(){
-  var d=await loadSav(),ml=mLeft(),proj=Math.round(d.deposit+ml*500),np=nextPay(),ef=d.emergency>=6000;
+  var d=await loadSav(),ml=mLeft(),proj=Math.round((d.deposit||0)+ml*500),np=nextPay(),ef=d.emergency>=6000;
   document.getElementById('sv-emerg').textContent=fm(d.emergency);
   document.getElementById('sv-dep').textContent=fm(d.deposit);
   document.getElementById('sv-invest').textContent=fm(d.invest||0);
@@ -1699,7 +1700,7 @@ function renderBudget(){
     var bc=bold?'border-top:0.5px solid var(--border2);':'border-bottom:0.5px solid var(--border);';
     var mono='font-family:monospace;';
     var td='padding:8px 10px;text-align:right;'+mono;
-    return '<tr style="'+bc+'"><td style="padding:8px 12px;'+s+c+'">'+label+'</td>'+
+    return '<tr class="budrow" style="'+bc+'"><td style="padding:8px 12px;'+s+c+'">'+label+'</td>'+
       '<td style="'+td+s+c+'">'+fc(w)+'</td>'+
       '<td style="'+td+s+c+'">'+fc(fn)+'</td>'+
       '<td style="'+td+s+c+'">'+fc(m)+'</td>'+
@@ -1711,7 +1712,7 @@ function renderBudget(){
     var c=color?'color:'+color+';opacity:0.7;':'color:var(--text3);';
     var mono='font-family:monospace;';
     var td='padding:5px 10px;text-align:right;'+mono;
-    return '<tr style="border-bottom:0.5px solid var(--border);"><td style="padding:5px 12px;font-size:11px;'+c+'">'+label+'</td>'+
+    return '<tr class="budrow" style="border-bottom:0.5px solid var(--border);"><td style="padding:5px 12px;font-size:11px;'+c+'">'+label+'</td>'+
       '<td style="'+td+'font-size:11px;'+c+'">'+fc(w)+'</td>'+
       '<td style="'+td+'font-size:11px;'+c+'">'+fc(fn)+'</td>'+
       '<td style="'+td+'font-size:11px;'+c+'">'+fc(m)+'</td>'+
@@ -1729,6 +1730,7 @@ function renderBudget(){
   html+=rowSub(logo('wise.com')+'Wise investing',200,400,867,10400,'var(--blue)');
   html+=row('Buffer left',bufW,bufFn,bufM,bufY,true,'var(--amber)');
   document.getElementById('budget-body').innerHTML=html;
+  var bsEl=document.getElementById('bud-stats');if(bsEl){function sc(l,v,col){return '<div class="card" style="margin:0;"><div style="padding:10px 14px;"><div class="stat-lbl">'+l+'</div><div class="stat-val" style="color:'+col+';">'+fc(v)+'</div></div></div>';}bsEl.innerHTML=sc('Monthly expenses',totalM,'var(--red)')+sc('Monthly income',income.m,'var(--green)')+sc('Monthly savings',savM,'var(--blue)')+sc('Buffer',bufM,'var(--amber)');}
 }
 
 function updateDateDisplay(){
