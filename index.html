@@ -967,6 +967,10 @@ var evtCache=null;
 
 function migrateEvent(e){
   var type=e.type||'other';
+  // If already a valid new type, keep it as-is - don't override user's edits
+  var validTypes=['work','sleep','sports','personal','learning','meal','michaels','home','travel','other'];
+  if(validTypes.indexOf(type)>=0)return type;
+  // Only migrate old types (tt, gym, ball, fun, etc)
   var title=(e.title||'').toLowerCase();
   // Travel/home first - catch before 'shift' or 'pcyc' keywords
   if(title.includes('travel')||title.includes('podcast')||title.includes('shower'))return 'home';
@@ -1582,14 +1586,20 @@ function renderBudget(){
 function updateDateDisplay(){
   var d=new Date(selectedDate+'T00:00:00');
   var dayName=d.toLocaleDateString('en-AU',{weekday:'long'});
+  var dd=String(d.getDate()).padStart(2,'0');
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  var yyyy=d.getFullYear();
   var el=document.getElementById('habit-date-display');
-  if(el)el.textContent=dayName;
+  if(el){if(el.tagName==='INPUT')el.value=dd+'/'+mm+'/'+yyyy+',  '+dayName;else el.textContent=dd+'/'+mm+'/'+yyyy+',  '+dayName;}
 }
 function updateTTDateDisplay(){
   var d=new Date(ttSelectedDate+'T00:00:00');
   var dayName=d.toLocaleDateString('en-AU',{weekday:'long'});
+  var dd=String(d.getDate()).padStart(2,'0');
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  var yyyy=d.getFullYear();
   var el=document.getElementById('tt-date-display');
-  if(el)el.textContent=dayName;
+  if(el){if(el.tagName==='INPUT')el.value=dd+'/'+mm+'/'+yyyy+',  '+dayName;else el.textContent=dd+'/'+mm+'/'+yyyy+',  '+dayName;}
 }
 window._shiftDate=function(dir){
   var d=new Date(selectedDate+'T00:00:00');
