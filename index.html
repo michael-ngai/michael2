@@ -387,7 +387,7 @@ select option{background:var(--surface2);}
   </div>
 </div>
 
-</div>
+
 
 <!-- SAVINGS + BUDGET -->
 <div class="panel" id="panel-savings">
@@ -1112,7 +1112,7 @@ window._saveCalEdit=async function(id,ds){
   CS.sel=ds;
   CS.day=new Date(ds+'T12:00:00');
   renderCal();
-  renderSelEvts();
+  setTimeout(function(){renderSelEvts();},100);
 };
 
 async function loadEvts(){
