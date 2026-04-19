@@ -44,8 +44,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .stat-val{font-size:20px;font-weight:600;font-family:'DM Mono',monospace;color:var(--green);}
 .stat-val.w{color:var(--text);}
 .stat-val.a{color:var(--amber);}
-.hrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:all .15s;}
-.hrow:hover{border:1px solid var(--green) !important;background:rgba(29,185,117,0.04);margin:0 -1px;padding:9px 13px;}
+.hrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border:1px solid transparent;border-bottom:0.5px solid var(--border);cursor:pointer;transition:border-color .15s,background .15s;}
+.hrow:hover{border-color:var(--green);background:rgba(29,185,117,0.04);}
 .hrow:last-child{border-bottom:none;}
 .hrow:hover{background:var(--surface2);}
 .hrow.done{opacity:.5;}
