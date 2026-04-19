@@ -460,8 +460,11 @@ select option{background:var(--surface2);}
     <div class="brow"><button class="btn p" style="flex:1;" onclick="logEx()">Log expense</button><button class="btn d" onclick="clrEx()">Clear</button></div>
   </div>
 
-  <!-- Two history tables side by side -->
-  <div style="display:flex;gap:10px;margin-top:10px;">
+  <!-- Expense History header + two tables -->
+  <div class="card-hdr" style="margin-top:14px;padding:0 2px 6px;">
+    <div class="card-title">Expense History</div>
+  </div>
+  <div style="display:flex;gap:10px;">
     <div class="card" style="flex:1;min-width:0;">
       <div class="card-hdr"><div class="card-title" style="color:var(--blue);">🔵 Regular</div><div class="card-meta" id="ex-reg-cnt">0</div></div>
       <div id="ex-reg-log"><div class="empty">None yet</div></div>
@@ -1588,6 +1591,50 @@ async function renderEx(){
       '<div style="font-size:11px;color:var(--text3);margin-top:4px;">'+pct+'% of total this month</div>';
   }
 }
+
+window._delEx=async function(idx){
+  var d=await loadEx();
+  if(!d.entries||idx<0||idx>=d.entries.length)return;
+  d.entries.splice(idx,1);
+  savCache=null;
+  await fbSet('savings','main',d);
+  savCache=d;
+  renderEx();
+};
+
+window._editEx=async function(idx){
+  var d=await loadEx();
+  if(!d.entries||idx<0||idx>=d.entries.length)return;
+  var x=d.entries[idx];
+  var typeEl=document.getElementById('ex-type');
+  var amtEl=document.getElementById('ex-amt');
+  var noteEl=document.getElementById('ex-note');
+  if(typeEl)typeEl.value=x.type||'regular';
+  if(amtEl)amtEl.value=x.amount;
+  if(noteEl)noteEl.value=x.note||'';
+  var btn=document.querySelector('#sv-view-expenses .brow .btn.p');
+  if(btn){btn.textContent='Update';btn.setAttribute('onclick','updateEx('+idx+')');}
+  var form=document.querySelector('#sv-view-expenses .card');
+  if(form)form.scrollIntoView({behavior:'smooth'});
+};
+
+window._updateEx=async function(idx){
+  var type=document.getElementById('ex-type')?document.getElementById('ex-type').value:'regular';
+  var amt=parseFloat(document.getElementById('ex-amt').value);
+  var note=document.getElementById('ex-note').value.trim();
+  if(isNaN(amt)||amt<=0){alert('Enter a valid amount');return;}
+  var d=await loadEx();
+  if(!d.entries||idx<0||idx>=d.entries.length)return;
+  d.entries[idx]={date:d.entries[idx].date,type:type,amount:amt,note:note};
+  savCache=null;
+  await fbSet('savings','main',d);
+  savCache=d;
+  var btn=document.querySelector('#sv-view-expenses .brow .btn.p');
+  if(btn){btn.textContent='Log expense';btn.setAttribute('onclick','logEx()');}
+  document.getElementById('ex-amt').value='';
+  document.getElementById('ex-note').value='';
+  renderEx();
+};
 
 window._switchTodoSub=function(name){
   document.getElementById('td-view-todo').style.display=name==='todo'?'':'none';
