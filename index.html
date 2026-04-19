@@ -22,7 +22,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:0.5px solid var(--border);}
 .hdr-title{font-size:22px;font-weight:600;letter-spacing:-.5px;}
 .hdr-sub{font-size:12px;color:var(--text2);margin-top:3px;font-family:'DM Mono',monospace;}
-.hdr-date{text-align:right;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.8;}
+.hdr-date{text-align:right;font-size:11px;color:var(--text);font-family:'DM Mono',monospace;line-height:1.8;}
 .sync-status{font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block;}
 .sync-ok{background:var(--gdim);color:var(--green);}
 .sync-err{background:rgba(255,95,95,0.1);color:var(--red);}
@@ -46,7 +46,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .stat-val.a{color:var(--amber);}
 .hrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border:1px solid transparent;border-bottom:0.5px solid var(--border);cursor:pointer;transition:border-color .15s,background .15s;}
 .hrow:hover{border-color:var(--green);background:rgba(29,185,117,0.04);}
-.hrow:last-child{border-bottom:none;}
+.hrow:last-child{border-bottom:0.5px solid transparent;}
 .hrow:hover{background:var(--surface2);}
 .hrow.done{opacity:.5;}
 .hrow.done .htext{text-decoration:line-through;color:var(--text3);}
@@ -443,7 +443,6 @@ select option{background:var(--surface2);}
   </div>
 </div>
 <!-- TODO -->
->
   <div id="sv-view-expenses" style="display:none;">
 
   <!-- Log form -->
@@ -455,17 +454,7 @@ select option{background:var(--surface2);}
         <option value="unnecessary">🔴 Unnecessary</option>
       </select>
     </div>
-    <div class="irow"><select id="ex-cat" onchange="showOtherField()">
-      <option value="Family / social">Family / social</option>
-      <option value="Food / dining">Food / dining</option>
-      <option value="Transport">Transport</option>
-      <option value="Health">Health</option>
-      <option value="Shopping">Shopping</option>
-      <option value="Entertainment">Entertainment</option>
-      <option value="Emergency / repair">Emergency / repair</option>
-      <option value="Other">Other — specify below</option>
-    </select></div>
-    <div class="irow" id="ex-other-row" style="display:none;"><input type="text" id="ex-other-text" placeholder="Specify what it is..."/></div>
+
     <div class="irow"><input type="number" id="ex-amt" placeholder="Amount $" min="0" step="0.01"/></div>
     <div class="irow"><input type="text" id="ex-note" placeholder="Notes (optional)"/></div>
     <div class="brow"><button class="btn p" style="flex:1;" onclick="logEx()">Log expense</button><button class="btn d" onclick="clrEx()">Clear</button></div>
@@ -1188,7 +1177,6 @@ async function loadEvts(){
   function logicalSortTime(note){
     var t=parseStartTime(note);
     if(t===9999)return 9999;
-    if(t>=0&&t<300)return t+1440;
     return t;
   }
   list.sort(function(a,b){
