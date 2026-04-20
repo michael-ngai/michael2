@@ -1477,21 +1477,21 @@ window._clrSav=async function(){
 };
 
 async function renderSav(){
-  var d=await loadSav(),ml=mLeft(),proj=Math.round((d.deposit||0)+ml*500),np=nextPay(),ef=d.emergency>=6000;
-  document.getElementById('sv-emerg').textContent=fm(d.emergency);
-  document.getElementById('sv-dep').textContent=fm(d.deposit);
-  document.getElementById('sv-invest').textContent=fm(d.invest||0);
+  var d=await loadSav(),ml=mLeft(),np=nextPay();var emg=0,dep=0,inv=0;(d.entries||[]).forEach(function(e){var a=e.amount||0;if(e.acct==='emergency')emg+=a;else if(e.acct==='deposit')dep+=a;else inv+=a;});if(!emg)emg=d.emergency||0;if(!dep)dep=d.deposit||0;if(!inv)inv=d.invest||0;var proj=Math.round(dep+ml*500),ef=emg>=6000;
+  document.getElementById('sv-emerg').textContent=fm(emg);
+  document.getElementById('sv-dep').textContent=fm(dep);
+  document.getElementById('sv-invest').textContent=fm(inv);
   document.getElementById('sv-months').textContent=ml;
   document.getElementById('sv-proj').textContent=fm(proj);
   document.getElementById('pay-next').textContent=np.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
   document.getElementById('pay-amt').textContent=ef?'$900 → deposit+invest':'$500+$100+$400';
-  var ep=Math.min(100,Math.round(d.emergency/6000*100));
+  var ep=Math.min(100,Math.round(emg/6000*100));
   document.getElementById('eb-bar').style.width=ep+'%';document.getElementById('eb-pct').textContent=ep+'%';
   var ebb=document.getElementById('eb-badge');ebb.textContent=ep>=100?'Complete':'In progress';ebb.className='badge '+(ep>=100?'bg':'ba');
-  var dp=Math.min(100,Math.round(d.deposit/59000*100));
+  var dp=Math.min(100,Math.round(dep/59000*100));
   document.getElementById('db-bar').style.width=dp+'%';document.getElementById('db-pct').textContent=dp+'%';
   var dbb=document.getElementById('db-badge');dbb.textContent=dp>=100?'Complete':'In progress';dbb.className='badge '+(dp>=100?'bg':'ba');
-  var ip=Math.min(100,Math.round((d.invest||0)/10000*100));
+  var ip=Math.min(100,Math.round(inv/10000*100));
   document.getElementById('ib-bar').style.width=ip+'%';document.getElementById('ib-pct').textContent=ip+'%';
   document.getElementById('sv-cnt').textContent=d.entries.length+' entries';
   var log=document.getElementById('sv-log');
@@ -1721,13 +1721,13 @@ function renderBudget(){
       '</tr>';
   }
   var html='';
+  html+=row(logo('pcycnsw.org.au')+'Income — PCYC',income.w,income.fn,income.m,income.y,true,'var(--green)');
   rows.forEach(function(r){html+=row(r.label,r.w,r.fn,r.m,r.y,false,null);});
   html+=row('Total expenses',totalW,totalFn,totalM,totalY,true,'var(--red)');
-  html+=row(logo('pcycnsw.org.au')+'Income — PCYC',income.w,income.fn,income.m,income.y,true,'var(--green)');
-  html+=row('Savings (total)',savW,savFn,savM,savY,true,'var(--blue)');
   html+=rowSub(logo('ubank.com.au')+'Ubank deposit',250,500,1083,13000,'var(--blue)');
   html+=rowSub(logo('commbank.com.au')+'CommBank emergency',50,100,217,2600,'var(--blue)');
   html+=rowSub(logo('wise.com')+'Wise investing',200,400,867,10400,'var(--blue)');
+  html+=row('Total Savings',savW,savFn,savM,savY,true,'var(--blue)');
   html+=row('Buffer left',bufW,bufFn,bufM,bufY,true,'var(--amber)');
   document.getElementById('budget-body').innerHTML=html;
   var bsEl=document.getElementById('bud-stats');if(bsEl){function sc(l,v,col){return '<div class="card" style="margin:0;"><div style="padding:10px 14px;"><div class="stat-lbl">'+l+'</div><div class="stat-val" style="color:'+col+';">'+fc(v)+'</div></div></div>';}bsEl.innerHTML=sc('Monthly expenses',totalM,'var(--red)')+sc('Monthly income',income.m,'var(--green)')+sc('Monthly savings',savM,'var(--blue)')+sc('Buffer',bufM,'var(--amber)');}
