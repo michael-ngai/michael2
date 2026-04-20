@@ -46,7 +46,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .stat-val.a{color:var(--amber);}
 .hrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border:1px solid transparent;border-bottom:0.5px solid var(--border);cursor:pointer;transition:border-color .15s,background .15s;}
 .hrow:hover{border-color:var(--green);background:rgba(29,185,117,0.04);}
-.hrow:last-child{border-bottom:0.5px solid transparent;}
+.hrow:last-child{border-bottom:0.5px solid transparent;}.hrow:last-child:hover{border-bottom:0.5px solid var(--green);}
 .hrow:hover{background:var(--surface2);}
 .hrow.done{opacity:.5;}
 .hrow.done .htext{text-decoration:line-through;color:var(--text3);}
@@ -635,6 +635,7 @@ var SCH={
 // ── UTILS ──
 function dstr(d){return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0')+'-'+d.getDate().toString().padStart(2,'0');}
 function fm(n){n=Number(n);return (isNaN(n)?'$0':'$'+Math.round(n).toLocaleString());}
+function fmd(n){n=Number(n);return (isNaN(n)?'$0.0':'$'+(Math.round(n*10)/10).toFixed(1));}
 var todayStr=dstr(new Date());
 
 function logicalDate(d){
@@ -874,7 +875,7 @@ window._togTT=async function(idx){
     var item=sch.items[idx];
     var lbl=ov.l||item.l,tim=ov.t||item.t;
     var evts=await loadEvts();
-    var typeMap={sleep:'sleep',work:'work',travel:'home',gym:'sports',ball:'sports',meal:'meal',personal:'personal',fun:"michaels",family:"michaels"};
+    var typeMap={sleep:'sleep',work:'work',travel:'travel',gym:'sports',ball:'sports',meal:'meal',personal:'personal',fun:"michaels",family:"michaels"};
     var evtType=typeMap[item.c]||'other';
     var exists=evts.some(function(e){return e.date===ttSelectedDate&&e.title===lbl;});
     if(!exists){await fbAddDoc('events',{date:ttSelectedDate,type:evtType,title:lbl,note:tim});evtCache=null;}
@@ -1103,6 +1104,7 @@ window._saveCalEdit=async function(id,ds){
   if(!title){alert('Please enter a title');return;}
   // Close edit panel first
   calEditId=null;
+  renderSelEvts();
   // Delete old, add new
   await fbDelDoc('events',id);
   await fbAddDoc('events',{date:ds,type:type,title:title,note:note});
@@ -1129,7 +1131,7 @@ window._saveCalEdit=async function(id,ds){
   freshList.sort(function(a,b){
     var dc=(a.date||'').localeCompare(b.date||'');
     if(dc!==0)return dc;
-    return logicalSortTime(a.note)-logicalSortTime(b.note);
+    var sta=parseStartTime(a.note),stb=parseStartTime(b.note);if(sta<9999&&sta<300)sta+=1440;if(stb<9999&&stb<300)stb+=1440;return sta-stb;
   });
   evtCache=freshList;
   CS.sel=ds;
@@ -1563,7 +1565,7 @@ async function renderEx(){
           '<div class="logdesc">'+x.cat+(x.note?' · '+x.note:'')+'</div>'+
         '</div>'+
         '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">'+
-          '<span class="logamt r" style="color:'+accent+';">-'+fm(x.amount)+'</span>'+
+          '<span class="logamt r" style="color:'+accent+';">-'+fmd(x.amount)+'</span>'+
           '<button class="editbtn" onclick="editEx('+idx+')">edit</button>'+
           '<span class="evtdel" onclick="delEx('+idx+')">&#215;</span>'+
         '</div>'+
@@ -1627,10 +1629,9 @@ window._updateEx=async function(idx){
   if(isNaN(amt)||amt<=0){alert('Enter a valid amount');return;}
   var d=await loadEx();
   if(!d.entries||idx<0||idx>=d.entries.length)return;
-  d.entries[idx]={date:d.entries[idx].date,type:type,amount:amt,note:note};
-  savCache=null;
-  await fbSet('savings','main',d);
-  savCache=d;
+  d.entries[idx]={date:d.entries[idx].date,cat:d.entries[idx].cat,type:type,amount:amt,note:note};
+  exCache=d;
+  await fbSet('extra','main',d);
   var btn=document.querySelector('#sv-view-expenses .brow .btn.p');
   if(btn){btn.textContent='Log expense';btn.setAttribute('onclick','logEx()');}
   document.getElementById('ex-amt').value='';
@@ -1698,7 +1699,7 @@ function renderBudget(){
   function row(label,w,fn,m,y,bold,color){
     var s=bold?'font-weight:500;':'';
     var c=color?'color:'+color+';':'color:var(--text2);';
-    var bc=bold?'border-top:0.5px solid var(--border2);':'border-bottom:0.5px solid var(--border);';
+    var bc=bold?'border-top:0.5px solid var(--border2);border-bottom:0.5px solid var(--border);':'border-bottom:0.5px solid var(--border);';
     var mono='font-family:monospace;';
     var td='padding:8px 10px;text-align:right;'+mono;
     return '<tr class="budrow" style="'+bc+'"><td style="padding:8px 12px;'+s+c+'">'+label+'</td>'+
