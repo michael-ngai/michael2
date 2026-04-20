@@ -787,7 +787,7 @@ async function renderH(){
     var el=document.getElementById(secMap[s]);
     if(el)el.textContent=dn+'/'+items.length;
   });
-  var wr=document.getElementById('week-row');wr.innerHTML='';
+  var wr=document.getElementById('week-row');var whtml='';
   var today=new Date(),selD=new Date(selectedDate+'T00:00:00');
   // Always anchor week to TODAY, not selectedDate
   var todayDow=today.getDay(),dfm=(todayDow===0)?6:todayDow-1;
@@ -803,11 +803,12 @@ async function renderH(){
     var cls='wdot de';
     if(!isF&&cnt===DH.length)cls='wdot df';
     else if(!isF&&cnt>0)cls='wdot dp';
-    wr.innerHTML+='<div class="wday" onclick="jumpToDate(this.dataset.date)" data-date="'+ds2+'" style="cursor:pointer;">'
+    whtml+='<div class="wday" onclick="jumpToDate(this.dataset.date)" data-date="'+ds2+'" style="cursor:pointer;">'
       +'<div class="wday-n" style="font-size:8px;">'+DF_FULL[d.getDay()]+'</div>'
       +'<div class="'+cls+(isSel?' dt':'')+'">'+( isF?'·':cnt)+'</div>'
       +'</div>';
   }
+  wr.innerHTML=whtml;
 }
 
 // ── TIMETABLE ──
