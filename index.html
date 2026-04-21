@@ -46,7 +46,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .stat-val.a{color:var(--amber);}
 .hrow{display:flex;align-items:center;gap:11px;padding:10px 14px;border:1px solid transparent;border-bottom:0.5px solid var(--border);cursor:pointer;transition:border-color .15s,background .15s;}
 .hrow:hover{border-color:var(--green);background:rgba(29,185,117,0.04);}
-.hrow:last-child{border-bottom:0.5px solid transparent;}.hrow:last-child:hover{border-bottom:0.5px solid var(--green);}
+.hrow:last-child{border-bottom:0.5px solid transparent;}.hrow:last-child:hover{border-bottom:0.5px solid var(--green);border-bottom-left-radius:var(--r);border-bottom-right-radius:var(--r);}
 .hrow:hover{background:var(--surface2);}
 .hrow.done{opacity:.5;}
 .hrow.done .htext{text-decoration:line-through;color:var(--text3);}
@@ -1131,7 +1131,7 @@ window._saveCalEdit=async function(id,ds){
   freshList.sort(function(a,b){
     var dc=(a.date||'').localeCompare(b.date||'');
     if(dc!==0)return dc;
-    var sta=parseStartTime(a.note),stb=parseStartTime(b.note);if(sta<9999&&sta<300)sta+=1440;if(stb<9999&&stb<300)stb+=1440;return sta-stb;
+    function _ek(note){var t=parseStartTime(note);if(t>=300||t===9999)return t;var em=String(note||"").match(/[-–](d{1,2}):(d{2})s*(am|pm)/i);if(em){var eh=parseInt(em[1]),emn2=parseInt(em[2]),eap=em[3].toLowerCase();if(eap==="am"&&eh===12)eh=0;if(eap==="pm"&&eh!==12)eh+=12;if(eh*60+emn2>=300)return t;}return t+1440;}return _ek(a.note)-_ek(b.note);
   });
   evtCache=freshList;
   CS.sel=ds;
