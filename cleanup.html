@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head><title>Data Cleanup</title></head>
+<body>
+<h2>Michael Dashboard — Data Cleanup</h2>
+<p>This will separate expense entries that were accidentally saved into savings data.</p>
+<button onclick="runCleanup()" style="padding:10px 20px;background:#1db975;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;">Run Cleanup</button>
+<div id="log" style="margin-top:20px;font-family:monospace;white-space:pre;"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
+  authDomain: "michael-dashboard-ce18b.firebaseapp.com",
+  projectId: "michael-dashboard-ce18b",
+  storageBucket: "michael-dashboard-ce18b.firebasestorage.app",
+  messagingSenderId: "609388078138",
+  appId: "1:609388078138:web:d0fe0e63a59b79d7d50103"
+});
+const db = getFirestore(app);
+
+function log(msg) {
+  document.getElementById('log').textContent += msg + '\n';
+}
+
+window.runCleanup = async function() {
+  log('Reading savings/main...');
+  const savSnap = await getDoc(doc(db, 'savings', 'main'));
+  const savData = savSnap.exists() ? savSnap.data() : {entries:[]};
+  log('savings/main entries: ' + (savData.entries||[]).length);
+
+  log('Reading extra/main...');
+  const exSnap = await getDoc(doc(db, 'extra', 'main'));
+  const exData = exSnap.exists() ? exSnap.data() : {entries:[]};
+  log('extra/main entries: ' + (exData.entries||[]).length);
+
+  // Separate: transfer entries have 'acct' field, expense entries have 'type' field
+  const transfers = (savData.entries||[]).filter(e => e.acct);
+  const expenses_in_sav = (savData.entries||[]).filter(e => !e.acct);
+
+  log('Transfer entries (correct): ' + transfers.length);
+  log('Expense entries wrongly in savings: ' + expenses_in_sav.length);
+
+  if (expenses_in_sav.length > 0) {
+    log('Moving expenses to extra/main...');
+    const allExpenses = [...(exData.entries||[]), ...expenses_in_sav];
+    await setDoc(doc(db, 'extra', 'main'), {entries: allExpenses});
+    
+    // Clean savings to only have transfer entries
+    const cleanSav = {...savData, entries: transfers};
+    await setDoc(doc(db, 'savings', 'main'), cleanSav);
+    log('Done! Moved ' + expenses_in_sav.length + ' expense entries to expenses.');
+    log('Savings now has ' + transfers.length + ' transfer entries only.');
+  } else {
+    log('No misplaced expense entries found in savings. Data is already clean.');
+  }
+  log('\nAll done! Refresh your dashboard.');
+};
+</script>
+</body>
+</html>
