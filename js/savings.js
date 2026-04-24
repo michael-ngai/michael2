@@ -64,11 +64,8 @@ async function loadEx(){
   return exCache;
 }
 
-window._showOtherField=function(){
-  var cat=document.getElementById('ex-cat').value;
-  var row=document.getElementById('ex-other-row');
-  if(row)row.style.display=(cat==='Other'?'flex':'none');
-};
+window._showOtherField=function(){};
+
 
 window._logEx=async function(){
   var type=document.getElementById('ex-type')?document.getElementById('ex-type').value:'regular';
@@ -79,9 +76,9 @@ window._logEx=async function(){
   if(!d.entries)d.entries=[];
   var date=window.logicalDate?window.logicalDate(new Date()):new Date().toISOString().slice(0,10);
   d.entries.push({date:date,type:type,amount:amt,note:note});
-  savCache=null;
-  await fbSet('savings','main',d);
-  savCache=d;
+  exCache=null;
+  await fbSet('extra','main',d);
+  exCache=d;
   document.getElementById('ex-amt').value='';
   document.getElementById('ex-note').value='';
   renderEx();
@@ -180,9 +177,9 @@ window._updateEx=async function(idx){
   var d=await loadEx();
   if(!d.entries||idx<0||idx>=d.entries.length)return;
   d.entries[idx]={date:d.entries[idx].date,type:type,amount:amt,note:note};
-  savCache=null;
-  await fbSet('savings','main',d);
-  savCache=d;
+  exCache=null;
+  await fbSet('extra','main',d);
+  exCache=d;
   var btn=document.querySelector('#sv-view-expenses .brow .btn.p');
   if(btn){btn.textContent='Log expense';btn.onclick=function(){logEx();};}
   document.getElementById('ex-amt').value='';
