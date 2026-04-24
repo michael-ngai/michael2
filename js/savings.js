@@ -109,7 +109,7 @@ async function renderEx(){
       return '<div class="logrow" style="border-left:2px solid '+accent+';">'+
         '<div style="flex:1;min-width:0;">'+
           '<div class="logdate" style="font-size:10px;margin-bottom:2px;">'+x.date+'</div>'+
-          '<div class="logdesc">'+x.cat+(x.note?' · '+x.note:'')+'</div>'+
+          '<div class="logdesc">'+(x.note||'\u2014')+'</div>'+
         '</div>'+
         '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">'+
           '<span class="logamt r" style="color:'+accent+';">-'+fmd(x.amount)+'</span>'+
@@ -147,9 +147,9 @@ window._delEx=async function(idx){
   var d=await loadEx();
   if(!d.entries||idx<0||idx>=d.entries.length)return;
   d.entries.splice(idx,1);
-  savCache=null;
+  exCache=null;
   await fbSet('extra','main',d);
-  savCache=d;
+  exCache=d;
   renderEx();
 };
 
@@ -182,14 +182,6 @@ window._updateEx=async function(idx){
   exCache=d;
   var btn=document.querySelector('#sv-view-expenses .brow .btn.p');
   if(btn){btn.textContent='Log expense';btn.onclick=function(){logEx();};}
-  document.getElementById('ex-amt').value='';
-  document.getElementById('ex-note').value='';
-  renderEx();
-};
-  exCache=d;
-  await fbSet('extra','main',d);
-  var btn=document.querySelector('#sv-view-expenses .brow .btn.p');
-  if(btn){btn.textContent='Log expense';btn.setAttribute('onclick','logEx()');}
   document.getElementById('ex-amt').value='';
   document.getElementById('ex-note').value='';
   renderEx();
