@@ -71,20 +71,20 @@ window._showOtherField=function(){
 };
 
 window._logEx=async function(){
-  var catEl=document.getElementById('ex-cat');
-  var cat=catEl.value;
-  if(cat==='Other'){var ot=document.getElementById('ex-other-text').value.trim();cat=ot?ot:'Other';}
+  var type=document.getElementById('ex-type')?document.getElementById('ex-type').value:'regular';
   var amt=parseFloat(document.getElementById('ex-amt').value);
   var note=document.getElementById('ex-note').value.trim();
   if(!amt||amt<=0){alert('Enter a valid amount');return;}
   var d=await loadEx();
-  d.entries.push({date:new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}),cat:cat,amount:amt,note:note});
-  exCache=d;
-  await fbSet('extra','main',d);
-  document.getElementById('ex-amt').value='';document.getElementById('ex-note').value='';
-  document.getElementById('ex-other-text').value='';
-  document.getElementById('ex-other-row').style.display='none';
-  catEl.selectedIndex=0;renderEx();
+  if(!d.entries)d.entries=[];
+  var date=window.logicalDate?window.logicalDate(new Date()):new Date().toISOString().slice(0,10);
+  d.entries.push({date:date,type:type,amount:amt,note:note});
+  savCache=null;
+  await fbSet('savings','main',d);
+  savCache=d;
+  document.getElementById('ex-amt').value='';
+  document.getElementById('ex-note').value='';
+  renderEx();
 };
 
 window._clrEx=async function(){
@@ -176,10 +176,19 @@ window._updateEx=async function(idx){
   var type=document.getElementById('ex-type')?document.getElementById('ex-type').value:'regular';
   var amt=parseFloat(document.getElementById('ex-amt').value);
   var note=document.getElementById('ex-note').value.trim();
-  if(isNaN(amt)||amt<=0){alert('Enter a valid amount');return;}
+  if(!amt||amt<=0){alert('Enter a valid amount');return;}
   var d=await loadEx();
   if(!d.entries||idx<0||idx>=d.entries.length)return;
-  d.entries[idx]={date:d.entries[idx].date,cat:d.entries[idx].cat,type:type,amount:amt,note:note};
+  d.entries[idx]={date:d.entries[idx].date,type:type,amount:amt,note:note};
+  savCache=null;
+  await fbSet('savings','main',d);
+  savCache=d;
+  var btn=document.querySelector('#sv-view-expenses .brow .btn.p');
+  if(btn){btn.textContent='Log expense';btn.onclick=function(){logEx();};}
+  document.getElementById('ex-amt').value='';
+  document.getElementById('ex-note').value='';
+  renderEx();
+};
   exCache=d;
   await fbSet('extra','main',d);
   var btn=document.querySelector('#sv-view-expenses .brow .btn.p');

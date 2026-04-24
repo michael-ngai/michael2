@@ -203,6 +203,7 @@ async function renderTodo(){
           +'<div style="font-size:13px;color:var(--text);line-height:1.5;">'+t.text+'</div>'
           +'<div style="font-size:11px;color:var(--text3);font-family:monospace;margin-top:2px;">Added '+t.created+'</div>'
           +'</div>'
+          +'<button class="editbtn" data-id="'+t.id+'" onclick="editTodo(this.dataset.id)">edit</button>'
           +'<span class="evtdel" data-id="'+t.id+'" data-from="pending" onclick="deleteTodo(this.dataset.id,this.dataset.from)">&#215;</span>'
           +'</div>';
       }).join('');
@@ -290,3 +291,30 @@ async function renderHistory(){
   list.innerHTML=html||'<div class="empty">No habit data yet</div>';
 }
 
+window._editTodo=async function(id){
+  var d=await loadTodo();
+  var task=d.pending.find(function(t){return t.id===id;});
+  if(!task)return;
+  var inp=document.getElementById('todo-input');
+  if(!inp)return;
+  inp.value=task.text;
+  inp.focus();
+  var btn=document.querySelector('#td-view-todo .brow .btn.p');
+  if(btn){btn.textContent='Update';btn.onclick=function(){window._updateTodo(id);};}
+  inp.scrollIntoView({behavior:'smooth'});
+};
+
+window._updateTodo=async function(id){
+  var inp=document.getElementById('todo-input');
+  var text=inp?inp.value.trim():'';
+  if(!text)return;
+  var d=await loadTodo();
+  var task=d.pending.find(function(t){return t.id===id;});
+  if(!task)return;
+  task.text=text;
+  await fbSet('todos','main',d);
+  inp.value='';
+  var btn=document.querySelector('#td-view-todo .brow .btn.p');
+  if(btn){btn.textContent='Add task';btn.onclick=function(){addTodo();};}
+  renderTodo();
+};
