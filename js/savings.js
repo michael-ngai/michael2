@@ -151,7 +151,7 @@ window._delEx=async function(idx){
   if(!d.entries||idx<0||idx>=d.entries.length)return;
   d.entries.splice(idx,1);
   savCache=null;
-  await fbSet('savings','main',d);
+  await fbSet('extra','main',d);
   savCache=d;
   renderEx();
 };
