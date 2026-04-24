@@ -86,8 +86,8 @@ select option{background:var(--surface2);}
 .btn.d{color:var(--text3);}
 .btn.d:hover{color:var(--green);border-color:var(--green);}
 .brow{display:flex;gap:7px;padding:9px 14px 13px;}
-.prog-wrap{background:var(--surface2);border-radius:3px;height:6px;margin:7px 0 4px;overflow:hidden;}
-.prog-fill{height:100%;border-radius:3px;transition:width .4s;}
+.prog-wrap{background:var(--surface2);border-radius:5px;height:9px;margin:7px 0 4px;overflow:hidden;position:relative;}
+.prog-fill{height:100%;border-radius:5px;transition:width .4s;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;}
 .pf-g{background:var(--green);}
 .pf-a{background:var(--amber);}
 .pf-b{background:var(--blue);}
@@ -412,15 +412,15 @@ select option{background:var(--surface2);}
   </div>
   <div class="card">
     <div class="card-hdr"><div class="card-title">Emergency fund</div><div class="badge ba" id="eb-badge">in progress</div></div>
-    <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-a" id="eb-bar" style="width:0%"></div></div><div class="prog-lbl"><span id="eb-pct">0%</span><span>$6,000</span></div></div>
+    <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-a" id="eb-bar" style="width:0%;"><span style="font-size:8px;color:#fff;font-weight:700;white-space:nowrap;" id="eb-pct"></span></div></div><div class="prog-lbl"><span style="color:var(--text3);">Target: $6,000</span><span id="eb-amt" style="color:var(--amber);font-weight:600;">$0</span></div></div>
   </div>
   <div class="card">
     <div class="card-hdr"><div class="card-title">Property deposit</div><div class="badge ba" id="db-badge">in progress</div></div>
-    <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-g" id="db-bar" style="width:0%"></div></div><div class="prog-lbl"><span id="db-pct">0%</span><span>$59,000 by Aug 2028</span></div><div style="display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;"><span>Months left: <span id="sv-months" style="color:var(--text2);">—</span></span><span>Projected: <span id="sv-proj" style="color:var(--green);">—</span></span></div></div>
+    <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-g" id="db-bar" style="width:0%;"><span style="font-size:8px;color:#fff;font-weight:700;white-space:nowrap;" id="db-pct"></span></div></div><div class="prog-lbl"><span style="color:var(--text3);">Target: $59,000</span><span id="db-amt" style="color:var(--green);font-weight:600;">$0</span></div><div style="display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;"><span>Months left: <span id="sv-months" style="color:var(--text2);">—</span></span><span>Projected: <span id="sv-proj" style="color:var(--green);">—</span></span></div></div>
   </div>
   <div class="card">
     <div class="card-hdr"><div class="card-title">Investing (HK)</div><div class="badge" style="background:var(--bdim);color:var(--blue);" id="ib-badge">in progress</div></div>
-    <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-b" id="ib-bar" style="width:0%"></div></div><div class="prog-lbl"><span id="ib-pct">0%</span><span>$10,000 target</span></div></div>
+    <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-b" id="ib-bar" style="width:0%;"><span style="font-size:8px;color:#fff;font-weight:700;white-space:nowrap;" id="ib-pct"></span></div></div><div class="prog-lbl"><span style="color:var(--text3);">Target: $10,000</span><span id="ib-amt" style="color:var(--blue);font-weight:600;">$0</span></div></div>
   </div>
   <div class="card">
     <div class="card-hdr"><div class="card-title">Log a transfer</div></div>

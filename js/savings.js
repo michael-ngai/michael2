@@ -18,7 +18,7 @@ window._logSav=async function(){
   if(a==='emergency')d.emergency+=amt;
   else if(a==='deposit')d.deposit+=amt;
   else d.invest=(d.invest||0)+amt;
-  d.entries.push({date:new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short'}),acct:a,amount:amt,note:note});
+  d.entries.push({date:(function(){var n=new Date();var dd=String(n.getDate()).padStart(2,'0');var mm=String(n.getMonth()+1).padStart(2,'0');var yyyy=n.getFullYear();var day=n.toLocaleDateString('en-AU',{weekday:'long'});return dd+'/'+mm+'/'+yyyy+', '+day;})(),acct:a,amount:amt,note:note});
   savCache=d;
   await fbSet('savings','main',d);
   document.getElementById('sv-in').value='';document.getElementById('sv-note').value='';
@@ -43,7 +43,7 @@ async function renderSav(){
   var ebb=document.getElementById('eb-badge');ebb.textContent=ep>=100?'Complete':'In progress';ebb.className='badge '+(ep>=100?'bg':'ba');
   var dp=Math.min(100,Math.round(dep/59000*100));
   document.getElementById('db-bar').style.width=dp+'%';document.getElementById('db-pct').textContent=dp+'%';
-  var dbb=document.getElementById('db-badge');dbb.textContent=dp>=100?'Complete':'In progress';dbb.className='badge '+(dp>=100?'bg':'ba');
+  var dbb=document.getElementById('db-badge');dbb.textContent=dp>=100?'Complete':'In progress';dbb.className='badge bg';
   var ip=Math.min(100,Math.round(inv/10000*100));
   document.getElementById('ib-bar').style.width=ip+'%';document.getElementById('ib-pct').textContent=ip+'%';
   document.getElementById('sv-cnt').textContent=d.entries.length+' entries';
@@ -74,7 +74,14 @@ window._logEx=async function(){
   if(!amt||amt<=0){alert('Enter a valid amount');return;}
   var d=await loadEx();
   if(!d.entries)d.entries=[];
-  var date=window.logicalDate?window.logicalDate(new Date()):new Date().toISOString().slice(0,10);
+  var _now=new Date();
+  var _d=window.logicalDate?window.logicalDate(_now):_now;
+  var _dObj=new Date(_d+'T00:00:00');
+  var _dd=String(_dObj.getDate()).padStart(2,'0');
+  var _mm=String(_dObj.getMonth()+1).padStart(2,'0');
+  var _yyyy=_dObj.getFullYear();
+  var _day=_dObj.toLocaleDateString('en-AU',{weekday:'long'});
+  var date=_dd+'/'+_mm+'/'+_yyyy+', '+_day;
   d.entries.push({date:date,type:type,amount:amt,note:note});
   exCache=null;
   await fbSet('extra','main',d);
