@@ -3,14 +3,12 @@ var habitCache={};
 
 async function loadHabits(dateStr){
   // Fetch daily habits
-  var data=await fbGet('habits',dateStr)||{};
+  var data=await fbGet('habits',dateStr,true)||{};
   // Merge weekly ticks - stored by week's Monday key
   var wk=weekKey(dateStr);
-  var wdata=habitCache['__wk_'+wk];
-  if(!wdata){
-    wdata=await fbGet('habits',wk)||{};
-    habitCache['__wk_'+wk]=wdata;
-  }
+  // Always fetch weekly from server to avoid stale cache
+  var wdata=await fbGet('habits',wk,true)||{};
+  habitCache['__wk_'+wk]=wdata;
   // Set weekly habits based on wdata - both true AND false explicitly
   WEEKLY_HABITS.forEach(function(h){
     if(wdata[h])data[h]=true;
