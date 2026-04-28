@@ -52,9 +52,16 @@ async function renderSav(){
   document.getElementById('sv-cnt').textContent=d.entries.length+' entries';
   var log=document.getElementById('sv-log');
   if(!d.entries||d.entries.length===0){log.innerHTML='<div class="empty">No transfers logged yet</div>';return;}
-  log.innerHTML=d.entries.slice().reverse().map(function(e){
-    var lbl=e.acct==='emergency'?'Emergency':e.acct==='deposit'?'Deposit':'Investing';
-    return '<div class="logrow"><div class="logdate">'+e.date+'</div><div class="logdesc">'+lbl+(e.note?' · '+e.note:'')+'</div><div class="logamt">'+fm(e.amount)+'</div></div>';
+  var entries_rev=d.entries.slice().reverse();
+  log.innerHTML=entries_rev.map(function(e,ii){
+    var ei=d.entries.length-1-ii;
+    var lbl=e.acct==='emergency'?'CommBank — Emergency fund':e.acct==='deposit'?'Ubank — Property deposit':'Wise → Investing (HK)';
+    return '<div class="logrow" style="align-items:center;">'+
+      '<div style="flex:1;"><div class="logdate">'+e.date+'</div><div class="logdesc">'+lbl+(e.note?' · '+e.note:'')+'</div></div>'+
+      '<div class="logamt" style="margin-right:6px;">'+fm(e.amount)+'</div>'+
+      '<button class="editbtn" onclick="editTransfer('+ei+')">edit</button>'+
+      '<span class="evtdel" onclick="delTransfer('+ei+')">&#215;</span>'+
+    '</div>';
   }).join('');
 }
 
@@ -115,7 +122,7 @@ async function renderEx(){
   document.getElementById('ex-tot').textContent=fm(totMo)+' this month';
   // Split by type
   var reg=entries.filter(function(x){return x.type==='regular'||!x.type;});
-  var unn=entries.filter(function(x){return x.type==='unnecessary';});
+  var unn=entries.filter(function(x){return (x.type||'regular')==='unnecessary';});
   function makeRows(arr,elId,cntId,accent){accent=accent||'var(--blue)';
     var el=document.getElementById(elId);
     var cnt=document.getElementById(cntId);
@@ -144,7 +151,7 @@ async function renderEx(){
   var sumEl=document.getElementById('ex-summary');
   if(sumEl){
     var regMo=curMo.filter(function(x){return x.type==='regular'||!x.type;});
-    var unnMo=curMo.filter(function(x){return x.type==='unnecessary';});
+    var unnMo=curMo.filter(function(x){return (x.type||'regular')==='unnecessary';});
     var regTot=regMo.reduce(function(s,x){return s+(x.amount||0);},0);
     var unnTot=unnMo.reduce(function(s,x){return s+(x.amount||0);},0);
     var pct=totMo>0?Math.round(unnTot/totMo*100):0;

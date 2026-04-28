@@ -411,11 +411,11 @@ select option{background:var(--surface2);}
     <div class="stat"><div class="stat-lbl">Investing</div><div class="stat-val" style="color:var(--blue);" id="sv-invest">$0</div></div>
   </div>
   <div class="card">
-    <div class="card-hdr"><div class="card-title">Emergency fund</div><div class="badge ba" id="eb-badge">in progress</div></div>
+    <div class="card-hdr"><div class="card-title">Emergency fund</div><div class="badge ba" id="eb-badge">In progress</div></div>
     <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-a" id="eb-bar" style="width:0%;"><span style="font-size:8px;color:#fff;font-weight:700;white-space:nowrap;" id="eb-pct"></span></div></div><div class="prog-lbl"><span style="color:var(--text3);">Target: $6,000</span><span id="eb-amt" style="color:var(--amber);font-weight:600;">$0</span></div></div>
   </div>
   <div class="card">
-    <div class="card-hdr"><div class="card-title">Property deposit</div><div class="badge ba" id="db-badge">in progress</div></div>
+    <div class="card-hdr"><div class="card-title">Property deposit</div><div class="badge ba" id="db-badge">In progress</div></div>
     <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-g" id="db-bar" style="width:0%;"><span style="font-size:8px;color:#fff;font-weight:700;white-space:nowrap;" id="db-pct"></span></div></div><div class="prog-lbl"><span style="color:var(--text3);">Target: $59,000</span><span id="db-amt" style="color:var(--green);font-weight:600;">$0</span></div><div style="display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;"><span>Months left: <span id="sv-months" style="color:var(--text2);">—</span></span><span>Projected: <span id="sv-proj" style="color:var(--green);">—</span></span></div></div>
   </div>
   <div class="card">
@@ -424,7 +424,7 @@ select option{background:var(--surface2);}
   </div>
   <div class="card">
     <div class="card-hdr"><div class="card-title">Log a transfer</div></div>
-    <div class="irow"><select id="sv-acct"><option value="emergency">Emergency fund</option><option value="deposit">Property deposit</option><option value="invest">Investing (HK)</option></select></div>
+    <div class="irow"><select id="sv-acct"><option value="emergency">CommBank — Emergency fund</option><option value="deposit">Ubank — Property deposit</option><option value="invest">Wise → Investing (HK)</option></select></div>
     <div class="irow"><input type="number" id="sv-in" placeholder="Amount $" min="0" step="1"/></div>
     <div class="irow"><input type="text" id="sv-note" placeholder="Note (e.g. payday 15 Apr)"/></div>
     <div class="brow"><button class="btn p" style="flex:1;" onclick="logSav()">Log transfer</button><button class="btn d" onclick="clrSav()">Reset</button></div>
