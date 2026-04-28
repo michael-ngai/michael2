@@ -1,3 +1,29 @@
+// ── DATE HELPERS ──
+function parseEntryDate(ds){
+  try{
+    ds=(ds||'').trim();
+    // dd/mm/yyyy or dd/mm/yyyy, Day
+    if(/^\d{2}\/\d{2}\/\d{4}/.test(ds)){
+      var p=ds.split(',')[0].trim().split('/');
+      return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));
+    }
+    // ISO yyyy-mm-dd
+    if(/^\d{4}-\d{2}-\d{2}/.test(ds)){
+      var p=ds.split('T')[0].split('-');
+      return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+    }
+    // "19 Apr 2026" or "19 Apr 2026"
+    return new Date(ds);
+  }catch(e){return null;}
+}
+function fmtDate(ds){
+  var d=parseEntryDate(ds||'');
+  if(!d||isNaN(d.getTime()))return ds||'';
+  var dd=String(d.getDate()).padStart(2,'0');
+  var mm=String(d.getMonth()+1).padStart(2,'0');
+  return dd+'/'+mm+'/'+d.getFullYear();
+}
+
 // ── SAVINGS ──
 var savCache=null;
 async function loadSav(){
@@ -55,9 +81,10 @@ async function renderSav(){
   log.innerHTML=entries_rev.map(function(e,ii){
     var ei=d.entries.length-1-ii;
     var lbl=e.acct==='emergency'?'CommBank — Emergency fund':e.acct==='deposit'?'Ubank — Property deposit':'Wise → Investing (HK)';
-    return '<div class="logrow" style="align-items:center;">'+
-      '<div style="flex:1;"><div class="logdate">'+fmtDate(e.date)+'</div><div class="logdesc">'+lbl+(e.note?' · '+e.note:'')+'</div></div>'+
-      '<div class="logamt" style="margin-right:6px;">'+fm(e.amount)+'</div>'+
+    var col=e.acct==='emergency'?'var(--amber)':e.acct==='deposit'?'var(--green)':'var(--blue)';
+    return '<div class="logrow" style="align-items:center;border-left:2.5px solid '+col+';">'+
+      '<div style="flex:1;"><div class="logdate">'+fmtDate(e.date)+'</div><div class="logdesc" style="color:'+col+';">'+lbl+(e.note?' · '+e.note:'')+'</div></div>'+
+      '<div class="logamt" style="margin-right:6px;color:'+col+';">'+fm(e.amount)+'</div>'+
       '<button class="editbtn" onclick="editTransfer('+ei+')">edit</button>'+
       '<span class="evtdel" onclick="delTransfer('+ei+')">&#215;</span>'+
     '</div>';
@@ -107,28 +134,9 @@ window._clrEx=async function(){
 async function renderEx(){
   var d=await loadEx(),now=new Date();
   var entries=d.entries||[];
-  function parseEntryDate(ds){
-    try{
-      ds=ds||'';
-      if(ds.indexOf('/')===2){
-        var p=ds.split(',')[0].trim().split('/');
-        return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));
-      }
-      return new Date(ds);
-    }catch(e){return null;}
-  }
-  function fmtDate(ds){
-    var d=parseEntryDate(ds);
-    if(!d||isNaN(d))return ds;
-    var dd=String(d.getDate()).padStart(2,'0');
-    var mm=String(d.getMonth()+1).padStart(2,'0');
-    var yyyy=d.getFullYear();
-    var day=d.toLocaleDateString('en-AU',{weekday:'long'});
-    return dd+'/'+mm+'/'+yyyy+', '+day;
-  }
   var curMo=entries.filter(function(x){
     var parsed=parseEntryDate(x.date||'');
-    return parsed&&!isNaN(parsed)&&parsed.getMonth()===now.getMonth()&&parsed.getFullYear()===now.getFullYear();
+    return parsed&&!isNaN(parsed.getTime())&&parsed.getMonth()===now.getMonth()&&parsed.getFullYear()===now.getFullYear();
   });
   var totMo=curMo.reduce(function(s,x){return s+(x.amount||0);},0);
   document.getElementById('ex-tot').textContent=fm(totMo)+' this month';
