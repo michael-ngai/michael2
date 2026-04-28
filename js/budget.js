@@ -3,7 +3,7 @@ function renderBudget(){
   function logo(domain){return '<img src="https://www.google.com/s2/favicons?domain='+domain+'&sz=32" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:5px;border-radius:3px;" />';}
   var rows=[
     {label:logo('realestate.com.au')+'Rent',w:380,fn:760,m:1647,y:19760},
-    {label:logo('costco.com.au')+'Fuel — Costco',w:40,fn:80,m:173,y:2080},
+    {label:logo('costco.com.au')+'Fuel — Costco (500km/fn)',w:40,fn:80,m:173,y:2080},
     {label:logo('honda.com')+'Car (insurance / rego / service)',w:48,fn:96,m:208,y:2500},
     {label:logo('humanservices.gov.au')+'Personal insurance',w:16.63,fn:33.26,m:72,y:864},
     {label:logo('amaysim.com.au')+'Phone — Amaysim',w:7.50,fn:15,m:33,y:390},
