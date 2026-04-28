@@ -30,25 +30,24 @@ window._clrSav=async function(){
 };
 
 async function renderSav(){
-  var d=await loadSav(),ml=mLeft(),np=nextPay();var emg=0,dep=0,inv=0;(d.entries||[]).forEach(function(e){var a=e.amount||0;if(e.acct==='emergency')emg+=a;else if(e.acct==='deposit')dep+=a;else inv+=a;});if(!emg)emg=d.emergency||0;if(!dep)dep=d.deposit||0;if(!inv)inv=d.invest||0;var proj=Math.round(dep+ml*500),ef=emg>=6000;
+  var d=await loadSav(),np=nextPay(),ef=(d.emergency||0)>=6000;
+  var emg=d.emergency||0,dep=d.deposit||0,inv=d.invest||0;
   document.getElementById('sv-emerg').textContent=fm(emg);
   document.getElementById('sv-dep').textContent=fm(dep);
   document.getElementById('sv-invest').textContent=fm(inv);
-  document.getElementById('sv-months').textContent=ml;
-  document.getElementById('sv-proj').textContent=fm(proj);
   document.getElementById('pay-next').textContent=np.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
   document.getElementById('pay-amt').textContent=ef?'$900 → deposit+invest':'$500+$100+$400';
   var ep=Math.min(100,Math.round(emg/6000*100));
-  document.getElementById('eb-bar').style.width=ep+'%';document.getElementById('eb-pct').textContent=ep+'%';
+  document.getElementById('eb-bar').style.width=ep+'%';document.getElementById('eb-pct').textContent=ep>0?ep+'%':'';
   var ebb=document.getElementById('eb-badge');ebb.textContent=ep>=100?'Complete':'In progress';ebb.className='badge '+(ep>=100?'bg':'ba');
   var dp=Math.min(100,Math.round(dep/59000*100));
-  document.getElementById('db-bar').style.width=dp+'%';document.getElementById('db-pct').textContent=dp+'%';
+  document.getElementById('db-bar').style.width=dp+'%';document.getElementById('db-pct').textContent=dp>0?dp+'%':'';
   var dbb=document.getElementById('db-badge');dbb.textContent=dp>=100?'Complete':'In progress';dbb.className='badge bg';
   var ip=Math.min(100,Math.round(inv/10000*100));
-  document.getElementById('ib-bar').style.width=ip+'%';document.getElementById('ib-pct').textContent=ip+'%';
-  if(document.getElementById('eb-amt'))document.getElementById('eb-amt').textContent=fm(emg);
-  if(document.getElementById('db-amt'))document.getElementById('db-amt').textContent=fm(dep);
-  if(document.getElementById('ib-amt'))document.getElementById('ib-amt').textContent=fm(inv||0);
+  document.getElementById('ib-bar').style.width=ip+'%';document.getElementById('ib-pct').textContent=ip>0?ip+'%':'';
+  var eamt=document.getElementById('eb-amt');if(eamt)eamt.textContent=fm(emg);
+  var damt=document.getElementById('db-amt');if(damt)damt.textContent=fm(dep);
+  var iamt=document.getElementById('ib-amt');if(iamt)iamt.textContent=fm(inv);
   document.getElementById('sv-cnt').textContent=d.entries.length+' entries';
   var log=document.getElementById('sv-log');
   if(!d.entries||d.entries.length===0){log.innerHTML='<div class="empty">No transfers logged yet</div>';return;}
@@ -57,7 +56,7 @@ async function renderSav(){
     var ei=d.entries.length-1-ii;
     var lbl=e.acct==='emergency'?'CommBank — Emergency fund':e.acct==='deposit'?'Ubank — Property deposit':'Wise → Investing (HK)';
     return '<div class="logrow" style="align-items:center;">'+
-      '<div style="flex:1;"><div class="logdate">'+e.date+'</div><div class="logdesc">'+lbl+(e.note?' · '+e.note:'')+'</div></div>'+
+      '<div style="flex:1;"><div class="logdate">'+fmtDate(e.date)+'</div><div class="logdesc">'+lbl+(e.note?' · '+e.note:'')+'</div></div>'+
       '<div class="logamt" style="margin-right:6px;">'+fm(e.amount)+'</div>'+
       '<button class="editbtn" onclick="editTransfer('+ei+')">edit</button>'+
       '<span class="evtdel" onclick="delTransfer('+ei+')">&#215;</span>'+
@@ -108,15 +107,28 @@ window._clrEx=async function(){
 async function renderEx(){
   var d=await loadEx(),now=new Date();
   var entries=d.entries||[];
-  var curMo=entries.filter(function(x){
+  function parseEntryDate(ds){
     try{
-      // Handle both "dd/mm/yyyy, Day" and ISO formats
-      var ds=x.date||'';
-      var parsed;
-      if(ds.indexOf('/')===2){var p=ds.split(',')[0].trim().split('/');parsed=new Date(p[2],p[1]-1,p[0]);}
-      else{parsed=new Date(ds);}
-      return parsed.getMonth()===now.getMonth()&&parsed.getFullYear()===now.getFullYear();
-    }catch(e){return false;}
+      ds=ds||'';
+      if(ds.indexOf('/')===2){
+        var p=ds.split(',')[0].trim().split('/');
+        return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));
+      }
+      return new Date(ds);
+    }catch(e){return null;}
+  }
+  function fmtDate(ds){
+    var d=parseEntryDate(ds);
+    if(!d||isNaN(d))return ds;
+    var dd=String(d.getDate()).padStart(2,'0');
+    var mm=String(d.getMonth()+1).padStart(2,'0');
+    var yyyy=d.getFullYear();
+    var day=d.toLocaleDateString('en-AU',{weekday:'long'});
+    return dd+'/'+mm+'/'+yyyy+', '+day;
+  }
+  var curMo=entries.filter(function(x){
+    var parsed=parseEntryDate(x.date||'');
+    return parsed&&!isNaN(parsed)&&parsed.getMonth()===now.getMonth()&&parsed.getFullYear()===now.getFullYear();
   });
   var totMo=curMo.reduce(function(s,x){return s+(x.amount||0);},0);
   document.getElementById('ex-tot').textContent=fm(totMo)+' this month';
@@ -134,7 +146,7 @@ async function renderEx(){
       var idx=entries.indexOf(x);
       return '<div class="logrow" style="border-left:2px solid '+accent+';">'+
         '<div style="flex:1;min-width:0;">'+
-          '<div class="logdate" style="font-size:10px;margin-bottom:2px;">'+x.date+'</div>'+
+          '<div class="logdate" style="font-size:10px;margin-bottom:2px;">'+fmtDate(x.date)+'</div>'+
           '<div class="logdesc">'+(x.note||'\u2014')+'</div>'+
         '</div>'+
         '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">'+
