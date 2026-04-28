@@ -323,3 +323,10 @@ window._updateTransfer=async function(idx){
   document.getElementById('sv-note').value='';
   renderSav();
 };
+
+window._updateAcctColor=function(sel){
+  var cols={emergency:'var(--amber)',deposit:'var(--green)',invest:'var(--blue)'};
+  var c=cols[sel.value]||'var(--text)';
+  sel.style.color=c;
+  sel.style.borderColor=c;
+};
