@@ -25,12 +25,9 @@ window._togH=async function(el){
     wdata[id]=!wdata[id];
     nowTicked=!!wdata[id];
     await fbSet('habits',wk,wdata);
-    // Clear cache for this week so all days reload with updated weekly state
-    var wk2=weekKey(selectedDate);
-    Object.keys(habitCache).forEach(function(k){
-      if(k==='__wk_'+wk2||habitCache[k])delete habitCache[k];
-    });
+    // Set cache directly with updated wdata so renderH uses fresh data
     habitCache={};
+    habitCache['__wk_'+wk]=wdata;
   } else {
     var data=await loadHabits(selectedDate);
     data[id]=!data[id];
