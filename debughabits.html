@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head><title>Habit Debug</title>
+<style>body{font-family:monospace;padding:20px;background:#111;color:#eee;}
+button{background:#1db975;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin:4px;}
+pre{background:#222;padding:12px;border-radius:6px;overflow:auto;margin-top:12px;font-size:12px;}
+</style></head>
+<body>
+<h2>Habit Debug</h2>
+<button id="btn-read">Read today's habit data</button>
+<button id="btn-fix">Force clear housework from all keys</button>
+<pre id="out">Click "Read today's habit data"</pre>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
+  apiKey:"AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
+  authDomain:"michael-dashboard-ce18b.firebaseapp.com",
+  projectId:"michael-dashboard-ce18b"
+});
+var db = firebase.firestore();
+var out = document.getElementById('out');
+
+function getMon(d){var day=d.getDay(),diff=(day===0)?-6:1-day;var m=new Date(d);m.setDate(d.getDate()+diff);return m.toISOString().slice(0,10);}
+function getToday(){var n=new Date();if(n.getHours()<5){n.setDate(n.getDate()-1);}return n.toISOString().slice(0,10);}
+
+document.getElementById('btn-read').onclick = function(){
+  var today = getToday();
+  var wk = 'wk_' + getMon(new Date(today));
+  out.textContent = 'Today key: ' + today + '\nWeek key: ' + wk + '\n\nReading...';
+  
+  Promise.all([
+    db.collection('habits').doc(today).get(),
+    db.collection('habits').doc(wk).get()
+  ]).then(function(snaps){
+    var daily = snaps[0].exists ? snaps[0].data() : '(no document)';
+    var weekly = snaps[1].exists ? snaps[1].data() : '(no document)';
+    out.textContent = 'Today key: ' + today + '\nWeek key: ' + wk + 
+      '\n\nDAILY habits:\n' + JSON.stringify(daily, null, 2) +
+      '\n\nWEEKLY habits:\n' + JSON.stringify(weekly, null, 2);
+  });
+};
+
+document.getElementById('btn-fix').onclick = function(){
+  var today = getToday();
+  var wk = 'wk_' + getMon(new Date(today));
+  out.textContent = 'Fixing...';
+  
+  Promise.all([
+    db.collection('habits').doc(today).get(),
+    db.collection('habits').doc(wk).get()
+  ]).then(function(snaps){
+    var ops = [];
+    if(snaps[0].exists){
+      var d = snaps[0].data();
+      if('housework' in d){delete d.housework; ops.push(db.collection('habits').doc(today).set(d));}
+    }
+    if(snaps[1].exists){
+      var w = snaps[1].data();
+      if('housework' in w){delete w.housework; ops.push(db.collection('habits').doc(wk).set(w));}
+    }
+    return Promise.all(ops);
+  }).then(function(){
+    out.textContent = 'Done! Housework removed from both daily and weekly keys.\nRefresh your dashboard and try ticking/unticking again.';
+  });
+};
+</script>
+</body>
+</html>
