@@ -424,7 +424,7 @@ select option{background:var(--surface2);}
   </div>
   <div class="card">
     <div class="card-hdr"><div class="card-title">Log a transfer</div></div>
-    <div class="irow"><select id="sv-acct"><option value="emergency">CommBank — Emergency fund</option><option value="deposit">Ubank — Property deposit</option><option value="invest">Wise → Investing (HK)</option></select></div>
+    <div class="irow"><select id="sv-acct" id="sv-acct"><option value="emergency" style="color:var(--amber);">🟡 CommBank — Emergency fund</option><option value="deposit" style="color:var(--green);">🟢 Ubank — Property deposit</option><option value="invest" style="color:var(--blue);">🔵 Wise → Investing (HK)</option></select></div>
     <div class="irow"><input type="number" id="sv-in" placeholder="Amount $" min="0" step="1"/></div>
     <div class="irow"><input type="text" id="sv-note" placeholder="Note (e.g. payday 15 Apr)"/></div>
     <div class="brow"><button class="btn p" style="flex:1;" onclick="logSav()">Log transfer</button><button class="btn d" onclick="clrSav()">Reset</button></div>
@@ -508,13 +508,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js"></script>
-<script defer src="js/shared.js"></script>
-<script defer src="js/routine.js"></script>
-<script defer src="js/calendar.js"></script>
-<script defer src="js/savings.js"></script>
-<script defer src="js/budget.js"></script>
-<script defer src="js/init.js"></script>
+<script type="module" src="js/firebase.js?v=1777393962"></script>
+<script defer src="js/shared.js?v=1777393962"></script>
+<script defer src="js/routine.js?v=1777393962"></script>
+<script defer src="js/calendar.js?v=1777393962"></script>
+<script defer src="js/savings.js?v=1777393962"></script>
+<script defer src="js/budget.js?v=1777393962"></script>
+<script defer src="js/init.js?v=1777393962"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}

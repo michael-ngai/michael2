@@ -3,7 +3,7 @@ function renderBudget(){
   function logo(domain){return '<img src="https://www.google.com/s2/favicons?domain='+domain+'&sz=32" style="width:16px;height:16px;object-fit:contain;vertical-align:middle;margin-right:5px;border-radius:3px;" />';}
   var rows=[
     {label:logo('realestate.com.au')+'Rent',w:380,fn:760,m:1647,y:19760},
-    {label:logo('costco.com.au')+'Fuel — Costco (500km/fn)',w:40,fn:80,m:173,y:2080},
+    {label:logo('costco.com.au')+'Fuel — Costco (500km/2 weeks)',w:40,fn:80,m:173,y:2080},
     {label:logo('honda.com')+'Car (insurance / rego / service)',w:48,fn:96,m:208,y:2500},
     {label:logo('humanservices.gov.au')+'Personal insurance',w:16.63,fn:33.26,m:72,y:864},
     {label:logo('amaysim.com.au')+'Phone — Amaysim',w:7.50,fn:15,m:33,y:390},
@@ -56,9 +56,9 @@ function renderBudget(){
   html+=row(logo('pcycnsw.org.au')+'Income — PCYC',income.w,income.fn,income.m,income.y,true,'var(--green)');
   rows.forEach(function(r){html+=row(r.label,r.w,r.fn,r.m,r.y,false,null);});
   html+=row('Total expenses',totalW,totalFn,totalM,totalY,true,'var(--red)');
-  html+=rowSub(logo('ubank.com.au')+'Ubank deposit',250,500,1083,13000,'var(--blue)');
-  html+=rowSub(logo('commbank.com.au')+'CommBank emergency',50,100,217,2600,'var(--blue)');
-  html+=rowSub(logo('wise.com')+'Wise investing',200,400,867,10400,'var(--blue)');
+  html+=rowSub(logo('commbank.com.au')+'CommBank — Emergency fund',50,100,217,2600,'var(--amber)');
+  html+=rowSub(logo('ubank.com.au')+'Ubank — Property deposit',250,500,1083,13000,'var(--green)');
+  html+=rowSub(logo('wise.com')+'Wise → Investing (HK)',200,400,867,10400,'var(--blue)');
   html+=row('Total Savings',savW,savFn,savM,savY,true,'var(--blue)');
   html+=row('Buffer left',bufW,bufFn,bufM,bufY,true,'var(--amber)');
   document.getElementById('budget-body').innerHTML=html;
