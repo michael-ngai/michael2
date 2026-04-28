@@ -3,10 +3,12 @@ function lGet(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e
 function lSet(k,v){localStorage.setItem(k,JSON.stringify(v));}
 
 // ── FIREBASE HELPERS ──
-async function fbGet(col,id){
+async function fbGet(col,id,forceServer){
   try{
     if(!db)return lGet(col+'_'+id);
-    var snap=await getDoc(doc(db,col,id));
+    var snap=forceServer
+      ?await getDocFromServer(doc(db,col,id))
+      :await getDoc(doc(db,col,id));
     return snap.exists()?snap.data():null;
   }catch(e){return lGet(col+'_'+id);}
 }

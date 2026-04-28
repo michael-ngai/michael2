@@ -26,9 +26,9 @@ function fmtDate(ds){
 
 // ── SAVINGS ──
 var savCache=null;
-async function loadSav(){
-  if(savCache)return savCache;
-  var data=await fbGet('savings','main');
+async function loadSav(force){
+  if(savCache&&!force)return savCache;
+  var data=await fbGet('savings','main',true); // always server fetch
   savCache=Object.assign({emergency:0,deposit:0,invest:0,entries:[]},data||{});
   return savCache;
 }
@@ -56,7 +56,8 @@ window._clrSav=async function(){
 };
 
 async function renderSav(){
-  var d=await loadSav(),np=nextPay(),ef=(d.emergency||0)>=6000;
+  savCache=null;
+  var d=await loadSav(true),np=nextPay(),ef=(d.emergency||0)>=6000;
   var emg=d.emergency||0,dep=d.deposit||0,inv=d.invest||0;
   document.getElementById('sv-emerg').textContent=fm(emg);
   document.getElementById('sv-dep').textContent=fm(dep);

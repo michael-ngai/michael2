@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, getDocsFromServer, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocFromServer, setDoc, collection, getDocs, getDocsFromServer, deleteDoc, addDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
@@ -28,7 +28,7 @@ function setSyncStatus(state){
 
 // ── Expose Firebase to global scope ──
 window.db=db;window.app=app;
-window.getDoc=getDoc;window.setDoc=setDoc;window.doc=doc;
+window.getDoc=getDoc;window.getDocFromServer=getDocFromServer;window.setDoc=setDoc;window.doc=doc;
 window.collection=collection;window.getDocs=getDocs;
 window.getDocsFromServer=getDocsFromServer;
 window.deleteDoc=deleteDoc;window.addDoc=addDoc;
