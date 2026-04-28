@@ -1,52 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head><title>Debug</title>
-<style>body{font-family:monospace;padding:20px;background:#111;color:#eee;}
-button{background:#1db975;color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin:5px;}
-pre{background:#222;padding:16px;border-radius:8px;overflow:auto;}
-</style></head>
+<style>
+body{font-family:monospace;padding:20px;background:#111;color:#eee;}
+button{background:#1db975;color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;margin:5px;font-size:15px;}
+pre{background:#222;padding:16px;border-radius:8px;overflow:auto;margin-top:16px;}
+</style>
+</head>
 <body>
 <h2>Firebase Debug Tool</h2>
-<button onclick="readData()">Read Firebase Data</button>
-<button onclick="fixData()">Fix NaN Values</button>
+<button id="btn-read">Read Firebase Data</button>
+<button id="btn-fix">Fix NaN Values</button>
 <pre id="out">Click "Read Firebase Data" first</pre>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
-const app = initializeApp({
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({
   apiKey:"AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
   authDomain:"michael-dashboard-ce18b.firebaseapp.com",
   projectId:"michael-dashboard-ce18b"
 });
-const db = getFirestore(app);
-const out = document.getElementById('out');
+var db = firebase.firestore();
+var out = document.getElementById('out');
 
-window.readData = async function(){
+document.getElementById('btn-read').onclick = function(){
   out.textContent = 'Reading...';
-  const snap = await getDoc(doc(db,'savings','main'));
-  const d = snap.exists() ? snap.data() : null;
-  out.textContent = JSON.stringify(d, null, 2);
+  db.collection('savings').doc('main').get().then(function(snap){
+    if(!snap.exists){out.textContent='No savings data found';return;}
+    var d = snap.data();
+    out.textContent = 'emergency: ' + d.emergency + '\ndeposit: ' + d.deposit + '\ninvest: ' + d.invest + '\nentries count: ' + (d.entries||[]).length + '\n\nFull data:\n' + JSON.stringify(d, null, 2);
+  }).catch(function(e){out.textContent='Error: '+e.message;});
 };
 
-window.fixData = async function(){
+document.getElementById('btn-fix').onclick = function(){
   out.textContent = 'Reading...';
-  const snap = await getDoc(doc(db,'savings','main'));
-  if(!snap.exists()){out.textContent='No data found';return;}
-  var d = snap.data();
-  // Sum from entries (most reliable)
-  var emg=0,dep=0,inv=0;
-  (d.entries||[]).forEach(function(e){
-    var a = parseFloat(e.amount)||0;
-    if(e.acct==='emergency') emg+=a;
-    else if(e.acct==='deposit') dep+=a;
-    else inv+=a;
-  });
-  // Override top-level values with correct sums
-  d.emergency = emg;
-  d.deposit = dep;
-  d.invest = inv;
-  await setDoc(doc(db,'savings','main'), d);
-  out.textContent = 'Fixed! New values:\n emergency: $'+emg+'\n deposit: $'+dep+'\n invest: $'+inv+'\n\nRefresh your dashboard now.';
+  db.collection('savings').doc('main').get().then(function(snap){
+    var d = snap.exists ? snap.data() : {entries:[]};
+    var emg=0, dep=0, inv=0;
+    (d.entries||[]).forEach(function(e){
+      var a = parseFloat(e.amount)||0;
+      if(e.acct==='emergency') emg+=a;
+      else if(e.acct==='deposit') dep+=a;
+      else inv+=a;
+    });
+    d.emergency = emg;
+    d.deposit = dep;
+    d.invest = inv;
+    return db.collection('savings').doc('main').set(d).then(function(){
+      out.textContent = 'FIXED!\n\nemergency: $'+emg+'\ndeposit: $'+dep+'\ninvest: $'+inv+'\n\nNow refresh your dashboard.';
+    });
+  }).catch(function(e){out.textContent='Error: '+e.message;});
 };
 </script>
 </body>
