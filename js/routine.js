@@ -2,7 +2,7 @@
 var habitCache={};
 
 async function loadHabits(dateStr){
-  // Always fetch fresh for weekly merge accuracy
+  // Fetch daily habits
   var data=await fbGet('habits',dateStr)||{};
   // Merge weekly ticks - stored by week's Monday key
   var wk=weekKey(dateStr);
@@ -11,7 +11,11 @@ async function loadHabits(dateStr){
     wdata=await fbGet('habits',wk)||{};
     habitCache['__wk_'+wk]=wdata;
   }
-  WEEKLY_HABITS.forEach(function(h){if(wdata[h])data[h]=true;});
+  // Set weekly habits based on wdata - both true AND false explicitly
+  WEEKLY_HABITS.forEach(function(h){
+    if(wdata[h])data[h]=true;
+    else delete data[h]; // explicitly remove if weekly says false
+  });
   habitCache[dateStr]=data;
   return data;
 }
@@ -25,9 +29,11 @@ window._togH=async function(el){
     wdata[id]=!wdata[id];
     nowTicked=!!wdata[id];
     await fbSet('habits',wk,wdata);
-    // Set cache directly with updated wdata so renderH uses fresh data
+    // Clear all cache and set weekly data directly
     habitCache={};
     habitCache['__wk_'+wk]=wdata;
+    // Force re-merge for selectedDate
+    delete habitCache[selectedDate];
   } else {
     var data=await loadHabits(selectedDate);
     data[id]=!data[id];
