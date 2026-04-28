@@ -63,7 +63,14 @@ async function renderSav(){
   document.getElementById('sv-dep').textContent=fm(dep);
   document.getElementById('sv-invest').textContent=fm(inv);
   document.getElementById('pay-next').textContent=np.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-  document.getElementById('pay-amt').textContent=ef?'$900 → deposit+invest':'$500+$100+$400';
+  var payEl=document.getElementById('pay-amt');
+  if(payEl){
+    if(ef){
+      payEl.innerHTML='<span style="color:var(--green);">$900</span><span style="color:var(--text3);"> → deposit+invest</span>';
+    } else {
+      payEl.innerHTML='<span style="color:var(--amber);">$100</span><span style="color:var(--text3);"> + </span><span style="color:var(--green);">$500</span><span style="color:var(--text3);"> + </span><span style="color:var(--blue);">$400</span>';
+    }
+  }
   var ep=Math.min(100,Math.round(emg/6000*100));
   document.getElementById('eb-bar').style.width=ep+'%';document.getElementById('eb-pct').textContent=ep>0?ep+'%':'';
   var ebb=document.getElementById('eb-badge');ebb.textContent=ep>=100?'Complete':'In progress';ebb.className='badge '+(ep>=100?'bg':'ba');
