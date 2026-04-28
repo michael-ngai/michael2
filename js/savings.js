@@ -46,6 +46,9 @@ async function renderSav(){
   var dbb=document.getElementById('db-badge');dbb.textContent=dp>=100?'Complete':'In progress';dbb.className='badge bg';
   var ip=Math.min(100,Math.round(inv/10000*100));
   document.getElementById('ib-bar').style.width=ip+'%';document.getElementById('ib-pct').textContent=ip+'%';
+  if(document.getElementById('eb-amt'))document.getElementById('eb-amt').textContent=fm(emg);
+  if(document.getElementById('db-amt'))document.getElementById('db-amt').textContent=fm(dep);
+  if(document.getElementById('ib-amt'))document.getElementById('ib-amt').textContent=fm(inv||0);
   document.getElementById('sv-cnt').textContent=d.entries.length+' entries';
   var log=document.getElementById('sv-log');
   if(!d.entries||d.entries.length===0){log.innerHTML='<div class="empty">No transfers logged yet</div>';return;}
@@ -98,7 +101,16 @@ window._clrEx=async function(){
 async function renderEx(){
   var d=await loadEx(),now=new Date();
   var entries=d.entries||[];
-  var curMo=entries.filter(function(x){try{var dd=new Date(x.date);return dd.getMonth()===now.getMonth()&&dd.getFullYear()===now.getFullYear();}catch(e){return false;}});
+  var curMo=entries.filter(function(x){
+    try{
+      // Handle both "dd/mm/yyyy, Day" and ISO formats
+      var ds=x.date||'';
+      var parsed;
+      if(ds.indexOf('/')===2){var p=ds.split(',')[0].trim().split('/');parsed=new Date(p[2],p[1]-1,p[0]);}
+      else{parsed=new Date(ds);}
+      return parsed.getMonth()===now.getMonth()&&parsed.getFullYear()===now.getFullYear();
+    }catch(e){return false;}
+  });
   var totMo=curMo.reduce(function(s,x){return s+(x.amount||0);},0);
   document.getElementById('ex-tot').textContent=fm(totMo)+' this month';
   // Split by type
@@ -223,3 +235,56 @@ window._switchSavSub=function(name){
   if(name==='expenses'){renderEx();}
 };
 
+
+window._delTransfer=async function(idx){
+  var d=await loadSav();
+  if(!d.entries||idx<0||idx>=d.entries.length)return;
+  var e=d.entries[idx];
+  var a=e.amount||0;
+  if(e.acct==='emergency')d.emergency=Math.max(0,(d.emergency||0)-a);
+  else if(e.acct==='deposit')d.deposit=Math.max(0,(d.deposit||0)-a);
+  else d.invest=Math.max(0,(d.invest||0)-a);
+  d.entries.splice(idx,1);
+  savCache=null;
+  await fbSet('savings','main',d);
+  savCache=d;
+  renderSav();
+};
+
+window._editTransfer=async function(idx){
+  var d=await loadSav();
+  if(!d.entries||idx<0||idx>=d.entries.length)return;
+  var e=d.entries[idx];
+  var acctEl=document.getElementById('sv-acct');
+  var amtEl=document.getElementById('sv-in');
+  var noteEl=document.getElementById('sv-note');
+  if(acctEl)acctEl.value=e.acct||'emergency';
+  if(amtEl)amtEl.value=e.amount;
+  if(noteEl)noteEl.value=e.note||'';
+  var btn=document.querySelector('#sv-view-savings .brow .btn.p');
+  if(btn){btn.textContent='Update';btn.onclick=function(){window._updateTransfer(idx);};}
+  document.querySelector('#sv-view-savings .card').scrollIntoView({behavior:'smooth'});
+};
+
+window._updateTransfer=async function(idx){
+  var acct=document.getElementById('sv-acct').value;
+  var amt=parseFloat(document.getElementById('sv-in').value);
+  var note=document.getElementById('sv-note').value.trim();
+  if(isNaN(amt)||amt<=0){alert('Enter a valid amount');return;}
+  var d=await loadSav();
+  if(!d.entries||idx<0||idx>=d.entries.length)return;
+  var old=d.entries[idx];
+  var oldAmt=old.amount||0;
+  if(old.acct==='emergency')d.emergency=Math.max(0,(d.emergency||0)-oldAmt+amt);
+  else if(old.acct==='deposit')d.deposit=Math.max(0,(d.deposit||0)-oldAmt+amt);
+  else d.invest=Math.max(0,(d.invest||0)-oldAmt+amt);
+  d.entries[idx]={date:old.date,acct:acct,amount:amt,note:note};
+  savCache=null;
+  await fbSet('savings','main',d);
+  savCache=d;
+  var btn=document.querySelector('#sv-view-savings .brow .btn.p');
+  if(btn){btn.textContent='Log transfer';btn.onclick=function(){logSav();};}
+  document.getElementById('sv-in').value='';
+  document.getElementById('sv-note').value='';
+  renderSav();
+};

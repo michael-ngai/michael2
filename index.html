@@ -86,7 +86,7 @@ select option{background:var(--surface2);}
 .btn.d{color:var(--text3);}
 .btn.d:hover{color:var(--green);border-color:var(--green);}
 .brow{display:flex;gap:7px;padding:9px 14px 13px;}
-.prog-wrap{background:var(--surface2);border-radius:5px;height:9px;margin:7px 0 4px;overflow:hidden;position:relative;}
+.prog-wrap{background:var(--surface2);border-radius:5px;height:13px;margin:7px 0 4px;overflow:hidden;position:relative;}
 .prog-fill{height:100%;border-radius:5px;transition:width .4s;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;}
 .pf-g{background:var(--green);}
 .pf-a{background:var(--amber);}
@@ -406,7 +406,7 @@ select option{background:var(--surface2);}
     <div style="text-align:right;"><div class="paytxt">Transfer</div><div class="payamt" id="pay-amt">—</div></div>
   </div>
   <div class="stats">
-    <div class="stat"><div class="stat-lbl">Emergency</div><div class="stat-val" id="sv-emerg">$0</div></div>
+    <div class="stat"><div class="stat-lbl">Emergency</div><div class="stat-val" id="sv-emerg" style="color:var(--amber);">$0</div></div>
     <div class="stat"><div class="stat-lbl">Deposit</div><div class="stat-val" id="sv-dep">$0</div></div>
     <div class="stat"><div class="stat-lbl">Investing</div><div class="stat-val" style="color:var(--blue);" id="sv-invest">$0</div></div>
   </div>
@@ -419,12 +419,12 @@ select option{background:var(--surface2);}
     <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-g" id="db-bar" style="width:0%;"><span style="font-size:8px;color:#fff;font-weight:700;white-space:nowrap;" id="db-pct"></span></div></div><div class="prog-lbl"><span style="color:var(--text3);">Target: $59,000</span><span id="db-amt" style="color:var(--green);font-weight:600;">$0</span></div><div style="display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;"><span>Months left: <span id="sv-months" style="color:var(--text2);">—</span></span><span>Projected: <span id="sv-proj" style="color:var(--green);">—</span></span></div></div>
   </div>
   <div class="card">
-    <div class="card-hdr"><div class="card-title">Investing (HK)</div><div class="badge" style="background:var(--bdim);color:var(--blue);" id="ib-badge">in progress</div></div>
+    <div class="card-hdr"><div class="card-title">Investing (HK)</div><div class="badge" style="background:var(--bdim);color:var(--blue);" id="ib-badge">In progress</div></div>
     <div style="padding:10px 14px 13px;"><div class="prog-wrap"><div class="prog-fill pf-b" id="ib-bar" style="width:0%;"><span style="font-size:8px;color:#fff;font-weight:700;white-space:nowrap;" id="ib-pct"></span></div></div><div class="prog-lbl"><span style="color:var(--text3);">Target: $10,000</span><span id="ib-amt" style="color:var(--blue);font-weight:600;">$0</span></div></div>
   </div>
   <div class="card">
     <div class="card-hdr"><div class="card-title">Log a transfer</div></div>
-    <div class="irow"><select id="sv-acct"><option value="emergency">CommBank — emergency ($100)</option><option value="deposit">Ubank — deposit ($500)</option><option value="invest">Wise → HK investing ($400)</option></select></div>
+    <div class="irow"><select id="sv-acct"><option value="emergency">Emergency fund</option><option value="deposit">Property deposit</option><option value="invest">Investing (HK)</option></select></div>
     <div class="irow"><input type="number" id="sv-in" placeholder="Amount $" min="0" step="1"/></div>
     <div class="irow"><input type="text" id="sv-note" placeholder="Note (e.g. payday 15 Apr)"/></div>
     <div class="brow"><button class="btn p" style="flex:1;" onclick="logSav()">Log transfer</button><button class="btn d" onclick="clrSav()">Reset</button></div>
@@ -439,7 +439,7 @@ select option{background:var(--surface2);}
     <div class="srow"><div><div class="slbl">Ubank — deposit</div><div class="snote">50% of pay · untouchable until 2028</div></div><div class="sval">$500</div></div>
     <div class="srow"><div><div class="slbl">CommBank — emergency</div><div class="snote">Until $6,000</div></div><div class="sval">$100</div></div>
     <div class="srow"><div><div class="slbl">Wise → HK investing</div><div class="snote">Long term · no deadline</div></div><div class="sval">$400</div></div>
-    <div class="srow" style="background:var(--gdim);border-top:0.5px solid var(--green);border-bottom:0.5px solid var(--green);margin:4px 0;"><div><div class="slbl" style="color:var(--green);font-weight:600;">Total per payday</div><div class="snote" style="color:var(--green);opacity:0.7;">Top up $25 from buffer to hit $1,000</div></div><div class="sval" style="color:var(--green);font-size:18px;">$1,000</div></div>
+    <div class="srow" style="background:var(--gdim);border-top:0.5px solid var(--green);border-bottom:0.5px solid var(--green);margin:4px 0;"><div><div class="slbl" style="color:var(--green);font-weight:600;">Total per payday</div></div><div class="sval" style="color:var(--green);font-size:18px;">$1,000</div></div>
   </div>
 </div>
 <!-- TODO -->
@@ -564,6 +564,9 @@ function switchTodoSub(n){if(window._switchTodoSub)window._switchTodoSub(n);}
 function switchCalSub(n){if(window._switchCalSub)window._switchCalSub(n);}
 function tickTodo(id){if(window._tickTodo)window._tickTodo(id);}
 function deleteTodo(id,from){if(window._deleteTodo)window._deleteTodo(id,from);}
+function delTransfer(idx){if(window._delTransfer)window._delTransfer(idx);}
+function editTransfer(idx){if(window._editTransfer)window._editTransfer(idx);}
+function updateTransfer(idx){if(window._updateTransfer)window._updateTransfer(idx);}
 function editTodo(id){if(window._editTodo)window._editTodo(id);}
 function updateTodo(id){if(window._updateTodo)window._updateTodo(id);}
 function delEx(idx){if(window._delEx)window._delEx(idx);}
