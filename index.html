@@ -1301,7 +1301,7 @@ async function renderMonth(){
 window._selDay=function(ds){
   CS.sel=ds;
   document.getElementById('ce-date-hidden').value=ds;
-  if(window._updateCEDate)window._updateCEDate();
+  if(typeof updateCEDate==='function')updateCEDate();
   renderMonth();
 };
 
@@ -2249,8 +2249,8 @@ timeLabels.push('11:00pm','11:15pm','11:30pm','11:45pm');
   timeLabels.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);});
 });
 document.getElementById('ce-date-hidden').value=todayStr;
-if(window._updateCEDate)window._updateCEDate();
-if(window.initRoutineState)initRoutineState();buildDayBtns();buildWeekBtns();buildFnBtns();buildMonthBtns();
+if(typeof updateCEDate==='function')updateCEDate();
+initRoutineState();buildDayBtns();buildWeekBtns();buildFnBtns();buildMonthBtns();
 renderTodo();
 Promise.all([renderDaily(),renderSav(),renderEx()]).then(function(){
   setSyncStatus('ok');
