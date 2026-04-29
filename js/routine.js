@@ -49,10 +49,17 @@ async function loadHabits(dateStr){
 }
 
 // ── SELECTED PERIODS ──
-var selDate=logicalDate(new Date());
-var selWeek=wkKey(selDate);
-var selFn=fnKey(selDate);
-var selMo=(function(){var n=new Date();return {y:n.getFullYear(),m:n.getMonth()};}());
+var selDate='';
+var selWeek='';
+var selFn='';
+var selMo={y:new Date().getFullYear(),m:new Date().getMonth()};
+
+function initRoutineState(){
+  selDate=logicalDate(new Date());
+  selWeek=wkKey(selDate);
+  selFn=fnKey(selDate);
+  selMo={y:new Date().getFullYear(),m:new Date().getMonth()};
+}
 
 // ── CB HELPER ──
 function cbSvg(){return '<svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';}

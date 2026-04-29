@@ -16,6 +16,7 @@ timeLabels.push('11:00pm','11:15pm','11:30pm','11:45pm');
 });
 document.getElementById('ce-date-hidden').value=todayStr;
 if(window._updateCEDate)window._updateCEDate();
+if(window.initRoutineState)initRoutineState();
 renderTodo();
 renderHistory();
 Promise.all([renderDaily(),renderSav(),renderEx()]).then(function(){
