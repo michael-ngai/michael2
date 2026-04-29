@@ -1559,8 +1559,7 @@ window._clrSav=async function(){
 };
 
 async function renderSav(){
-  savCache=null;
-  var d=await loadSav(true),np=nextPay(),ef=(d.emergency||0)>=6000;
+  var d=await loadSav(),np=nextPay(),ef=(d.emergency||0)>=6000;
   var emg=d.emergency||0,dep=d.deposit||0,inv=d.invest||0;
   document.getElementById('sv-emerg').textContent=fm(emg);
   document.getElementById('sv-dep').textContent=fm(dep);
@@ -2091,12 +2090,13 @@ async function loadNote(dateStr){
 async function renderHistory(){
   var today=new Date();
   var rows=[];
-  // Check last 30 days
-  for(var i=0;i<30;i++){
+  // Check last 14 days only (perf)
+  for(var i=0;i<14;i++){
     var d=new Date(today);
     d.setDate(today.getDate()-i);
     var ds=dstr(d);
-    var data=await fbGet('habits',ds)||{};
+    var data=habitCache[ds]||(await fbGet('habits',ds)||{});
+    habitCache[ds]=data;
     var done=DH.filter(function(h){return data[h];}).length;
     var total=DH.length;
     rows.push({d:d,ds:ds,done:done,total:total});
@@ -2252,10 +2252,11 @@ document.getElementById('ce-date-hidden').value=todayStr;
 if(window._updateCEDate)window._updateCEDate();
 if(window.initRoutineState)initRoutineState();buildDayBtns();buildWeekBtns();buildFnBtns();buildMonthBtns();
 renderTodo();
-renderHistory();
 Promise.all([renderDaily(),renderSav(),renderEx()]).then(function(){
   setSyncStatus('ok');
-}).catch(function(){
+  renderHistory();
+}).catch(function(e){
+  console.error('Init error:',e);
   setSyncStatus('err');
 });
 setInterval(updHdr,1000);
