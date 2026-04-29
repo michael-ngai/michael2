@@ -2,8 +2,6 @@
 updHdr();
 setSyncStatus('loading');
 renderBudget();
-document.getElementById('habit-date-hidden').value=logicalToday;
-updateDateDisplay();
 document.getElementById('tt-date-hidden').value=logicalToday;
 updateTTDateDisplay();
 var timeLabels=['12:00am','12:15am','12:30am','12:45am'];
@@ -20,7 +18,7 @@ document.getElementById('ce-date-hidden').value=todayStr;
 if(window._updateCEDate)window._updateCEDate();
 renderTodo();
 renderHistory();
-Promise.all([renderH(),renderSav(),renderEx()]).then(function(){
+Promise.all([renderDaily(),renderSav(),renderEx()]).then(function(){
   setSyncStatus('ok');
 }).catch(function(){
   setSyncStatus('err');

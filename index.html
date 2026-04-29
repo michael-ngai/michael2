@@ -217,81 +217,79 @@ select option{background:var(--surface2);}
   </div>
   <div id="td-view-routine">
 
-  <div class="stats">
-    <div class="stat"><div class="stat-lbl">Today</div><div class="stat-val w" id="h-today">0/0</div></div>
-    <div class="stat"><div class="stat-lbl">Streak</div><div class="stat-val" id="h-streak">0</div></div>
-    <div class="stat"><div class="stat-lbl">This week</div><div class="stat-val a" id="h-week">0%</div></div>
+  <!-- 4 subtabs -->
+  <div class="subtabs" id="rtn-subtabs" style="margin-bottom:12px;">
+    <button class="subtab active" data-tab="daily" onclick="switchRtnSub('daily')">📅 Daily</button>
+    <button class="subtab" data-tab="weekly" onclick="switchRtnSub('weekly')">📋 Weekly</button>
+    <button class="subtab" data-tab="fortnightly" onclick="switchRtnSub('fortnightly')">💵 Fortnight</button>
+    <button class="subtab" data-tab="monthly" onclick="switchRtnSub('monthly')">🗓 Monthly</button>
   </div>
-  <div class="wrow" id="week-row"></div>
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-    <button class="btn" onclick="shiftDate(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
-    <div style="flex:1;position:relative;">
-      <input type="text" id="habit-date-display" readonly onclick="document.getElementById('habit-date-hidden').showPicker()" style="width:100%;text-align:center;cursor:pointer;font-size:13px;height:38px;box-sizing:border-box;" placeholder="Pick a date"/>
-      <input type="date" id="habit-date-hidden" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;top:0;left:0;" onchange="changeHabitDate()"/>
+
+  <!-- DAILY -->
+  <div id="rtn-daily">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <button class="btn" onclick="shiftDailyDate(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
+      <div style="flex:1;position:relative;">
+        <input type="text" id="daily-date-display" readonly onclick="document.getElementById('daily-date-hidden').showPicker()" style="width:100%;text-align:center;cursor:pointer;font-size:13px;height:38px;box-sizing:border-box;" placeholder="Pick a date"/>
+        <input type="date" id="daily-date-hidden" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0;top:0;left:0;" onchange="changeDailyDate()"/>
+      </div>
+      <button class="btn" onclick="shiftDailyDate(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
+      <button class="btn p" onclick="goDailyToday()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">Today</button>
     </div>
-    <button class="btn" onclick="shiftDate(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
-    <button class="btn p" onclick="goToday()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">Today</button>
-  </div>
-  <div class="card">
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">💪 Body</div><div class="card-meta" id="bc"></div></div>
-    <div class="hrow" data-id="sleep" data-sec="body" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Slept 7.5–8 hours</div><span class="tag tp">Sleep</span></div>
-    <div class="hrow" data-id="workout" data-sec="body" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Worked out / basketball</div><span class="tag ta">Sports</span></div>
-    <div class="hrow" data-id="meal" data-sec="body" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Ate home-cooked — no dining out</div><span class="tag to">Meal</span></div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">🧠 Mind</div><div class="card-meta" id="mc"></div></div>
-    <div class="hrow" data-id="duolingo" data-sec="mind" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Duolingo — at least 1 lesson</div><span class="tag ta">Learning</span></div>
-    <div class="hrow" data-id="ai" data-sec="mind" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Used AI for something useful today</div><span class="tag ta">Learning</span></div>
-    <div class="hrow" data-id="journal" data-sec="mind" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Wrote daily journal entry in English</div><span class="tag ta">Learning</span></div>
-    <div class="hrow" data-id="podcast" data-sec="mind" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Listened to English podcast (commute)</div><span class="tag ta">Learning</span></div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">💰 Money</div><div class="card-meta" id="nc"></div></div>
-    <div class="hrow" data-id="logdash" data-sec="body" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Logged everything on the dashboard</div><span class="tag tb">Personal</span></div>
-    <div class="hrow" data-id="nospend" data-sec="money" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">No unnecessary spending today</div><span class="tag tb">Personal</span></div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><div class="card-title">📅 Weekly</div><div class="card-meta" id="wkc"></div></div>
-    <div class="hrow" data-id="mealprep" data-sec="weekly" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Sunday meal prep — 2 batches done</div><span class="tag to">Meal</span></div>
-    <div class="hrow" data-id="pcs" data-sec="weekly" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">PCS social post published (every 2 weeks)</div><span class="tag tg">Work</span></div>
-    <div class="hrow" data-id="savings" data-sec="weekly" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Payday savings transferred</div><span class="tag tb">Personal</span></div>
-    <div class="hrow" data-id="anthro" data-sec="weekly" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">Anthropic Academy — 1 hr this week</div><span class="tag ta">Learning</span></div>
-    <div class="hrow" data-id="housework" data-sec="weekly" onclick="togH(this)"><div class="cb"><svg class="ck" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="htext">House work — laundry &amp; vacuum</div><span class="tag tb">Personal</span></div>
-  </div>
-  <div class="notetxt"><textarea id="daily-note" placeholder="Quick note for today..." oninput="saveNote()"></textarea></div>
-  <div class="card" style="margin-top:4px;">
-    <div class="card-hdr"><div class="card-title">📅 History</div><div class="card-meta" id="hist-summary"></div></div>
-    <div id="hist-list" class="logscroll" style="max-height:260px;"></div>
-  </div>
-  <div style="padding:0 0 8px;"><button class="btn d" onclick="resetH()">Reset today</button></div>
-
-  </div>
-</div>
-
-<!-- CALENDAR -->
-  <div id="td-view-todo" style="display:none;">
     <div class="card">
-    <div class="card-hdr"><div class="card-title">➕ Add task</div></div>
-    <div class="irow"><input type="text" id="todo-input" placeholder="Type a new task..." onkeydown="if(event.key==='Enter')addTodo()"/></div>
-    <div class="brow"><button class="btn p" style="flex:1;" onclick="addTodo()">Add task</button></div>
+      <div class="card-hdr"><div class="card-title">📅 Daily Routine</div><div class="card-meta" id="daily-count"></div></div>
+      <div id="daily-habits"></div>
+    </div>
+    <div class="notetxt"><textarea id="daily-note" placeholder="Quick note for today..." oninput="saveNote()"></textarea></div>
+    <div class="card" style="margin-top:4px;">
+      <div class="card-hdr"><div class="card-title">📅 History</div><div class="card-meta" id="hist-summary"></div></div>
+      <div id="hist-list" class="logscroll" style="max-height:260px;"></div>
+    </div>
+    <div style="padding:0 0 8px;"><button class="btn d" onclick="resetH()">Reset today</button></div>
   </div>
 
-  <div class="card" id="todo-pending-card">
-    <div class="card-hdr">
-      <div class="card-title">📋 To-Do</div>
-      <div class="card-meta" id="todo-pending-count">0 tasks</div>
+  <!-- WEEKLY -->
+  <div id="rtn-weekly" style="display:none;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <button class="btn" onclick="shiftWeek(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
+      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="weekly-display">—</div>
+      <button class="btn" onclick="shiftWeek(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
+      <button class="btn p" onclick="goThisWeek()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">This week</button>
     </div>
-    <div id="todo-pending-list"><div class="empty">No tasks yet — add one above</div></div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">📋 Weekly Routine</div><div class="card-meta" id="weekly-count"></div></div>
+      <div id="weekly-habits"></div>
+    </div>
   </div>
 
-  <div class="card" id="todo-done-card" style="margin-top:10px;">
-    <div class="card-hdr">
-      <div class="card-title">✅ Done</div>
-      <div class="card-meta" id="todo-done-count">0 completed</div>
+  <!-- FORTNIGHTLY -->
+  <div id="rtn-fn" style="display:none;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <button class="btn" onclick="shiftFn(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
+      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="fn-display">—</div>
+      <button class="btn" onclick="shiftFn(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
+      <button class="btn p" onclick="goThisFn()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">This period</button>
     </div>
-    <div id="todo-done-list" class="logscroll"><div class="empty">Nothing completed yet</div></div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">💵 Fortnightly Routine</div><div class="card-meta" id="fn-count"></div></div>
+      <div id="fn-habits"></div>
+    </div>
   </div>
+
+  <!-- MONTHLY -->
+  <div id="rtn-mo" style="display:none;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <button class="btn" onclick="shiftMonth(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
+      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="mo-display">—</div>
+      <button class="btn" onclick="shiftMonth(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
+      <button class="btn p" onclick="goThisMonth()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">This month</button>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">🗓 Monthly Routine</div><div class="card-meta" id="mo-count"></div></div>
+      <div id="mo-habits"></div>
+    </div>
+  </div>
+
 </div>
 
 </div>
@@ -514,18 +512,29 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777396467"></script>
-<script defer src="js/shared.js?v=1777396467"></script>
-<script defer src="js/routine.js?v=1777396467"></script>
-<script defer src="js/calendar.js?v=1777396467"></script>
-<script defer src="js/savings.js?v=1777396467"></script>
-<script defer src="js/budget.js?v=1777396467"></script>
-<script defer src="js/init.js?v=1777396467"></script>
+<script type="module" src="js/firebase.js?v=1777478092"></script>
+<script defer src="js/shared.js?v=1777478092"></script>
+<script defer src="js/routine.js?v=1777478092"></script>
+<script defer src="js/calendar.js?v=1777478092"></script>
+<script defer src="js/savings.js?v=1777478092"></script>
+<script defer src="js/budget.js?v=1777478092"></script>
+<script defer src="js/init.js?v=1777478092"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
 function goToday(){if(window._goToday)window._goToday();}
 function togH(el){if(window._togH)window._togH(el);}
+function togRoutine(el){if(window._togRoutine)window._togRoutine(el);}
+function switchRtnSub(n){if(window._switchRtnSub)window._switchRtnSub(n);}
+function shiftDailyDate(d){if(window._shiftDailyDate)window._shiftDailyDate(d);}
+function goDailyToday(){if(window._goDailyToday)window._goDailyToday();}
+function changeDailyDate(){if(window._changeDailyDate)window._changeDailyDate();}
+function shiftWeek(d){if(window._shiftWeek)window._shiftWeek(d);}
+function goThisWeek(){if(window._goThisWeek)window._goThisWeek();}
+function shiftFn(d){if(window._shiftFn)window._shiftFn(d);}
+function goThisFn(){if(window._goThisFn)window._goThisFn();}
+function shiftMonth(d){if(window._shiftMonth)window._shiftMonth(d);}
+function goThisMonth(){if(window._goThisMonth)window._goThisMonth();}
 function resetH(){if(window._resetH)window._resetH();}
 function jumpToDate(ds){if(window._jumpToDate)window._jumpToDate(ds);}
 function togTT(i){if(window._togTT)window._togTT(i);}
