@@ -237,6 +237,8 @@ select option{background:var(--surface2);}
       <button class="btn" onclick="shiftDailyDate(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
       <button class="btn p" onclick="goDailyToday()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">Today</button>
     </div>
+    <!-- Quick day buttons -->
+    <div id="daily-day-btns" style="display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;"></div>
     <div class="card">
       <div class="card-hdr"><div class="card-title">📅 Daily Routine</div><div class="card-meta" id="daily-count"></div></div>
       <div id="daily-habits"></div>
@@ -251,12 +253,14 @@ select option{background:var(--surface2);}
 
   <!-- WEEKLY -->
   <div id="rtn-weekly" style="display:none;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <button class="btn" onclick="shiftWeek(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
-      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="weekly-display">—</div>
+      <div style="flex:1;text-align:center;font-size:12px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="weekly-display">—</div>
       <button class="btn" onclick="shiftWeek(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
       <button class="btn p" onclick="goThisWeek()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">This week</button>
     </div>
+    <!-- Quick week buttons W1-W52 -->
+    <div id="weekly-week-btns" style="display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;"></div>
     <div class="card">
       <div class="card-hdr"><div class="card-title">📋 Weekly Routine</div><div class="card-meta" id="weekly-count"></div></div>
       <div id="weekly-habits"></div>
@@ -265,12 +269,14 @@ select option{background:var(--surface2);}
 
   <!-- FORTNIGHTLY -->
   <div id="rtn-fn" style="display:none;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <button class="btn" onclick="shiftFn(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
-      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="fn-display">—</div>
+      <div style="flex:1;text-align:center;font-size:12px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="fn-display">—</div>
       <button class="btn" onclick="shiftFn(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
       <button class="btn p" onclick="goThisFn()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">This period</button>
     </div>
+    <!-- Quick FN buttons FN1-FN26 -->
+    <div id="fn-period-btns" style="display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;"></div>
     <div class="card">
       <div class="card-hdr"><div class="card-title">💵 Fortnightly Routine</div><div class="card-meta" id="fn-count"></div></div>
       <div id="fn-habits"></div>
@@ -279,12 +285,14 @@ select option{background:var(--surface2);}
 
   <!-- MONTHLY -->
   <div id="rtn-mo" style="display:none;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <button class="btn" onclick="shiftMonth(-1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8249;</button>
-      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="mo-display">—</div>
+      <div style="flex:1;text-align:center;font-size:12px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="mo-display">—</div>
       <button class="btn" onclick="shiftMonth(1)" style="height:38px;padding:0 14px;font-size:18px;line-height:1;">&#8250;</button>
       <button class="btn p" onclick="goThisMonth()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">This month</button>
     </div>
+    <!-- Quick month buttons Jan-Dec -->
+    <div id="mo-month-btns" style="display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;"></div>
     <div class="card">
       <div class="card-hdr"><div class="card-title">🗓 Monthly Routine</div><div class="card-meta" id="mo-count"></div></div>
       <div id="mo-habits"></div>
@@ -739,32 +747,33 @@ var moCache={};
 
 async function loadDailyHabits(dateStr){
   if(dailyCache[dateStr])return dailyCache[dateStr];
-  var data=await fbGet('habits',dateStr,true)||{};
+  var data=await fbGet('habits',dateStr)||{};
   dailyCache[dateStr]=data;
   return data;
 }
 async function loadWeeklyHabits(wk){
   if(weeklyCache[wk])return weeklyCache[wk];
-  var data=await fbGet('habits',wk,true)||{};
+  var data=await fbGet('habits',wk)||{};
   weeklyCache[wk]=data;
   return data;
 }
 async function loadFnHabits(fk){
   if(fnCache[fk])return fnCache[fk];
-  var data=await fbGet('habits',fk,true)||{};
+  var data=await fbGet('habits',fk)||{};
   fnCache[fk]=data;
   return data;
 }
 async function loadMoHabits(mk){
   if(moCache[mk])return moCache[mk];
-  var data=await fbGet('habits',mk,true)||{};
+  var data=await fbGet('habits',mk)||{};
   moCache[mk]=data;
   return data;
 }
 
 // Legacy loadHabits for history/streak
 async function loadHabits(dateStr){
-  var data=await fbGet('habits',dateStr,true)||{};
+  if(habitCache[dateStr])return habitCache[dateStr];
+  var data=await fbGet('habits',dateStr)||{};
   habitCache[dateStr]=data;
   return data;
 }
@@ -2087,7 +2096,7 @@ async function renderHistory(){
     var d=new Date(today);
     d.setDate(today.getDate()-i);
     var ds=dstr(d);
-    var data=await loadHabits(ds);
+    var data=await fbGet('habits',ds)||{};
     var done=DH.filter(function(h){return data[h];}).length;
     var total=DH.length;
     rows.push({d:d,ds:ds,done:done,total:total});
@@ -2150,6 +2159,79 @@ window._updateTodo=async function(id){
 
 
 // ═══ init.js ═══
+// ── PERIOD QUICK BUTTONS ──
+function buildDayBtns(){
+  var el=document.getElementById('daily-day-btns');
+  if(!el)return;
+  var days=[];
+  for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days.push(d);}
+  el.innerHTML=days.map(function(d){
+    var ds=dstr(d);
+    var dd=String(d.getDate()).padStart(2,'0');
+    var mm=String(d.getMonth()+1).padStart(2,'0');
+    var dayName=d.toLocaleDateString('en-AU',{weekday:'short'});
+    var isActive=ds===selDate;
+    return '<button class="btn'+(isActive?' p':'')+'" data-ds="'+ds+'" onclick="jumpDay(this.dataset.ds)" style="font-size:10px;padding:4px 6px;height:auto;line-height:1.4;">'+dayName+'<br><span style="font-size:9px;">'+dd+'/'+mm+'</span></button>';
+  }).join('');
+}
+
+function buildWeekBtns(){
+  var el=document.getElementById('weekly-week-btns');
+  if(!el)return;
+  // Show weeks around current (3 before, current, 3 after)
+  var curWkDate=new Date(selWeek.replace('wk_','')+'T00:00:00');
+  var btns=[];
+  for(var i=-3;i<=3;i++){
+    var d=new Date(curWkDate);d.setDate(d.getDate()+i*7);
+    var wk='wk_'+dstr(d);
+    var wnum=getWeekNumber(d);
+    var isActive=wk===selWeek;
+    btns.push('<button class="btn'+(isActive?' p':'')+'" data-wk="'+wk+'" onclick="jumpWeek(this.dataset.wk)" style="font-size:10px;padding:4px 8px;">W'+wnum+'</button>');
+  }
+  el.innerHTML=btns.join('');
+}
+
+function buildFnBtns(){
+  var el=document.getElementById('fn-period-btns');
+  if(!el)return;
+  var base=new Date('2026-04-15T00:00:00');
+  var curStart=new Date(selFn.replace('fn_','')+'T00:00:00');
+  var curNum=Math.round((curStart-base)/(14*86400000))+1;
+  var btns=[];
+  for(var i=Math.max(1,curNum-3);i<=Math.min(26,curNum+3);i++){
+    var start=new Date(base);start.setDate(base.getDate()+(i-1)*14);
+    var fk='fn_'+dstr(start);
+    var isActive=fk===selFn;
+    btns.push('<button class="btn'+(isActive?' p':'')+'" data-fk="'+fk+'" onclick="jumpFn(this.dataset.fk)" style="font-size:10px;padding:4px 8px;">FN'+i+'</button>');
+  }
+  el.innerHTML=btns.join('');
+}
+
+function buildMonthBtns(){
+  var el=document.getElementById('mo-month-btns');
+  if(!el)return;
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  el.innerHTML=months.map(function(mn,mi){
+    var isActive=mi===selMo.m&&selMo.y===new Date().getFullYear();
+    return '<button class="btn'+(isActive?' p':'')+'" data-mi="'+mi+'" onclick="jumpMonth(parseInt(this.dataset.mi))" style="font-size:10px;padding:4px 6px;">'+mn+'</button>';
+  }).join('');
+}
+
+window._jumpDay=function(ds){selDate=ds;renderDaily();buildDayBtns();};
+window._jumpWeek=function(wk){selWeek=wk;renderWeekly();buildWeekBtns();};
+window._jumpFn=function(fk){selFn=fk;renderFortnightly();buildFnBtns();};
+window._jumpMonth=function(mi){selMo.m=mi;renderMonthly();buildMonthBtns();};
+
+// Override shift functions to rebuild buttons
+var _orig_shiftDailyDate=window._shiftDailyDate;
+window._shiftDailyDate=function(dir){if(_orig_shiftDailyDate)_orig_shiftDailyDate(dir);setTimeout(buildDayBtns,100);};
+var _orig_shiftWeek=window._shiftWeek;
+window._shiftWeek=function(dir){if(_orig_shiftWeek)_orig_shiftWeek(dir);setTimeout(buildWeekBtns,100);};
+var _orig_shiftFn=window._shiftFn;
+window._shiftFn=function(dir){if(_orig_shiftFn)_orig_shiftFn(dir);setTimeout(buildFnBtns,100);};
+var _orig_shiftMonth=window._shiftMonth;
+window._shiftMonth=function(dir){if(_orig_shiftMonth)_orig_shiftMonth(dir);setTimeout(buildMonthBtns,100);};
+
 // ── INIT ──
 updHdr();
 setSyncStatus('loading');
@@ -2168,7 +2250,7 @@ timeLabels.push('11:00pm','11:15pm','11:30pm','11:45pm');
 });
 document.getElementById('ce-date-hidden').value=todayStr;
 if(window._updateCEDate)window._updateCEDate();
-if(window.initRoutineState)initRoutineState();
+if(window.initRoutineState)initRoutineState();buildDayBtns();buildWeekBtns();buildFnBtns();buildMonthBtns();
 renderTodo();
 renderHistory();
 Promise.all([renderDaily(),renderSav(),renderEx()]).then(function(){
