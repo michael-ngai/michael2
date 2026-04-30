@@ -1,3 +1,11 @@
+function setSyncStatus(state){
+  var el=document.getElementById('sync-status');
+  if(!el)return;
+  if(state==='ok'){el.textContent='synced';el.className='sync-status sync-ok';}
+  else if(state==='err'){el.textContent='offline';el.className='sync-status sync-err';}
+  else{el.textContent='connecting...';el.className='sync-status sync-loading';}
+}
+
 // ── LOCAL FALLBACK ──
 function lGet(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
 function lSet(k,v){localStorage.setItem(k,JSON.stringify(v));}
