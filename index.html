@@ -192,48 +192,6 @@ select option{background:var(--surface2);}
 .devttitle{font-size:15px;font-weight:500;margin-bottom:3px;}
 .devtnote{font-size:12px;color:var(--text2);}
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script>
-(function(){
-  var app=firebase.initializeApp({
-    apiKey:"AIzaSyDXjCbGpFCE9yVNLPRj6K35Sv9F5VpINiI",
-    authDomain:"michael-dashboard-ce18b.firebaseapp.com",
-    projectId:"michael-dashboard-ce18b"
-  });
-  window.db=firebase.firestore();
-  window.fbGet=async function(col,id,force){
-    try{
-      var ref=window.db.collection(col).doc(id);
-      var snap=force?await ref.get({source:'server'}):await ref.get();
-      return snap.exists?snap.data():null;
-    }catch(e){return null;}
-  };
-  window.fbSet=async function(col,id,data){
-    try{
-      await window.db.collection(col).doc(id).set(data);
-      if(window.setSyncStatus)window.setSyncStatus('ok');
-    }catch(e){if(window.setSyncStatus)window.setSyncStatus('err');}
-  };
-  window.fbAddDoc=async function(col,data){
-    try{
-      var ref=await window.db.collection(col).add(data);
-      return ref.id;
-    }catch(e){return null;}
-  };
-  window.fbDelDoc=async function(col,id){
-    try{await window.db.collection(col).doc(id).delete();}catch(e){}
-  };
-  window.fbGetCol=async function(col,force){
-    try{
-      var snap=force?await window.db.collection(col).get({source:'server'}):await window.db.collection(col).get();
-      var r=[];snap.forEach(function(d){r.push(Object.assign({id:d.id},d.data()));});return r;
-    }catch(e){return [];}
-  };
-  window.lGet=function(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}};
-  window.lSet=function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}};
-})();
-</script>
 </head>
 <body>
 <div class="wrap">
@@ -580,12 +538,13 @@ select option{background:var(--surface2);}
 
 
 
-<script defer src="js/shared.js?v=1777516401"></script>
-<script defer src="js/routine.js?v=1777516401"></script>
-<script defer src="js/calendar.js?v=1777516401"></script>
-<script defer src="js/savings.js?v=1777516401"></script>
-<script defer src="js/budget.js?v=1777516401"></script>
-<script defer src="js/init.js?v=1777516401"></script>
+<script type="module" src="js/firebase.js?v=1777533564"></script>
+<script defer src="js/shared.js?v=1777533564"></script>
+<script defer src="js/routine.js?v=1777533564"></script>
+<script defer src="js/calendar.js?v=1777533564"></script>
+<script defer src="js/savings.js?v=1777533564"></script>
+<script defer src="js/budget.js?v=1777533564"></script>
+<script defer src="js/init.js?v=1777533564"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
