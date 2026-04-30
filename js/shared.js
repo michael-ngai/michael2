@@ -3,44 +3,14 @@ function lGet(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e
 function lSet(k,v){localStorage.setItem(k,JSON.stringify(v));}
 
 // ── FIREBASE HELPERS ──
-async function fbGet(col,id,forceServer){
-  try{
-    if(!db)return lGet(col+'_'+id);
-    var snap=forceServer
-      ?await getDocFromServer(doc(db,col,id))
-      :await getDoc(doc(db,col,id));
-    return snap.exists()?snap.data():null;
-  }catch(e){return lGet(col+'_'+id);}
-}
-async function fbSet(col,id,data){
-  try{
-    if(!db)throw new Error('no db');
-    await setDoc(doc(db,col,id),data);
-    lSet(col+'_'+id,data);
-    setSyncStatus('ok');
-  }catch(e){lSet(col+'_'+id,data);setSyncStatus('err');}
-}
-async function fbGetCol(col,forceServer){
-  try{
-    var snap=forceServer
-      ?await getDocsFromServer(collection(db,col))
-      :await getDocs(collection(db,col));
-    var result=[];
-    snap.forEach(function(d){result.push({id:d.id,...d.data()});});
-    return result;
-  }catch(e){return lGet(col+'_list')||[];}
-}
-async function fbAddDoc(col,data){
-  try{
-    var ref=await addDoc(collection(db,col),data);
-    setSyncStatus('ok');
-    return ref.id;
-  }catch(e){setSyncStatus('err');return null;}
-}
-async function fbDelDoc(col,id){
-  try{await deleteDoc(doc(db,col,id));setSyncStatus('ok');}
-  catch(e){setSyncStatus('err');}
-}
+async function fbGet(col,id,force){return window.fbGet?window.fbGet(col,id,force):null;}
+async function fbSet(col,id,data){return window.fbSet?window.fbSet(col,id,data):null;}
+async function fbGetCol(col,force){return window.fbGetCol?window.fbGetCol(col,force):[];}
+async function fbAddDoc(col,data){return window.fbAddDoc?window.fbAddDoc(col,data):null;}
+async function fbDelDoc(col,id){return window.fbDelDoc?window.fbDelDoc(col,id):null;}
+function lGet(k){return window.lGet?window.lGet(k):null;}
+function lSet(k,v){return window.lSet?window.lSet(k,v):null;}
+
 
 // ── CONSTANTS ──
 var DS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
