@@ -125,6 +125,8 @@ async function renderWeekly(){
   var wd   = new Date(selWeek.replace('wk_','')+'T00:00:00');
   var we   = new Date(wd); we.setDate(wd.getDate()+6);
   var disp = document.getElementById('weekly-display');
+  populateWeekSelect();
+  var disp=document.getElementById('weekly-display');
   if(disp) disp.textContent = 'Week '+weekNum(wd)+' — '+
     wd.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' to '+
     we.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
@@ -154,7 +156,9 @@ async function renderFortnightly(){
   var base = new Date('2026-04-15T00:00:00');
   var fnum = Math.round((fs-base)/(14*86400000))+1;
   var disp = document.getElementById('fn-display');
-  if(disp) disp.textContent = 'Fortnight '+fnum+' — '+
+  populateFnSelect();
+  var disp2=document.getElementById('fn-display');
+  if(disp2) disp2.textContent = 'Fortnight '+fnum+' — '+
     fs.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' to '+
     fe.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
 }
@@ -179,7 +183,9 @@ async function renderMonthly(){
 
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   var disp = document.getElementById('mo-display');
-  if(disp) disp.textContent = months[selMoM]+' '+selMoY;
+  populateMoSelect();
+  var disp3=document.getElementById('mo-display');
+  if(disp3) disp3.textContent = months[selMoM]+' '+selMoY;
 }
 
 // ── TOGGLE ──
@@ -252,3 +258,57 @@ window._resetH = async function(){
 
 // ── HISTORY / STREAK (legacy) ──
 var DH = DAILY_HABITS;
+
+// ── DROPDOWN POPULATION ──
+function populateWeekSelect(){
+  var el=document.getElementById('weekly-select');
+  if(!el)return;
+  el.innerHTML='';
+  // Generate W1-W52 for current year
+  var year=new Date().getFullYear();
+  var jan1=new Date(year,0,1);
+  for(var w=1;w<=52;w++){
+    var dayOffset=(w-1)*7-(jan1.getDay()||7)+1;
+    var wStart=new Date(year,0,1+dayOffset);
+    var wEnd=new Date(wStart);wEnd.setDate(wStart.getDate()+6);
+    var wk='wk_'+dstr(wStart);
+    var lbl='W'+w+' — '+wStart.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' to '+wEnd.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+    var o=document.createElement('option');
+    o.value=wk; o.textContent=lbl;
+    if(wk===selWeek)o.selected=true;
+    el.appendChild(o);
+  }
+}
+function populateFnSelect(){
+  var el=document.getElementById('fn-select');
+  if(!el)return;
+  el.innerHTML='';
+  var base=new Date('2026-04-15T00:00:00');
+  for(var i=0;i<26;i++){
+    var s=new Date(base);s.setDate(base.getDate()+i*14);
+    var e=new Date(s);e.setDate(s.getDate()+13);
+    var fk='fn_'+dstr(s);
+    var lbl='FN'+(i+1)+' — '+s.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' to '+e.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+    var o=document.createElement('option');
+    o.value=fk;o.textContent=lbl;
+    if(fk===selFn)o.selected=true;
+    el.appendChild(o);
+  }
+}
+function populateMoSelect(){
+  var el=document.getElementById('mo-select');
+  if(!el)return;
+  el.innerHTML='';
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var year=new Date().getFullYear();
+  months.forEach(function(mn,mi){
+    var o=document.createElement('option');
+    o.value=mi;o.textContent=mn+' '+year;
+    if(mi===selMoM&&year===selMoY)o.selected=true;
+    el.appendChild(o);
+  });
+}
+
+window._jumpToWeek=function(wk){selWeek=wk;renderWeekly();};
+window._jumpToFn=function(fk){selFn=fk;renderFortnightly();};
+window._jumpToMonth=function(mi){selMoM=parseInt(mi);renderMonthly();};

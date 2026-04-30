@@ -52,6 +52,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hrow.done .htext{text-decoration:line-through;color:var(--text3);}
 .cb{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer;}
 .cb:hover{border-color:var(--green);background:var(--gdim);}
+.cb.checked{background:var(--green);border-color:var(--green);}
+.cb.checked .ck{display:block;}
+.ck{display:none;}
 .cb.on{background:var(--green);border-color:var(--green);}
 .ck{display:none;}
 .cb.on .ck{display:block;}
@@ -253,7 +256,7 @@ select option{background:var(--surface2);}
   <div id="rtn-weekly" style="display:none;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
       <button class="btn" onclick="shiftWeek(-1)"  style="height:38px;padding:0 14px;font-size:18px;">&#8249;</button>
-      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="weekly-display">—</div>
+      <select id="weekly-select" onchange="jumpToWeek(this.value)" style="flex:1;height:38px;text-align:center;font-size:12px;"></select>
       <button class="btn" onclick="shiftWeek(1)"   style="height:38px;padding:0 14px;font-size:18px;">&#8250;</button>
       <button class="btn p" onclick="goThisWeek()" style="height:38px;padding:0 10px;font-size:11px;">This week</button>
     </div>
@@ -267,7 +270,7 @@ select option{background:var(--surface2);}
   <div id="rtn-fortnightly" style="display:none;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
       <button class="btn" onclick="shiftFn(-1)"    style="height:38px;padding:0 14px;font-size:18px;">&#8249;</button>
-      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="fn-display">—</div>
+      <select id="fn-select" onchange="jumpToFn(this.value)" style="flex:1;height:38px;text-align:center;font-size:12px;"></select>
       <button class="btn" onclick="shiftFn(1)"     style="height:38px;padding:0 14px;font-size:18px;">&#8250;</button>
       <button class="btn p" onclick="goThisFn()"   style="height:38px;padding:0 10px;font-size:11px;">This period</button>
     </div>
@@ -281,7 +284,7 @@ select option{background:var(--surface2);}
   <div id="rtn-monthly" style="display:none;">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
       <button class="btn" onclick="shiftMonth(-1)"   style="height:38px;padding:0 14px;font-size:18px;">&#8249;</button>
-      <div style="flex:1;text-align:center;font-size:13px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace;" id="mo-display">—</div>
+      <select id="mo-select" onchange="jumpToMonth(this.value)" style="flex:1;height:38px;text-align:center;font-size:12px;"></select>
       <button class="btn" onclick="shiftMonth(1)"    style="height:38px;padding:0 14px;font-size:18px;">&#8250;</button>
       <button class="btn p" onclick="goThisMonth()"  style="height:38px;padding:0 10px;font-size:11px;">This month</button>
     </div>
@@ -538,13 +541,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777536393"></script>
-<script defer src="js/shared.js?v=1777536393"></script>
-<script defer src="js/routine.js?v=1777536393"></script>
-<script defer src="js/calendar.js?v=1777536393"></script>
-<script defer src="js/savings.js?v=1777536393"></script>
-<script defer src="js/budget.js?v=1777536393"></script>
-<script defer src="js/init.js?v=1777536393"></script>
+<script type="module" src="js/firebase.js?v=1777569225"></script>
+<script defer src="js/shared.js?v=1777569225"></script>
+<script defer src="js/routine.js?v=1777569225"></script>
+<script defer src="js/calendar.js?v=1777569225"></script>
+<script defer src="js/savings.js?v=1777569225"></script>
+<script defer src="js/budget.js?v=1777569225"></script>
+<script defer src="js/init.js?v=1777569225"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -561,6 +564,9 @@ function shiftFn(d){if(window._shiftFn)window._shiftFn(d);}
 function goThisFn(){if(window._goThisFn)window._goThisFn();}
 function shiftMonth(d){if(window._shiftMonth)window._shiftMonth(d);}
 function goThisMonth(){if(window._goThisMonth)window._goThisMonth();}
+function jumpToWeek(v){if(window._jumpToWeek)window._jumpToWeek(v);}
+function jumpToFn(v){if(window._jumpToFn)window._jumpToFn(v);}
+function jumpToMonth(v){if(window._jumpToMonth)window._jumpToMonth(v);}
 function resetH(){if(window._resetH)window._resetH();}
 function jumpToDate(ds){if(window._jumpToDate)window._jumpToDate(ds);}
 function togTT(i){if(window._togTT)window._togTT(i);}
