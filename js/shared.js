@@ -118,6 +118,7 @@ function logicalDate(d){
 }
 var logicalToday=logicalDate(new Date());
 var selectedDate=logicalToday;
+var ttSelectedDate=logicalToday;
 var WEEKLY_HABITS=['mealprep','pcs','savings','anthro','housework'];
 
 var HABIT_CAL_MAP={
