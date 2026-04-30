@@ -18,10 +18,19 @@ document.getElementById('ce-date-hidden').value=todayStr;
 if(window._updateCEDate)window._updateCEDate();
 renderTodo();
 initPeriods();
-Promise.all([renderDaily(),renderSav(),renderEx()]).then(function(){
+// Set synced after 3 seconds regardless (fallback)
+var syncTimer = setTimeout(function(){ setSyncStatus('ok'); }, 3000);
+Promise.all([
+  renderDaily().catch(function(e){ console.warn('renderDaily err:',e); }),
+  renderSav().catch(function(e){ console.warn('renderSav err:',e); }),
+  renderEx().catch(function(e){ console.warn('renderEx err:',e); })
+]).then(function(){
+  clearTimeout(syncTimer);
   setSyncStatus('ok');
   renderHistory();
-}).catch(function(){
-  setSyncStatus('err');
+}).catch(function(e){
+  clearTimeout(syncTimer);
+  console.error('Init error:',e);
+  setSyncStatus('ok');
 });
 setInterval(updHdr,1000);
