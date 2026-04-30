@@ -18,9 +18,10 @@ document.getElementById('ce-date-hidden').value=todayStr;
 if(window._updateCEDate)window._updateCEDate();
 if(window.initRoutineState)initRoutineState();
 renderTodo();
-renderHistory();
+if(typeof initPeriods==="function")initPeriods();
 Promise.all([renderDaily(),renderSav(),renderEx()]).then(function(){
   setSyncStatus('ok');
+  renderHistory();
 }).catch(function(){
   setSyncStatus('err');
 });
