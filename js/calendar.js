@@ -243,15 +243,15 @@ window._switchCal=function(v){
 };
 
 function renderCal(){
-  if(CS.view==='month')renderMonth();
-  else if(CS.view==='week')renderWeek();
-  else renderDay();
+  if(CS.view==='month')renderMonth().then(populateCalMonthSelect).catch(function(){});
+  else if(CS.view==='week')renderWeek().then(populateCalWeekSelect).catch(function(){});
+  else renderDay().then(populateCalDaySelect).catch(function(){});
 }
 
 function getMon(d){var day=d.getDay(),diff=(day===0)?-6:1-day,m=new Date(d);m.setDate(d.getDate()+diff);return m;}
-window._chMonth=function(dir){CS.month=new Date(CS.month.getFullYear(),CS.month.getMonth()+dir,1);renderMonth();};
-window._chWeek=function(dir){if(!CS.wstart)CS.wstart=getMon(new Date());CS.wstart.setDate(CS.wstart.getDate()+(dir*7));renderWeek();};
-window._chDay=function(dir){CS.day.setDate(CS.day.getDate()+dir);renderDay();};
+window._chMonth=function(dir){CS.month=new Date(CS.month.getFullYear(),CS.month.getMonth()+dir,1);renderMonth().then(populateCalMonthSelect).catch(function(){});};
+window._chWeek=function(dir){if(!CS.wstart)CS.wstart=getMon(new Date());CS.wstart.setDate(CS.wstart.getDate()+(dir*7));renderWeek().then(populateCalWeekSelect).catch(function(){});};
+window._chDay=function(dir){CS.day.setDate(CS.day.getDate()+dir);renderDay().then(populateCalDaySelect).catch(function(){});};
 
 async function renderMonth(){
   var m=CS.month,today=new Date();
@@ -533,28 +533,13 @@ function populateCalDaySelect(){
 }
 
 window._jumpCalMonth=function(v){
-  var p=v.split('-');CS.month=new Date(parseInt(p[0]),parseInt(p[1]),1);renderMonth();
+  var p=v.split('-');CS.month=new Date(parseInt(p[0]),parseInt(p[1]),1);renderMonth().then(populateCalMonthSelect);
 };
 window._jumpCalWeek=function(ds){
-  CS.wstart=new Date(ds+'T00:00:00');renderWeek();
+  CS.wstart=new Date(ds+'T00:00:00');renderWeek().then(populateCalWeekSelect);
 };
 window._jumpCalDay=function(ds){
-  CS.day=new Date(ds+'T00:00:00');renderDay();
+  CS.day=new Date(ds+'T00:00:00');renderDay().then(populateCalDaySelect);
 };
 
-// Override render functions to populate dropdowns
-var _origRenderMonth=renderMonth;
-async function renderMonth(){
-  await _origRenderMonth();
-  populateCalMonthSelect();
-}
-var _origRenderWeek=renderWeek;
-async function renderWeek(){
-  await _origRenderWeek();
-  populateCalWeekSelect();
-}
-var _origRenderDay=renderDay;
-async function renderDay(){
-  await _origRenderDay();
-  populateCalDaySelect();
-}
+
