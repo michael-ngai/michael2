@@ -477,3 +477,84 @@ window._delEvt=async function(id){
   evtCache=null;renderCal();
 };
 
+
+// ── CALENDAR DROPDOWNS ──
+function populateCalMonthSelect(){
+  var el=document.getElementById('cal-month-select');
+  if(!el)return;
+  var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var curY=CS.month.getFullYear(),curM=CS.month.getMonth();
+  el.innerHTML='';
+  // Show current year months
+  var year=curY;
+  months.forEach(function(mn,mi){
+    var o=document.createElement('option');
+    o.value=year+'-'+mi;
+    o.textContent=mn+' '+year;
+    if(mi===curM&&year===curY)o.selected=true;
+    el.appendChild(o);
+  });
+}
+
+function populateCalWeekSelect(){
+  var el=document.getElementById('cal-week-select');
+  if(!el)return;
+  el.innerHTML='';
+  var year=new Date().getFullYear();
+  var jan1=new Date(year,0,1);
+  var curMon=CS.wstart?new Date(CS.wstart):getMon(new Date());
+  for(var w=1;w<=52;w++){
+    var dayOffset=(w-1)*7-(jan1.getDay()||7)+1;
+    var wStart=new Date(year,0,1+dayOffset);
+    var wEnd=new Date(wStart);wEnd.setDate(wStart.getDate()+6);
+    var o=document.createElement('option');
+    o.value=dstr(wStart);
+    o.textContent='W'+w+' — '+wStart.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' to '+wEnd.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+    if(dstr(wStart)===dstr(curMon))o.selected=true;
+    el.appendChild(o);
+  }
+}
+
+function populateCalDaySelect(){
+  var el=document.getElementById('cal-day-select');
+  if(!el)return;
+  el.innerHTML='';
+  var curDs=dstr(CS.day);
+  var today=new Date();
+  for(var i=-30;i<=30;i++){
+    var d=new Date(today);d.setDate(today.getDate()+i);
+    var ds=dstr(d);
+    var o=document.createElement('option');
+    o.value=ds;
+    o.textContent=d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'});
+    if(ds===curDs)o.selected=true;
+    el.appendChild(o);
+  }
+}
+
+window._jumpCalMonth=function(v){
+  var p=v.split('-');CS.month=new Date(parseInt(p[0]),parseInt(p[1]),1);renderMonth();
+};
+window._jumpCalWeek=function(ds){
+  CS.wstart=new Date(ds+'T00:00:00');renderWeek();
+};
+window._jumpCalDay=function(ds){
+  CS.day=new Date(ds+'T00:00:00');renderDay();
+};
+
+// Override render functions to populate dropdowns
+var _origRenderMonth=renderMonth;
+async function renderMonth(){
+  await _origRenderMonth();
+  populateCalMonthSelect();
+}
+var _origRenderWeek=renderWeek;
+async function renderWeek(){
+  await _origRenderWeek();
+  populateCalWeekSelect();
+}
+var _origRenderDay=renderDay;
+async function renderDay(){
+  await _origRenderDay();
+  populateCalDaySelect();
+}

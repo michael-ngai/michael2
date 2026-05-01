@@ -339,7 +339,7 @@ select option{background:var(--surface2);}
   <div class="calview active" id="cv-month">
     <div class="calnav">
       <button class="btn" onclick="chMonth(-1)" style="padding:6px 14px;font-size:18px;">&#8249;</button>
-      <div class="caltitle" id="cal-mtitle"></div>
+      <select id="cal-month-select" onchange="jumpCalMonth(this.value)" style="flex:1;height:36px;font-size:12px;text-align:center;margin:0 4px;"></select>
       <button class="btn" onclick="chMonth(1)" style="padding:6px 14px;font-size:18px;">&#8250;</button>
     </div>
     <div class="calgh"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div>
@@ -349,7 +349,7 @@ select option{background:var(--surface2);}
   <div class="calview" id="cv-week">
     <div class="calnav">
       <button class="btn" onclick="chWeek(-1)" style="padding:6px 14px;font-size:18px;">&#8249;</button>
-      <div class="caltitle" id="cal-wtitle"></div>
+      <select id="cal-week-select" onchange="jumpCalWeek(this.value)" style="flex:1;height:36px;font-size:12px;text-align:center;margin:0 4px;"></select>
       <button class="btn" onclick="chWeek(1)" style="padding:6px 14px;font-size:18px;">&#8250;</button>
     </div>
     <div id="cal-wgrid"></div>
@@ -357,7 +357,7 @@ select option{background:var(--surface2);}
   <div class="calview" id="cv-day">
     <div class="calnav">
       <button class="btn" onclick="chDay(-1)" style="padding:6px 14px;font-size:18px;">&#8249;</button>
-      <div class="caltitle" id="cal-dtitle"></div>
+      <select id="cal-day-select" onchange="jumpCalDay(this.value)" style="flex:1;height:36px;font-size:12px;text-align:center;margin:0 4px;"></select>
       <button class="btn" onclick="chDay(1)" style="padding:6px 14px;font-size:18px;">&#8250;</button>
     </div>
     <div id="cal-dbody"></div>
@@ -541,13 +541,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777569225"></script>
-<script defer src="js/shared.js?v=1777569225"></script>
-<script defer src="js/routine.js?v=1777569225"></script>
-<script defer src="js/calendar.js?v=1777569225"></script>
-<script defer src="js/savings.js?v=1777569225"></script>
-<script defer src="js/budget.js?v=1777569225"></script>
-<script defer src="js/init.js?v=1777569225"></script>
+<script type="module" src="js/firebase.js?v=1777603529"></script>
+<script defer src="js/shared.js?v=1777603529"></script>
+<script defer src="js/routine.js?v=1777603529"></script>
+<script defer src="js/calendar.js?v=1777603529"></script>
+<script defer src="js/savings.js?v=1777603529"></script>
+<script defer src="js/budget.js?v=1777603529"></script>
+<script defer src="js/init.js?v=1777603529"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -564,6 +564,9 @@ function shiftFn(d){if(window._shiftFn)window._shiftFn(d);}
 function goThisFn(){if(window._goThisFn)window._goThisFn();}
 function shiftMonth(d){if(window._shiftMonth)window._shiftMonth(d);}
 function goThisMonth(){if(window._goThisMonth)window._goThisMonth();}
+function jumpCalMonth(v){if(window._jumpCalMonth)window._jumpCalMonth(v);}
+function jumpCalWeek(v){if(window._jumpCalWeek)window._jumpCalWeek(v);}
+function jumpCalDay(v){if(window._jumpCalDay)window._jumpCalDay(v);}
 function jumpToWeek(v){if(window._jumpToWeek)window._jumpToWeek(v);}
 function jumpToFn(v){if(window._jumpToFn)window._jumpToFn(v);}
 function jumpToMonth(v){if(window._jumpToMonth)window._jumpToMonth(v);}
