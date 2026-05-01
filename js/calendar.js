@@ -243,23 +243,15 @@ window._switchCal=function(v){
 };
 
 function renderCal(){
-  var p;
-  if(CS.view==='month')p=renderMonth();
-  else if(CS.view==='week')p=renderWeek();
-  else p=renderDay();
-  if(p&&p.then){
-    p.then(function(){
-      populateCalMonthSelect();
-      populateCalWeekSelect();
-      populateCalDaySelect();
-    }).catch(function(e){console.warn('renderCal err:',e);});
-  }
+  if(CS.view==='month'){renderMonth();setTimeout(function(){populateCalMonthSelect();},200);}
+  else if(CS.view==='week'){renderWeek();setTimeout(function(){populateCalWeekSelect();},200);}
+  else{renderDay();setTimeout(function(){populateCalDaySelect();},200);}
 }
 
 function getMon(d){var day=d.getDay(),diff=(day===0)?-6:1-day,m=new Date(d);m.setDate(d.getDate()+diff);return m;}
-window._chMonth=function(dir){CS.month=new Date(CS.month.getFullYear(),CS.month.getMonth()+dir,1);renderMonth().then(populateCalMonthSelect).catch(function(){});};
-window._chWeek=function(dir){if(!CS.wstart)CS.wstart=getMon(new Date());CS.wstart.setDate(CS.wstart.getDate()+(dir*7));renderWeek().then(populateCalWeekSelect).catch(function(){});};
-window._chDay=function(dir){CS.day.setDate(CS.day.getDate()+dir);renderDay().then(populateCalDaySelect).catch(function(){});};
+window._chMonth=function(dir){CS.month=new Date(CS.month.getFullYear(),CS.month.getMonth()+dir,1);renderMonth();setTimeout(populateCalMonthSelect,200);};
+window._chWeek=function(dir){if(!CS.wstart)CS.wstart=getMon(new Date());CS.wstart.setDate(CS.wstart.getDate()+(dir*7));renderWeek();setTimeout(populateCalWeekSelect,200);};
+window._chDay=function(dir){CS.day.setDate(CS.day.getDate()+dir);renderDay();setTimeout(populateCalDaySelect,200);};
 
 async function renderMonth(){
   var m=CS.month,today=new Date();
@@ -541,13 +533,13 @@ function populateCalDaySelect(){
 }
 
 window._jumpCalMonth=function(v){
-  var p=v.split('-');CS.month=new Date(parseInt(p[0]),parseInt(p[1]),1);renderMonth().then(populateCalMonthSelect);
+  var p=v.split('-');CS.month=new Date(parseInt(p[0]),parseInt(p[1]),1);renderMonth();setTimeout(populateCalMonthSelect,200);
 };
 window._jumpCalWeek=function(ds){
-  CS.wstart=new Date(ds+'T00:00:00');renderWeek().then(populateCalWeekSelect);
+  CS.wstart=new Date(ds+'T00:00:00');renderWeek();setTimeout(populateCalWeekSelect,200);
 };
 window._jumpCalDay=function(ds){
-  CS.day=new Date(ds+'T00:00:00');renderDay().then(populateCalDaySelect);
+  CS.day=new Date(ds+'T00:00:00');renderDay();setTimeout(populateCalDaySelect,200);
 };
 
 
