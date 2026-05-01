@@ -243,9 +243,17 @@ window._switchCal=function(v){
 };
 
 function renderCal(){
-  if(CS.view==='month')renderMonth().then(populateCalMonthSelect).catch(function(){});
-  else if(CS.view==='week')renderWeek().then(populateCalWeekSelect).catch(function(){});
-  else renderDay().then(populateCalDaySelect).catch(function(){});
+  var p;
+  if(CS.view==='month')p=renderMonth();
+  else if(CS.view==='week')p=renderWeek();
+  else p=renderDay();
+  if(p&&p.then){
+    p.then(function(){
+      populateCalMonthSelect();
+      populateCalWeekSelect();
+      populateCalDaySelect();
+    }).catch(function(e){console.warn('renderCal err:',e);});
+  }
 }
 
 function getMon(d){var day=d.getDay(),diff=(day===0)?-6:1-day,m=new Date(d);m.setDate(d.getDate()+diff);return m;}
