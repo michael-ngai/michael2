@@ -227,12 +227,6 @@ select option{background:var(--surface2);}
 
 <!-- TO-DO + ROUTINE -->
 <div class="panel active" id="panel-todo">
-  <div class="card" style="margin-bottom:8px;">
-    <div class="card-hdr"><div class="card-title">📝 Today's Note</div><div class="card-meta" id="home-note-date"></div></div>
-    <div style="padding:4px 12px 12px;">
-      <textarea id="home-note" placeholder="What's on your mind today..." oninput="saveHomeNote()" style="width:100%;background:transparent;border:none;color:var(--text);font-size:13px;resize:none;outline:none;min-height:52px;font-family:'DM Sans',sans-serif;"></textarea>
-    </div>
-  </div>
   <div class="subtabs">
     <button class="subtab active" id="td-sub-routine" onclick="switchTodoSub('routine')">&#x1F305; Routine</button>
     <button class="subtab" id="td-sub-todo" onclick="switchTodoSub('todo')">&#x1F4CB; Tasks</button>
@@ -483,7 +477,7 @@ select option{background:var(--surface2);}
     <div class="brow"><button class="btn p" style="flex:1;" onclick="logSav()">Log transfer</button><button class="btn d" onclick="clrSav()">Reset</button></div>
   </div>
   <div class="card">
-    <div class="card-hdr"><div class="card-title">Transfer history</div><div class="card-meta" id="sv-cnt">0 entries</div></div>
+    <div class="card-hdr"><div class="card-title">Transfer history</div><div style="display:flex;align-items:center;gap:8px;"><span class="card-meta" id="sv-cnt">0 entries</span><button class="btn" onclick="exportTransfers()" style="font-size:10px;padding:2px 8px;height:auto;">⬇ CSV</button></div></div>
     <div class="logscroll" id="sv-log"><div class="empty">No transfers logged yet</div></div>
   </div>
   <div class="card">
@@ -514,7 +508,7 @@ select option{background:var(--surface2);}
   </div>
 
   <!-- Expense History header + two tables -->
-  <div style="margin:20px 0 10px;display:flex;align-items:center;gap:10px;"><span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:'DM Mono',monospace;">Expense History</span><div style="flex:1;height:0.5px;background:var(--border);"></div></div>
+  <div style="margin:20px 0 10px;display:flex;align-items:center;gap:10px;"><span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:'DM Mono',monospace;">Expense History</span><div style="flex:1;height:0.5px;background:var(--border);"></div><button class="btn" onclick="exportExpenses()" style="font-size:10px;padding:2px 8px;height:auto;">⬇ CSV</button></div>
   <div style="display:flex;gap:10px;">
     <div class="card" style="flex:1;min-width:0;">
       <div class="card-hdr"><div class="card-title" style="color:var(--blue);">🔵 Regular</div><div class="card-meta" id="ex-reg-cnt">0</div></div>
@@ -561,13 +555,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777735224"></script>
-<script defer src="js/shared.js?v=1777735224"></script>
-<script defer src="js/routine.js?v=1777735224"></script>
-<script defer src="js/calendar.js?v=1777735224"></script>
-<script defer src="js/savings.js?v=1777735224"></script>
-<script defer src="js/budget.js?v=1777735224"></script>
-<script defer src="js/init.js?v=1777735224"></script>
+<script type="module" src="js/firebase.js?v=1777735688"></script>
+<script defer src="js/shared.js?v=1777735688"></script>
+<script defer src="js/routine.js?v=1777735688"></script>
+<script defer src="js/calendar.js?v=1777735688"></script>
+<script defer src="js/savings.js?v=1777735688"></script>
+<script defer src="js/budget.js?v=1777735688"></script>
+<script defer src="js/init.js?v=1777735688"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}

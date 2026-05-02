@@ -153,7 +153,7 @@ function weekKey(dateStr){
 function updHdr(){
   var n=new Date();
   var time=n.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
-  document.getElementById('hdr-date').innerHTML=n.toLocaleDateString('en-AU',{weekday:'long'})+'<br>'+n.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+'<br>'+time;
+  document.getElementById('hdr-date').innerHTML=n.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})+', '+n.toLocaleDateString('en-AU',{weekday:'long'})+'<br>'+time;
 }
 
 // ── TABS ──
