@@ -71,6 +71,24 @@ async function renderSav(){
       payEl.innerHTML='<span style="color:var(--amber);">$100</span><span style="color:var(--text3);"> + </span><span style="color:var(--green);">$500</span><span style="color:var(--text3);"> + </span><span style="color:var(--blue);">$400</span>';
     }
   }
+  // Payday countdown
+  var today=new Date();
+  var nextPay=new Date('2026-05-13');
+  // Find next payday from today
+  while(nextPay<=today) nextPay.setDate(nextPay.getDate()+14);
+  var daysLeft=Math.ceil((nextPay-today)/(86400000));
+  var cdEl=document.getElementById('pay-countdown');
+  if(cdEl){
+    var cdTxt=daysLeft===0?'Today! 🎉':daysLeft===1?'Tomorrow!':daysLeft+' days away';
+    cdEl.textContent=cdTxt;
+    cdEl.style.color=daysLeft<=2?'var(--green)':'var(--text2)';
+  }
+  // Savings rate (income: $2,400 avg fortnightly)
+  var income=2400;
+  var saved=1000; // fixed payday savings
+  var rate=Math.round(saved/income*100);
+  var srEl=document.getElementById('savings-rate');
+  if(srEl) srEl.innerHTML='<span style="color:var(--green);font-weight:600;">'+rate+'%</span> savings rate';
   var ep=Math.min(100,Math.round(emg/6000*100));
   document.getElementById('eb-bar').style.width=ep+'%';document.getElementById('eb-pct').textContent=ep>0?ep+'%':'';
   var ebb=document.getElementById('eb-badge');ebb.textContent=ep>=100?'Complete':'In progress';ebb.className='badge '+(ep>=100?'bg':'ba');
@@ -267,7 +285,7 @@ window._switchSavSub=function(name){
   document.getElementById('sv-sub-expenses').classList.toggle('active',name==='expenses');
   document.getElementById('sv-sub-budget').classList.toggle('active',name==='budget');
   if(name==='budget')renderBudget();
-  if(name==='expenses'){renderEx();}
+  if(name==='expenses'){renderEx();renderSpendingChart();}
 };
 
 
@@ -360,4 +378,61 @@ function downloadCSV(rows,filename){
   var a=document.createElement('a');
   a.href=url;a.download=filename;a.click();
   URL.revokeObjectURL(url);
+}
+
+// ── MONTHLY SPENDING CHART ──
+async function renderSpendingChart(){
+  var el=document.getElementById('spending-chart');
+  var sumEl=document.getElementById('chart-summary');
+  if(!el)return;
+  var d=await loadEx();
+  var entries=d.entries||[];
+
+  // Get last 3 months
+  var now=new Date();
+  var months=[];
+  for(var i=2;i>=0;i--){
+    var m=new Date(now.getFullYear(),now.getMonth()-i,1);
+    months.push({year:m.getFullYear(),month:m.getMonth(),
+      label:m.toLocaleDateString('en-AU',{month:'short'}),
+      reg:0,unn:0});
+  }
+
+  // Sum entries by month
+  entries.forEach(function(e){
+    var pd=parseEntryDate(e.date||'');
+    if(!pd||isNaN(pd.getTime()))return;
+    var ey=pd.getFullYear(),em=pd.getMonth();
+    months.forEach(function(mo){
+      if(mo.year===ey&&mo.month===em){
+        if((e.type||'regular')==='unnecessary') mo.unn+=e.amount||0;
+        else mo.reg+=e.amount||0;
+      }
+    });
+  });
+
+  // Find max for scaling
+  var maxVal=Math.max.apply(null,months.map(function(m){return m.reg+m.unn;})||[1]);
+  if(maxVal===0)maxVal=1;
+
+  // Render bars
+  el.innerHTML=months.map(function(mo){
+    var regH=Math.round(mo.reg/maxVal*100);
+    var unnH=Math.round(mo.unn/maxVal*100);
+    var total=mo.reg+mo.unn;
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">'+
+      '<div style="font-size:9px;color:var(--text3);">$'+Math.round(total)+'</div>'+
+      '<div style="width:100%;display:flex;gap:3px;align-items:flex-end;height:80px;">'+
+        '<div style="flex:1;height:'+regH+'%;background:var(--blue);border-radius:3px 3px 0 0;min-height:2px;"></div>'+
+        '<div style="flex:1;height:'+unnH+'%;background:var(--red);border-radius:3px 3px 0 0;min-height:2px;"></div>'+
+      '</div>'+
+      '<div style="font-size:10px;color:var(--text2);font-weight:600;">'+mo.label+'</div>'+
+    '</div>';
+  }).join('');
+  el.style.display='flex';
+  el.style.gap='12px';
+  el.style.alignItems='flex-end';
+
+  var totalAll=months.reduce(function(s,m){return s+m.reg+m.unn;},0);
+  if(sumEl) sumEl.textContent='$'+Math.round(totalAll/months.length)+'/mo avg';
 }

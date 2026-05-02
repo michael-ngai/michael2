@@ -443,8 +443,16 @@ select option{background:var(--surface2);}
   </div>
   <div id="sv-view-savings">
   <div class="paybanner">
-    <div><div class="paytxt">Next payday</div><div style="font-size:13px;color:var(--amber);margin-top:2px;" id="pay-next">—</div></div>
-    <div style="text-align:right;"><div class="paytxt">Transfer</div><div class="payamt" id="pay-amt">—</div></div>
+    <div>
+      <div class="paytxt">Next payday</div>
+      <div style="font-size:13px;color:var(--amber);margin-top:2px;" id="pay-next">—</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:3px;" id="pay-countdown"></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="paytxt">Transfer</div>
+      <div class="payamt" id="pay-amt">—</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px;" id="savings-rate"></div>
+    </div>
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-lbl">Emergency</div><div class="stat-val" id="sv-emerg" style="color:var(--amber);">$0</div></div>
@@ -507,6 +515,15 @@ select option{background:var(--surface2);}
     <div class="brow"><button class="btn p" style="flex:1;" onclick="logEx()">Log expense</button><button class="btn d" onclick="clrEx()">Clear</button></div>
   </div>
 
+  <!-- Monthly Spending Chart -->
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-hdr"><div class="card-title">📊 Monthly Spending</div><div class="card-meta" id="chart-summary"></div></div>
+    <div id="spending-chart" style="padding:12px 14px;"></div>
+    <div style="display:flex;gap:12px;padding:0 14px 10px;font-size:10px;color:var(--text3);">
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--blue);border-radius:2px;margin-right:4px;"></span>Regular</span>
+      <span><span style="display:inline-block;width:10px;height:10px;background:var(--red);border-radius:2px;margin-right:4px;"></span>Unnecessary</span>
+    </div>
+  </div>
   <!-- Expense History header + two tables -->
   <div style="margin:20px 0 10px;display:flex;align-items:center;gap:10px;"><span style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;font-family:'DM Mono',monospace;">Expense History</span><div style="flex:1;height:0.5px;background:var(--border);"></div><button class="btn" onclick="exportExpenses()" style="font-size:10px;padding:2px 8px;height:auto;">⬇ CSV</button></div>
   <div style="display:flex;gap:10px;">
@@ -555,13 +572,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777735688"></script>
-<script defer src="js/shared.js?v=1777735688"></script>
-<script defer src="js/routine.js?v=1777735688"></script>
-<script defer src="js/calendar.js?v=1777735688"></script>
-<script defer src="js/savings.js?v=1777735688"></script>
-<script defer src="js/budget.js?v=1777735688"></script>
-<script defer src="js/init.js?v=1777735688"></script>
+<script type="module" src="js/firebase.js?v=1777736145"></script>
+<script defer src="js/shared.js?v=1777736145"></script>
+<script defer src="js/routine.js?v=1777736145"></script>
+<script defer src="js/calendar.js?v=1777736145"></script>
+<script defer src="js/savings.js?v=1777736145"></script>
+<script defer src="js/budget.js?v=1777736145"></script>
+<script defer src="js/init.js?v=1777736145"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
