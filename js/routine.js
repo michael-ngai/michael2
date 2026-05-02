@@ -70,9 +70,6 @@ function applyTicks(el, habits, data){
 // ── RENDER DAILY ──
 async function renderDaily(){
   if(!selDate) initPeriods();
-  // Force-show streak placeholder immediately
-  var sdTest = document.getElementById('streak-display');
-  if(sdTest) sdTest.innerHTML = '🔥 Loading streak...';
   var data = await loadP(selDate, dailyCache);
   var el = document.getElementById('daily-habits');
   if(!el) return;
@@ -119,9 +116,6 @@ async function renderDaily(){
 // ── RENDER WEEKLY ──
 async function renderWeekly(){
   if(!selWeek) initPeriods();
-  // Force-show score placeholder immediately  
-  var wcTest = document.getElementById('weekly-count');
-  if(wcTest) wcTest.innerHTML = '⏳ Loading score...';
   var data = await loadP(selWeek, weeklyCache);
   var el   = document.getElementById('weekly-habits');
   if(!el) return;
@@ -140,7 +134,7 @@ async function renderWeekly(){
   var pct  = Math.round(done/WEEKLY_HABITS.length*100);
   var cnt  = document.getElementById('weekly-count');
   if(cnt){
-    var col=pct===100?'var(--green)':pct>=50?'var(--amber)':'var(--text3)';
+    var col=pct===100?'var(--green)':pct>=50?'var(--amber)':'var(--blue)';
     cnt.innerHTML='<span style="color:'+col+';font-weight:700;">'+done+'/'+WEEKLY_HABITS.length+' ('+pct+'%)</span>';
   }
 
@@ -356,7 +350,7 @@ async function computeStreak(){
   var el=document.getElementById('streak-display');
   if(!el) return;
   if(streak===0){
-    el.innerHTML='<span style="color:var(--text3);font-size:12px;">No streak yet — tick your habits!</span>';
+    el.innerHTML='<span style="color:var(--text2);font-size:12px;">🔥 0 day streak</span>';
   } else {
     el.innerHTML='🔥 <b style="color:var(--amber);font-size:18px;">'+streak+'</b> <span style="color:var(--text2);font-size:12px;">day streak</span>';
   }
