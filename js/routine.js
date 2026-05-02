@@ -70,6 +70,9 @@ function applyTicks(el, habits, data){
 // ── RENDER DAILY ──
 async function renderDaily(){
   if(!selDate) initPeriods();
+  // Force-show streak placeholder immediately
+  var sdTest = document.getElementById('streak-display');
+  if(sdTest) sdTest.innerHTML = '🔥 Loading streak...';
   var data = await loadP(selDate, dailyCache);
   var el = document.getElementById('daily-habits');
   if(!el) return;
@@ -116,6 +119,9 @@ async function renderDaily(){
 // ── RENDER WEEKLY ──
 async function renderWeekly(){
   if(!selWeek) initPeriods();
+  // Force-show score placeholder immediately  
+  var wcTest = document.getElementById('weekly-count');
+  if(wcTest) wcTest.innerHTML = '⏳ Loading score...';
   var data = await loadP(selWeek, weeklyCache);
   var el   = document.getElementById('weekly-habits');
   if(!el) return;
