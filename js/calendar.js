@@ -586,45 +586,52 @@ window._jumpCalDay=function(ds){
 async function renderTT(){
   var ds=(typeof ttSelectedDate!=="undefined"?ttSelectedDate:null)||logicalToday;
   var d=new Date(ds+'T00:00:00');
+  var dow=d.getDay();
+  var sch=SCH[dow];
   var evts=await loadEvts();
   var dayEvts=evts.filter(function(e){return e.date===ds;});
-  dayEvts.sort(function(a,b){
-    var at=(a.note||'').slice(0,7),bt=(b.note||'').slice(0,7);
-    return at<bt?-1:at>bt?1:0;
-  });
 
-  // Title
+  // Title + day note
   var title=document.getElementById('tt-cardtitle');
-  if(title){
-    var dayName=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'short'});
-    title.textContent=dayName;
-  }
+  if(title) title.textContent=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'short'});
 
-  // Event list
-  var list=document.getElementById('tt-list');
-  if(list){
-    if(dayEvts.length===0){
-      list.innerHTML='<div class="empty" style="padding:12px;">No events — add some in Calendar</div>';
-    } else {
-      list.innerHTML=dayEvts.map(function(e){
-        var ps=getPillStyle(e.type);
-        var timeStr='';
-        if(e.note){var m=e.note.match(/^\d+:\d+[ap]m/i);if(m)timeStr=m[0];}
-        return '<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:0.5px solid var(--border);">'+
-          '<div style="min-width:52px;font-size:11px;color:var(--text3);font-family:\'DM Mono\',monospace;">'+timeStr+'</div>'+
-          '<div style="flex:1;">'+
-            '<div style="font-size:13px;font-weight:500;">'+e.title+'</div>'+
-            (e.note&&e.note!==timeStr?'<div style="font-size:11px;color:var(--text3);">'+e.note+'</div>':'') +
-          '</div>'+
-          '<span style="font-size:10px;padding:2px 7px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
-        '</div>';
-      }).join('');
-    }
-  }
-
-  // Progress
   var prog=document.getElementById('tt-prog');
-  if(prog) prog.textContent=dayEvts.length+' event'+(dayEvts.length===1?'':'s');
+  if(prog) prog.textContent=sch?sch.note:'';
+
+  // Build schedule list - merge SCH items + calendar events
+  var list=document.getElementById('tt-list');
+  if(!list)return;
+
+  var html='';
+
+  // Show SCH schedule items
+  if(sch&&sch.items&&sch.items.length>0){
+    html+=sch.items.map(function(item){
+      var ps=getPillStyle(item.c);
+      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:0.5px solid var(--border);">'+
+        '<div style="min-width:80px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+item.t+'</div>'+
+        '<div style="flex:1;font-size:13px;">'+item.l+'</div>'+
+        '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
+      '</div>';
+    }).join('');
+  } else {
+    html+='<div class="empty" style="padding:12px;">No schedule for this day</div>';
+  }
+
+  // Show any calendar events for this day
+  if(dayEvts.length>0){
+    html+='<div style="padding:8px 14px 4px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;">Calendar events</div>';
+    html+=dayEvts.map(function(e){
+      var ps=getPillStyle(e.type);
+      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:0.5px solid var(--border);">'+
+        '<div style="min-width:80px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(e.note||'')+'</div>'+
+        '<div style="flex:1;font-size:13px;font-weight:500;">'+e.title+'</div>'+
+        '<span style="font-size:9px;padding:2px 6px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
+      '</div>';
+    }).join('');
+  }
+
+  list.innerHTML=html;
 
   // Week reference
   var weekEl=document.getElementById('tt-week');
@@ -637,15 +644,18 @@ async function renderTT(){
       var wdevts=evts.filter(function(e){return e.date===wds;});
       var isToday=wds===logicalToday;
       var isSel=wds===ds;
+      var wdow=wd.getDay();
+      var wsch=SCH[wdow];
       return '<div style="padding:6px 0;border-bottom:0.5px solid var(--border);cursor:pointer;" onclick="jumpTTDay(\''+wds+'\')">'+
         '<div style="font-size:11px;font-weight:'+(isSel?'700':'500')+';color:'+(isSel?'var(--green)':isToday?'var(--amber)':'var(--text2)')+';">'+
           wd.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})+
+          (wsch?'<span style="font-size:9px;color:var(--text3);margin-left:6px;">'+wsch.note+'</span>':'')+
         '</div>'+
         (wdevts.length?'<div style="display:flex;gap:3px;margin-top:3px;">'+
           wdevts.slice(0,4).map(function(e){
             var ec=ECOL[e.type]||'cd-other';
             return '<div class="cdot '+ec+'" style="width:5px;height:5px;border-radius:50%;"></div>';
-          }).join('')+(wdevts.length>4?'<span style="font-size:8px;color:var(--text3);">+'+( wdevts.length-4)+'</span>':'')+'</div>':'') +
+          }).join('')+(wdevts.length>4?'<span style="font-size:8px;color:var(--text3);">+'+(wdevts.length-4)+'</span>':'')+'</div>':'') +
       '</div>';
     }).join('');
   }
