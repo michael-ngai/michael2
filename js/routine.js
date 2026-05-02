@@ -135,7 +135,7 @@ async function renderWeekly(){
   var cnt  = document.getElementById('weekly-count');
   if(cnt){
     var col=pct===100?'var(--green)':pct>=50?'var(--amber)':'var(--blue)';
-    cnt.innerHTML='<span style="color:'+col+';font-weight:700;">'+done+'/'+WEEKLY_HABITS.length+' ('+pct+'%)</span>';
+    cnt.innerHTML=done+'/'+WEEKLY_HABITS.length+' <span style="color:'+col+';font-size:14px;font-weight:700;">'+pct+'%</span>';
   }
 
   var wd   = new Date(selWeek.replace('wk_','')+'T00:00:00');
@@ -350,7 +350,7 @@ async function computeStreak(){
   var el=document.getElementById('streak-display');
   if(!el) return;
   if(streak===0){
-    el.innerHTML='<span style="color:var(--text2);font-size:12px;">🔥 0 day streak</span>';
+    el.innerHTML='🔥 <span style="color:var(--amber);font-size:15px;font-weight:700;">0</span> <span style="color:var(--text2);font-size:11px;">day streak</span>';
   } else {
     el.innerHTML='🔥 <b style="color:var(--amber);font-size:18px;">'+streak+'</b> <span style="color:var(--text2);font-size:12px;">day streak</span>';
   }
