@@ -242,8 +242,10 @@ select option{background:var(--surface2);}
     </div>
     <div class="card">
       <div class="card-hdr"><div class="card-title">📅 Daily Routine</div><div class="card-meta" id="daily-count"></div></div>
+      <div id="streak-display" style="padding:6px 14px 2px;font-size:13px;"></div>
       <div id="daily-habits"></div>
     </div>
+    <div id="quick-notes" style="padding:0 0 6px;display:flex;flex-wrap:wrap;gap:2px;"></div>
     <div class="notetxt"><textarea id="daily-note" placeholder="Quick note for today..." oninput="saveNote()"></textarea></div>
     <div class="card" style="margin-top:4px;">
       <div class="card-hdr"><div class="card-title">History</div><div class="card-meta" id="hist-summary"></div></div>
@@ -541,13 +543,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777604039"></script>
-<script defer src="js/shared.js?v=1777604039"></script>
-<script defer src="js/routine.js?v=1777604039"></script>
-<script defer src="js/calendar.js?v=1777604039"></script>
-<script defer src="js/savings.js?v=1777604039"></script>
-<script defer src="js/budget.js?v=1777604039"></script>
-<script defer src="js/init.js?v=1777604039"></script>
+<script type="module" src="js/firebase.js?v=1777696957"></script>
+<script defer src="js/shared.js?v=1777696957"></script>
+<script defer src="js/routine.js?v=1777696957"></script>
+<script defer src="js/calendar.js?v=1777696957"></script>
+<script defer src="js/savings.js?v=1777696957"></script>
+<script defer src="js/budget.js?v=1777696957"></script>
+<script defer src="js/init.js?v=1777696957"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -564,6 +566,7 @@ function shiftFn(d){if(window._shiftFn)window._shiftFn(d);}
 function goThisFn(){if(window._goThisFn)window._goThisFn();}
 function shiftMonth(d){if(window._shiftMonth)window._shiftMonth(d);}
 function goThisMonth(){if(window._goThisMonth)window._goThisMonth();}
+function appendNote(t){if(window._appendNote)window._appendNote(t);}
 function jumpCalMonth(v){if(window._jumpCalMonth)window._jumpCalMonth(v);}
 function jumpCalWeek(v){if(window._jumpCalWeek)window._jumpCalWeek(v);}
 function jumpCalDay(v){if(window._jumpCalDay)window._jumpCalDay(v);}

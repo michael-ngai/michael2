@@ -99,6 +99,18 @@ async function renderDaily(){
   if(di) di.value = dd+'/'+mm+'/'+d.getFullYear()+',  '+d.toLocaleDateString('en-AU',{weekday:'long'});
   var dh = document.getElementById('daily-date-hidden');
   if(dh) dh.value = selDate;
+
+  // Quick-note presets
+  var qn = document.getElementById('quick-notes');
+  if(qn) qn.innerHTML=[
+    'Rest day','Ate out once','Busy day','Basketball game',
+    'Worked late','Tired','Good day','Travel day'
+  ].map(function(t){
+    return '<button class="btn" data-note="'+t+'" onclick="appendNote(this.dataset.note)" style="font-size:10px;padding:3px 8px;height:auto;margin:2px;">'+t+'</button>';
+  }).join('');
+
+  // Streak
+  computeStreak();
 }
 
 // ── RENDER WEEKLY ──
@@ -119,8 +131,12 @@ async function renderWeekly(){
   applyTicks(el, WEEKLY_HABITS, data);
 
   var done = WEEKLY_HABITS.filter(function(h){ return data[h]; }).length;
+  var pct  = Math.round(done/WEEKLY_HABITS.length*100);
   var cnt  = document.getElementById('weekly-count');
-  if(cnt) cnt.textContent = done+'/'+WEEKLY_HABITS.length+' done';
+  if(cnt){
+    var col=pct===100?'var(--green)':pct>=50?'var(--amber)':'var(--text3)';
+    cnt.innerHTML='<span style="color:'+col+';font-weight:600;">'+done+'/'+WEEKLY_HABITS.length+'</span> <span style="color:'+col+';">'+pct+'%</span>';
+  }
 
   var wd   = new Date(selWeek.replace('wk_','')+'T00:00:00');
   var we   = new Date(wd); we.setDate(wd.getDate()+6);
@@ -312,3 +328,32 @@ function populateMoSelect(){
 window._jumpToWeek=function(wk){selWeek=wk;renderWeekly();};
 window._jumpToFn=function(fk){selFn=fk;renderFortnightly();};
 window._jumpToMonth=function(mi){selMoM=parseInt(mi);renderMonthly();};
+
+// ── STREAK COUNTER ──
+async function computeStreak(){
+  var streak=0;
+  var today=logicalDate(new Date());
+  for(var i=0;i<365;i++){
+    var d=new Date(today+'T00:00:00');
+    d.setDate(d.getDate()-i);
+    var ds=dstr(d);
+    var data=await loadHabits(ds);
+    var done=DAILY_HABITS.filter(function(h){return data[h];}).length;
+    var pct=done/DAILY_HABITS.length;
+    if(pct>=0.7) streak++;
+    else if(i>0) break; // gap — stop counting (don't break on today if 0 yet)
+    else if(i===0&&pct===0) continue; // today not done yet — skip to yesterday
+  }
+  var el=document.getElementById('streak-display');
+  if(el){
+    if(streak===0) el.innerHTML='<span style="color:var(--text3);">No streak yet</span>';
+    else el.innerHTML='🔥 <span style="color:var(--amber);font-weight:700;font-size:18px;">'+streak+'</span> <span style="color:var(--text2);font-size:12px;">day streak</span>';
+  }
+}
+
+window._appendNote=function(txt){
+  var el=document.getElementById('daily-note');
+  if(!el)return;
+  el.value=(el.value?el.value+' · ':'')+txt;
+  if(window.saveNote)saveNote();
+};
