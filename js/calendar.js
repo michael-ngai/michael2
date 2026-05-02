@@ -270,7 +270,18 @@ async function renderMonth(){
     var cls='calcell'+(isT?' today':'')+(isSel?' sel':'')+(isO?' other':'');
     grid+='<div class="'+cls+'" onclick="selDay(\''+ds+'\')">';
     grid+='<div class="calnum">'+cd.getDate()+'</div>';
-    if(de.length>0){grid+='<div class="dotrow">';de.slice(0,4).forEach(function(e){var ec=ECOL[e.type]||ECOL_OLD[e.type]||'cd-other';grid+='<div class="cdot '+ec+'" style="width:5px;height:5px;border-radius:50%;"></div>';});grid+='</div>';}
+    if(de.length>0){
+      grid+='<div class="dotrow" style="display:flex;gap:2px;align-items:center;flex-wrap:wrap;">';
+      var showDots=de.slice(0,3);
+      showDots.forEach(function(e){
+        var ec=ECOL[e.type]||ECOL_OLD[e.type]||'cd-other';
+        grid+='<div class="cdot '+ec+'" style="width:6px;height:6px;border-radius:50%;flex-shrink:0;"></div>';
+      });
+      if(de.length>3){
+        grid+='<span style="font-size:8px;color:var(--text3);line-height:1;">+'+( de.length-3)+'</span>';
+      }
+      grid+='</div>';
+    }
     grid+='</div>';
   }
   document.getElementById('cal-mgrid').innerHTML=grid;
@@ -462,14 +473,41 @@ window._addEvt=async function(){
   var noteExtra=noteField?noteField.value.trim():'';
   var timeStr=start&&end?start+'–'+end:start?start:end?end:'';
   var note=timeStr+(noteExtra?(' · '+noteExtra):'');
+  var repeat=(document.getElementById('ce-repeat')||{}).value||'none';
   if(!date||!title){alert('Please fill in date and title');return;}
-  await fbAddDoc('events',{date:date,type:type,title:title,note:note});
+
+  // Generate recurring dates (up to 12 months ahead)
+  var dates=[date];
+  if(repeat!=='none'){
+    var d=new Date(date+'T00:00:00');
+    var maxD=new Date(d);maxD.setFullYear(maxD.getFullYear()+1);
+    while(true){
+      if(repeat==='weekly') d.setDate(d.getDate()+7);
+      else if(repeat==='fortnightly') d.setDate(d.getDate()+14);
+      else if(repeat==='monthly') d.setMonth(d.getMonth()+1);
+      if(d>maxD) break;
+      dates.push(dstr(d));
+    }
+  }
+
+  // Save all dates — group them with a repeatId so they can be identified
+  var repeatId=repeat!=='none'?('r_'+date+'_'+title.replace(/\s/g,'').slice(0,8)):'';
+  for(var i=0;i<dates.length;i++){
+    var evtData={date:dates[i],type:type,title:title,note:note};
+    if(repeatId) evtData.repeatId=repeatId;
+    await fbAddDoc('events',evtData);
+  }
+
   evtCache=null;
   document.getElementById('ce-title').value='';
   document.getElementById('ce-start').selectedIndex=0;
   document.getElementById('ce-end').selectedIndex=0;
   if(noteField)noteField.value='';
-  CS.sel=date;renderCal();
+  var rep=document.getElementById('ce-repeat');
+  if(rep)rep.value='none';
+  CS.sel=date;
+  if(dates.length>1)alert('✓ Created '+dates.length+' recurring events');
+  renderCal();
 };
 
 window._delEvt=async function(id){

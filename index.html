@@ -401,6 +401,13 @@ select option{background:var(--surface2);}
     </select></div>
     <div style="padding:4px 14px 2px;font-size:11px;color:var(--text3);">Title</div>
     <div class="irow"><input type="text" id="ce-title" placeholder="Event title"/></div>
+    <div style="padding:4px 14px 2px;font-size:11px;color:var(--text3);">Repeat</div>
+    <div class="irow"><select id="ce-repeat">
+      <option value="none">None</option>
+      <option value="weekly">Weekly</option>
+      <option value="fortnightly">Fortnightly</option>
+      <option value="monthly">Monthly</option>
+    </select></div>
     <div style="padding:4px 14px 2px;font-size:11px;color:var(--text3);">Note (optional)</div>
     <div class="irow"><input type="text" id="ce-note-field" placeholder="Extra note"/></div>
     <div class="brow"><button class="btn p" style="flex:1;" onclick="addEvt()">Add event</button></div>
@@ -572,13 +579,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777736485"></script>
-<script defer src="js/shared.js?v=1777736485"></script>
-<script defer src="js/routine.js?v=1777736485"></script>
-<script defer src="js/calendar.js?v=1777736485"></script>
-<script defer src="js/savings.js?v=1777736485"></script>
-<script defer src="js/budget.js?v=1777736485"></script>
-<script defer src="js/init.js?v=1777736485"></script>
+<script type="module" src="js/firebase.js?v=1777736828"></script>
+<script defer src="js/shared.js?v=1777736828"></script>
+<script defer src="js/routine.js?v=1777736828"></script>
+<script defer src="js/calendar.js?v=1777736828"></script>
+<script defer src="js/savings.js?v=1777736828"></script>
+<script defer src="js/budget.js?v=1777736828"></script>
+<script defer src="js/init.js?v=1777736828"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
