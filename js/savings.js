@@ -62,7 +62,7 @@ async function renderSav(){
   document.getElementById('sv-emerg').textContent=fm(emg);
   document.getElementById('sv-dep').textContent=fm(dep);
   document.getElementById('sv-invest').textContent=fm(inv);
-  document.getElementById('pay-next').textContent=np.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  // pay-next updated after countdown calc below
   var payEl=document.getElementById('pay-amt');
   if(payEl){
     if(ef){
@@ -73,10 +73,12 @@ async function renderSav(){
   }
   // Payday countdown
   var today=new Date();
-  var nextPay=new Date('2026-05-13');
+  var pdDate=new Date('2026-05-13');
   // Find next payday from today
-  while(nextPay<=today) nextPay.setDate(nextPay.getDate()+14);
-  var daysLeft=Math.ceil((nextPay-today)/(86400000));
+  while(pdDate<=today) pdDate.setDate(pdDate.getDate()+14);
+  var daysLeft=Math.ceil((pdDate-today)/(86400000));
+  var pnEl=document.getElementById('pay-next');
+  if(pnEl) pnEl.textContent=pdDate.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
   var cdEl=document.getElementById('pay-countdown');
   if(cdEl){
     var cdTxt=daysLeft===0?'Today! 🎉':daysLeft===1?'Tomorrow!':daysLeft+' days away';
@@ -264,7 +266,7 @@ window._switchTodoSub=function(name){
   document.getElementById('td-view-routine').style.display=name==='routine'?'':'none';
   document.getElementById('td-sub-todo').classList.toggle('active',name==='todo');
   document.getElementById('td-sub-routine').classList.toggle('active',name==='routine');
-  if(name==='routine'){renderH();renderHistory();}
+  if(name==='routine'){renderDaily();renderHistory();}
   if(name==='todo')renderTodo();
 };
 
