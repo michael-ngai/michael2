@@ -135,7 +135,7 @@ async function renderWeekly(){
   var cnt  = document.getElementById('weekly-count');
   if(cnt){
     var col=pct===100?'var(--green)':pct>=50?'var(--amber)':'var(--text3)';
-    cnt.innerHTML='<span style="color:'+col+';font-weight:600;">'+done+'/'+WEEKLY_HABITS.length+'</span> <span style="color:'+col+';">'+pct+'%</span>';
+    cnt.innerHTML='<span style="color:'+col+';font-weight:700;">'+done+'/'+WEEKLY_HABITS.length+' ('+pct+'%)</span>';
   }
 
   var wd   = new Date(selWeek.replace('wk_','')+'T00:00:00');
@@ -333,21 +333,26 @@ window._jumpToMonth=function(mi){selMoM=parseInt(mi);renderMonthly();};
 async function computeStreak(){
   var streak=0;
   var today=logicalDate(new Date());
-  for(var i=0;i<365;i++){
+  // Check last 60 days max
+  for(var i=0;i<60;i++){
     var d=new Date(today+'T00:00:00');
     d.setDate(d.getDate()-i);
     var ds=dstr(d);
-    var data=await loadHabits(ds);
+    var data=habitCache[ds]||await fbGet('habits',ds)||{};
+    habitCache[ds]=data;
     var done=DAILY_HABITS.filter(function(h){return data[h];}).length;
-    var pct=done/DAILY_HABITS.length;
+    var pct=DAILY_HABITS.length>0?done/DAILY_HABITS.length:0;
+    // Skip today if nothing ticked yet
+    if(i===0&&done===0) continue;
     if(pct>=0.7) streak++;
-    else if(i>0) break; // gap — stop counting (don't break on today if 0 yet)
-    else if(i===0&&pct===0) continue; // today not done yet — skip to yesterday
+    else break;
   }
   var el=document.getElementById('streak-display');
-  if(el){
-    if(streak===0) el.innerHTML='<span style="color:var(--text3);">No streak yet</span>';
-    else el.innerHTML='🔥 <span style="color:var(--amber);font-weight:700;font-size:18px;">'+streak+'</span> <span style="color:var(--text2);font-size:12px;">day streak</span>';
+  if(!el) return;
+  if(streak===0){
+    el.innerHTML='<span style="color:var(--text3);font-size:12px;">No streak yet — tick your habits!</span>';
+  } else {
+    el.innerHTML='🔥 <b style="color:var(--amber);font-size:18px;">'+streak+'</b> <span style="color:var(--text2);font-size:12px;">day streak</span>';
   }
 }
 
