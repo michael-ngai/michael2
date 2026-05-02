@@ -243,6 +243,7 @@ window._switchCal=function(v){
 };
 
 function renderCal(){
+  console.log("[renderCal] called, view:", CS.view);
   if(CS.view==='month'){renderMonth();setTimeout(function(){populateCalMonthSelect();},200);}
   else if(CS.view==='week'){renderWeek();setTimeout(function(){populateCalWeekSelect();},200);}
   else{renderDay();setTimeout(function(){populateCalDaySelect();},200);}
@@ -254,6 +255,7 @@ window._chWeek=function(dir){if(!CS.wstart)CS.wstart=getMon(new Date());CS.wstar
 window._chDay=function(dir){CS.day.setDate(CS.day.getDate()+dir);renderDay();setTimeout(populateCalDaySelect,200);};
 
 async function renderMonth(){
+  console.log("[renderMonth] called, month:", CS.month);
   var m=CS.month,today=new Date();
   document.getElementById('cal-mtitle').textContent=m.toLocaleDateString('en-AU',{month:'long',year:'numeric'});
   var first=new Date(m.getFullYear(),m.getMonth(),1);
