@@ -243,7 +243,6 @@ window._switchCal=function(v){
 };
 
 function renderCal(){
-  console.log("[renderCal] called, view:", CS.view);
   if(CS.view==='month'){renderMonth();setTimeout(function(){populateCalMonthSelect();},200);}
   else if(CS.view==='week'){renderWeek();setTimeout(function(){populateCalWeekSelect();},200);}
   else{renderDay();setTimeout(function(){populateCalDaySelect();},200);}
@@ -255,9 +254,8 @@ window._chWeek=function(dir){if(!CS.wstart)CS.wstart=getMon(new Date());CS.wstar
 window._chDay=function(dir){CS.day.setDate(CS.day.getDate()+dir);renderDay();setTimeout(populateCalDaySelect,200);};
 
 async function renderMonth(){
-  console.log("[renderMonth] called, month:", CS.month);
   var m=CS.month,today=new Date();
-  document.getElementById('cal-mtitle').textContent=m.toLocaleDateString('en-AU',{month:'long',year:'numeric'});
+  var mTitle=document.getElementById('cal-mtitle');if(mTitle)mTitle.textContent=m.toLocaleDateString('en-AU',{month:'long',year:'numeric'});
   var first=new Date(m.getFullYear(),m.getMonth(),1);
   var last=new Date(m.getFullYear(),m.getMonth()+1,0);
   var sdow=first.getDay(),offset=(sdow===0)?6:sdow-1;
@@ -410,7 +408,7 @@ async function renderWeek(){
   if(!CS.wstart)CS.wstart=getMon(new Date());
   var ws=CS.wstart,today=new Date(),evts=await loadEvts();
   var we=new Date(ws);we.setDate(ws.getDate()+6);
-  document.getElementById('cal-wtitle').textContent=ws.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' – '+we.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  var wTitle=document.getElementById('cal-wtitle');if(wTitle)wTitle.textContent=ws.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' – '+we.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
   var dns=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],html='';
   for(var i=0;i<7;i++){
     var d=new Date(ws);d.setDate(ws.getDate()+i);
@@ -442,7 +440,7 @@ async function renderWeek(){
 
 async function renderDay(){
   var d=CS.day,evts=await loadEvts(),ds=dstr(d);
-  document.getElementById('cal-dtitle').textContent=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var dTitle=document.getElementById('cal-dtitle');if(dTitle)dTitle.textContent=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   var de=evts.filter(function(e){return e.date===ds;}),html='';
   if(de.length===0){html='<div class="empty" style="padding:24px 0;">No events for this day</div>';}
   else{de.forEach(function(e){
