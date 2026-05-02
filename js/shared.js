@@ -168,3 +168,63 @@ window._switchTab=function(name){
   if(name==='savings'){window._switchSavSub('savings');renderSav();renderBudget();}
 };
 
+
+// ── DARK/LIGHT MODE ──
+window._toggleTheme=function(){
+  var isLight=document.body.classList.toggle('light');
+  localStorage.setItem('theme',isLight?'light':'dark');
+  var btn=document.getElementById('theme-btn');
+  if(btn)btn.textContent=isLight?'☀️':'🌙';
+};
+(function(){
+  if(localStorage.getItem('theme')==='light'){
+    document.body.classList.add('light');
+    setTimeout(function(){var b=document.getElementById('theme-btn');if(b)b.textContent='☀️';},100);
+  }
+})();
+
+// ── WEATHER WIDGET ──
+(function(){
+  var cache=lGet('weather_cache');
+  var now=Date.now();
+  if(cache&&cache.ts&&(now-cache.ts)<1800000){
+    renderWeather(cache);
+    return;
+  }
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=-33.87&longitude=151.21&current=temperature_2m,weathercode&timezone=Australia/Sydney')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var data={temp:Math.round(d.current.temperature_2m),code:d.current.weathercode,ts:Date.now()};
+      lSet('weather_cache',data);
+      renderWeather(data);
+    }).catch(function(){});
+})();
+
+function renderWeather(d){
+  var el=document.getElementById('weather-widget');
+  if(!el)return;
+  var icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️'};
+  var icon=icons[d.code]||'🌡️';
+  el.innerHTML=icon+' '+d.temp+'°C · Sydney';
+}
+
+// ── HOME NOTE ──
+window._saveHomeNote=function(){
+  var val=document.getElementById('home-note').value;
+  lSet('home_note_'+dstr(new Date()),val);
+};
+(function initHomeNote(){
+  setTimeout(function(){
+    var today=dstr(new Date());
+    var el=document.getElementById('home-note');
+    var dateEl=document.getElementById('home-note-date');
+    if(el){
+      var saved=lGet('home_note_'+today)||'';
+      el.value=saved;
+    }
+    if(dateEl){
+      var d=new Date();
+      dateEl.textContent=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'short'});
+    }
+  },500);
+})();

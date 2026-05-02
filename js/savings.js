@@ -330,3 +330,34 @@ window._updateAcctColor=function(sel){
   sel.style.color=c;
   sel.style.borderColor=c;
 };
+
+// ── CSV EXPORT ──
+window._exportExpenses=async function(){
+  var d=await loadEx();
+  var rows=[['Date','Type','Amount','Note']];
+  (d.entries||[]).forEach(function(e){
+    rows.push([e.date,e.type||'regular',e.amount,e.note||'']);
+  });
+  downloadCSV(rows,'expenses_'+dstr(new Date())+'.csv');
+};
+
+window._exportTransfers=async function(){
+  var d=await loadSav();
+  var rows=[['Date','Account','Amount','Note']];
+  (d.entries||[]).forEach(function(e){
+    var acct=e.acct==='emergency'?'CommBank Emergency':e.acct==='deposit'?'Ubank Property Deposit':'Wise Investing HK';
+    rows.push([e.date,acct,e.amount,e.note||'']);
+  });
+  downloadCSV(rows,'transfers_'+dstr(new Date())+'.csv');
+};
+
+function downloadCSV(rows,filename){
+  var csv=rows.map(function(r){
+    return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');
+  }).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}

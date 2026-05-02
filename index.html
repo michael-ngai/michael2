@@ -16,6 +16,12 @@
   --red:#ff5f5f;--purple:#a78bfa;
   --r:10px;--rs:6px;
 }
+body.light{
+  --bg:#f5f5f0;--surface:#ffffff;--surface2:#ebebeb;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1a1f;--text2:#555560;--text3:#aaaaaf;
+  --gdim:rgba(29,185,117,0.08);--adim:rgba(245,166,35,0.08);--bdim:rgba(74,158,255,0.08);
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:20px 20px 60px;}
 .wrap{max-width:576px;margin:0 auto;}
@@ -200,11 +206,17 @@ select option{background:var(--surface2);}
 <div class="wrap">
 <div class="hdr">
   <div>
-    <div class="hdr-title">Michael 2.0</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="hdr-title">Michael 2.0</div>
+      <button onclick="toggleTheme()" id="theme-btn" style="background:none;border:1px solid var(--border2);border-radius:20px;padding:2px 8px;font-size:11px;color:var(--text2);cursor:pointer;">🌙</button>
+    </div>
     <div class="hdr-sub">Beverly Hills, Sydney</div>
     <div class="sync-status sync-loading" id="sync-status">connecting...</div>
   </div>
-  <div class="hdr-date" id="hdr-date"></div>
+  <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+    <div id="weather-widget" style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;"></div>
+    <div class="hdr-date" id="hdr-date"></div>
+  </div>
 </div>
 
 <div class="tabs">
@@ -215,6 +227,12 @@ select option{background:var(--surface2);}
 
 <!-- TO-DO + ROUTINE -->
 <div class="panel active" id="panel-todo">
+  <div class="card" style="margin-bottom:8px;">
+    <div class="card-hdr"><div class="card-title">📝 Today's Note</div><div class="card-meta" id="home-note-date"></div></div>
+    <div style="padding:4px 12px 12px;">
+      <textarea id="home-note" placeholder="What's on your mind today..." oninput="saveHomeNote()" style="width:100%;background:transparent;border:none;color:var(--text);font-size:13px;resize:none;outline:none;min-height:52px;font-family:'DM Sans',sans-serif;"></textarea>
+    </div>
+  </div>
   <div class="subtabs">
     <button class="subtab active" id="td-sub-routine" onclick="switchTodoSub('routine')">&#x1F305; Routine</button>
     <button class="subtab" id="td-sub-todo" onclick="switchTodoSub('todo')">&#x1F4CB; Tasks</button>
@@ -543,13 +561,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777700752"></script>
-<script defer src="js/shared.js?v=1777700752"></script>
-<script defer src="js/routine.js?v=1777700752"></script>
-<script defer src="js/calendar.js?v=1777700752"></script>
-<script defer src="js/savings.js?v=1777700752"></script>
-<script defer src="js/budget.js?v=1777700752"></script>
-<script defer src="js/init.js?v=1777700752"></script>
+<script type="module" src="js/firebase.js?v=1777735224"></script>
+<script defer src="js/shared.js?v=1777735224"></script>
+<script defer src="js/routine.js?v=1777735224"></script>
+<script defer src="js/calendar.js?v=1777735224"></script>
+<script defer src="js/savings.js?v=1777735224"></script>
+<script defer src="js/budget.js?v=1777735224"></script>
+<script defer src="js/init.js?v=1777735224"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -567,6 +585,10 @@ function goThisFn(){if(window._goThisFn)window._goThisFn();}
 function shiftMonth(d){if(window._shiftMonth)window._shiftMonth(d);}
 function goThisMonth(){if(window._goThisMonth)window._goThisMonth();}
 function appendNote(t){if(window._appendNote)window._appendNote(t);}
+function toggleTheme(){if(window._toggleTheme)window._toggleTheme();}
+function saveHomeNote(){if(window._saveHomeNote)window._saveHomeNote();}
+function exportExpenses(){if(window._exportExpenses)window._exportExpenses();}
+function exportTransfers(){if(window._exportTransfers)window._exportTransfers();}
 function jumpCalMonth(v){if(window._jumpCalMonth)window._jumpCalMonth(v);}
 function jumpCalWeek(v){if(window._jumpCalWeek)window._jumpCalWeek(v);}
 function jumpCalDay(v){if(window._jumpCalDay)window._jumpCalDay(v);}
