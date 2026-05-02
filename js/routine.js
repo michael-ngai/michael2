@@ -142,8 +142,8 @@ async function renderWeekly(){
   var we   = new Date(wd); we.setDate(wd.getDate()+6);
   var disp = document.getElementById('weekly-display');
   populateWeekSelect();
-  var disp=document.getElementById('weekly-display');
-  if(disp) disp.textContent = 'Week '+weekNum(wd)+' — '+
+  var wdisp=document.getElementById('weekly-display');
+  if(wdisp) wdisp.textContent = 'Week '+weekNum(wd)+' — '+
     wd.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' to '+
     we.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
 }
@@ -173,8 +173,8 @@ async function renderFortnightly(){
   var fnum = Math.round((fs-base)/(14*86400000))+1;
   var disp = document.getElementById('fn-display');
   populateFnSelect();
-  var disp2=document.getElementById('fn-display');
-  if(disp2) disp2.textContent = 'Fortnight '+fnum+' — '+
+  var fndisp=document.getElementById('fn-display');
+  if(fndisp) fndisp.textContent = 'Fortnight '+fnum+' — '+
     fs.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+' to '+
     fe.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
 }
@@ -200,8 +200,8 @@ async function renderMonthly(){
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   var disp = document.getElementById('mo-display');
   populateMoSelect();
-  var disp3=document.getElementById('mo-display');
-  if(disp3) disp3.textContent = months[selMoM]+' '+selMoY;
+  var modisp=document.getElementById('mo-display');
+  if(modisp) modisp.textContent = months[selMoM]+' '+selMoY;
 }
 
 // ── TOGGLE ──
