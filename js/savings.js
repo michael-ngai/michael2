@@ -275,7 +275,7 @@ window._switchCalSub=function(name){
   document.getElementById('cl-view-timetable').style.display=name==='timetable'?'':'none';
   document.getElementById('cl-sub-calendar').classList.toggle('active',name==='calendar');
   document.getElementById('cl-sub-timetable').classList.toggle('active',name==='timetable');
-  if(name==='timetable')renderTT();
+  if(name==='timetable'){if(typeof updateTTDateDisplay==='function')updateTTDateDisplay();renderTT();}
   if(name==='calendar')renderCal();
 };
 

@@ -584,7 +584,7 @@ window._jumpCalDay=function(ds){
 
 // ── TIMETABLE VIEW ──
 async function renderTT(){
-  var ds=window.ttSelectedDate||logicalToday;
+  var ds=(typeof ttSelectedDate!=="undefined"?ttSelectedDate:null)||logicalToday;
   var d=new Date(ds+'T00:00:00');
   var evts=await loadEvts();
   var dayEvts=evts.filter(function(e){return e.date===ds;});
@@ -652,7 +652,7 @@ async function renderTT(){
 }
 
 window._jumpTTDay=function(ds){
-  window.ttSelectedDate=ds;
+  if(typeof ttSelectedDate!=="undefined"){ttSelectedDate=ds;} window.ttSelectedDate=ds;
   if(window.updateTTDateDisplay)window.updateTTDateDisplay();
   var el=document.getElementById('tt-date-hidden');
   if(el)el.value=ds;
