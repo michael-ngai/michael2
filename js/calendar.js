@@ -581,3 +581,85 @@ window._jumpCalDay=function(ds){
 };
 
 
+
+// ── TIMETABLE VIEW ──
+async function renderTT(){
+  var ds=window.ttSelectedDate||logicalToday;
+  var d=new Date(ds+'T00:00:00');
+  var evts=await loadEvts();
+  var dayEvts=evts.filter(function(e){return e.date===ds;});
+  dayEvts.sort(function(a,b){
+    var at=(a.note||'').slice(0,7),bt=(b.note||'').slice(0,7);
+    return at<bt?-1:at>bt?1:0;
+  });
+
+  // Title
+  var title=document.getElementById('tt-cardtitle');
+  if(title){
+    var dayName=d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'short'});
+    title.textContent=dayName;
+  }
+
+  // Event list
+  var list=document.getElementById('tt-list');
+  if(list){
+    if(dayEvts.length===0){
+      list.innerHTML='<div class="empty" style="padding:12px;">No events — add some in Calendar</div>';
+    } else {
+      list.innerHTML=dayEvts.map(function(e){
+        var ps=getPillStyle(e.type);
+        var timeStr='';
+        if(e.note){var m=e.note.match(/^\d+:\d+[ap]m/i);if(m)timeStr=m[0];}
+        return '<div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:0.5px solid var(--border);">'+
+          '<div style="min-width:52px;font-size:11px;color:var(--text3);font-family:\'DM Mono\',monospace;">'+timeStr+'</div>'+
+          '<div style="flex:1;">'+
+            '<div style="font-size:13px;font-weight:500;">'+e.title+'</div>'+
+            (e.note&&e.note!==timeStr?'<div style="font-size:11px;color:var(--text3);">'+e.note+'</div>':'') +
+          '</div>'+
+          '<span style="font-size:10px;padding:2px 7px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // Progress
+  var prog=document.getElementById('tt-prog');
+  if(prog) prog.textContent=dayEvts.length+' event'+(dayEvts.length===1?'':'s');
+
+  // Week reference
+  var weekEl=document.getElementById('tt-week');
+  if(weekEl){
+    var mon=getMon(d);
+    var weekDays=[];
+    for(var i=0;i<7;i++){var wd=new Date(mon);wd.setDate(mon.getDate()+i);weekDays.push(wd);}
+    weekEl.innerHTML=weekDays.map(function(wd){
+      var wds=dstr(wd);
+      var wdevts=evts.filter(function(e){return e.date===wds;});
+      var isToday=wds===logicalToday;
+      var isSel=wds===ds;
+      return '<div style="padding:6px 0;border-bottom:0.5px solid var(--border);cursor:pointer;" onclick="jumpTTDay(\''+wds+'\')">'+
+        '<div style="font-size:11px;font-weight:'+(isSel?'700':'500')+';color:'+(isSel?'var(--green)':isToday?'var(--amber)':'var(--text2)')+';">'+
+          wd.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'})+
+        '</div>'+
+        (wdevts.length?'<div style="display:flex;gap:3px;margin-top:3px;">'+
+          wdevts.slice(0,4).map(function(e){
+            var ec=ECOL[e.type]||'cd-other';
+            return '<div class="cdot '+ec+'" style="width:5px;height:5px;border-radius:50%;"></div>';
+          }).join('')+(wdevts.length>4?'<span style="font-size:8px;color:var(--text3);">+'+( wdevts.length-4)+'</span>':'')+'</div>':'') +
+      '</div>';
+    }).join('');
+  }
+}
+
+window._jumpTTDay=function(ds){
+  window.ttSelectedDate=ds;
+  if(window.updateTTDateDisplay)window.updateTTDateDisplay();
+  var el=document.getElementById('tt-date-hidden');
+  if(el)el.value=ds;
+  renderTT();
+};
+
+window._resetTT=function(){
+  // No tick system in timetable — just refresh
+  renderTT();
+};

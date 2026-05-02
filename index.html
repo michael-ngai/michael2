@@ -426,15 +426,12 @@ select option{background:var(--surface2);}
     <button class="btn p" onclick="goTTToday()" style="height:38px;padding:0 10px;font-size:11px;line-height:1;">Today</button>
   </div>
   <div class="card">
-  <div class="card">
     <div class="card-hdr"><div class="card-title" id="tt-cardtitle">Today's checklist</div><div class="card-meta" id="tt-prog"></div></div>
     <div id="tt-list"></div>
   </div>
   <div style="padding:2px 0 10px;"><button class="btn d" onclick="resetTT()">Reset today's ticks</button></div>
   <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.8px;margin:14px 0 10px;">Full week reference</div>
   <div id="tt-week"></div>
-
-  </div>
 </div>
 
 
@@ -579,13 +576,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777736828"></script>
-<script defer src="js/shared.js?v=1777736828"></script>
-<script defer src="js/routine.js?v=1777736828"></script>
-<script defer src="js/calendar.js?v=1777736828"></script>
-<script defer src="js/savings.js?v=1777736828"></script>
-<script defer src="js/budget.js?v=1777736828"></script>
-<script defer src="js/init.js?v=1777736828"></script>
+<script type="module" src="js/firebase.js?v=1777737335"></script>
+<script defer src="js/shared.js?v=1777737335"></script>
+<script defer src="js/routine.js?v=1777737335"></script>
+<script defer src="js/calendar.js?v=1777737335"></script>
+<script defer src="js/savings.js?v=1777737335"></script>
+<script defer src="js/budget.js?v=1777737335"></script>
+<script defer src="js/init.js?v=1777737335"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -610,6 +607,8 @@ function exportTransfers(){if(window._exportTransfers)window._exportTransfers();
 function jumpCalMonth(v){if(window._jumpCalMonth)window._jumpCalMonth(v);}
 function jumpCalWeek(v){if(window._jumpCalWeek)window._jumpCalWeek(v);}
 function jumpCalDay(v){if(window._jumpCalDay)window._jumpCalDay(v);}
+function jumpTTDay(ds){if(window._jumpTTDay)window._jumpTTDay(ds);}
+function resetTT(){if(window._resetTT)window._resetTT();}
 function jumpToWeek(v){if(window._jumpToWeek)window._jumpToWeek(v);}
 function jumpToFn(v){if(window._jumpToFn)window._jumpToFn(v);}
 function jumpToMonth(v){if(window._jumpToMonth)window._jumpToMonth(v);}
