@@ -99,7 +99,7 @@ var SCH={
   0:{note:'Full rest day — your day',items:[
     {t:'Morning',l:'Sleep in — no alarm',c:'sleep'},
     {t:'Morning',l:'Meal prep — 2 batches',c:'meal'},
-    {t:'2:30–4:00pm',l:'PCS — basketball coaching',c:'ball'},
+    {t:'2:30–4:00pm',l:'PCS — basketball coaching',c:'work'},
     {t:'Afternoon',l:'AI learning · Japanese · free',c:'personal'},
     {t:'Afternoon',l:'Switch / Netflix — enjoy',c:'fun'},
     {t:'Evening',l:'Family dinner (if Sunday)',c:'family'},
