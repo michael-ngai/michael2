@@ -632,7 +632,7 @@ async function renderTT(){
     html+='<div style="padding:8px 14px 4px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;">Calendar events</div>';
     html+=dayEvts.map(function(e,ei){
       var ps=getPillStyle(e.type);
-      return '<div style="display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:0.5px solid var(--border);">'+
+      return '<div style="display:flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid transparent;border-radius:4px;margin:1px 2px;transition:border-color .15s;" onmouseenter="this.style.borderColor=\'var(--green)\'" onmouseleave="this.style.borderColor=\'transparent\'">'+
         '<div style="min-width:60px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(e.note||'')+'</div>'+
         '<div style="flex:1;font-size:13px;font-weight:500;">'+e.title+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
