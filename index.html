@@ -213,6 +213,16 @@ select option{background:var(--surface2);}
     <div class="hdr-sub">Beverly Hills, Sydney</div>
     <div class="sync-status sync-loading" id="sync-status">connecting...</div>
   </div>
+  <!-- XP Bar -->
+  <div id="xp-widget" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 10px;gap:3px;">
+    <div style="display:flex;align-items:center;gap:5px;">
+      <span id="xp-level" style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;">Lv.1</span>
+      <div id="xp-bar" style="width:60px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;">
+        <div id="xp-fill" style="height:100%;background:var(--green);border-radius:3px;width:0%;transition:width .4s;"></div>
+      </div>
+    </div>
+    <div id="xp-label" style="font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;">0 XP</div>
+  </div>
   <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
     <div id="weather-widget" style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;"></div>
     <div class="hdr-date" id="hdr-date"></div>
@@ -576,13 +586,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777740196"></script>
-<script defer src="js/shared.js?v=1777740196"></script>
-<script defer src="js/routine.js?v=1777740196"></script>
-<script defer src="js/calendar.js?v=1777740196"></script>
-<script defer src="js/savings.js?v=1777740196"></script>
-<script defer src="js/budget.js?v=1777740196"></script>
-<script defer src="js/init.js?v=1777740196"></script>
+<script type="module" src="js/firebase.js?v=1777778897"></script>
+<script defer src="js/shared.js?v=1777778897"></script>
+<script defer src="js/routine.js?v=1777778897"></script>
+<script defer src="js/calendar.js?v=1777778897"></script>
+<script defer src="js/savings.js?v=1777778897"></script>
+<script defer src="js/budget.js?v=1777778897"></script>
+<script defer src="js/init.js?v=1777778897"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -601,6 +611,7 @@ function shiftMonth(d){if(window._shiftMonth)window._shiftMonth(d);}
 function goThisMonth(){if(window._goThisMonth)window._goThisMonth();}
 function appendNote(t){if(window._appendNote)window._appendNote(t);}
 function toggleTheme(){if(window._toggleTheme)window._toggleTheme();}
+function addXP(n,reason){if(window._addXP)window._addXP(n,reason);}
 function saveHomeNote(){if(window._saveHomeNote)window._saveHomeNote();}
 function exportExpenses(){if(window._exportExpenses)window._exportExpenses();}
 function exportTransfers(){if(window._exportTransfers)window._exportTransfers();}

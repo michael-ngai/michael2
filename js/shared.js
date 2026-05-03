@@ -228,3 +228,67 @@ window._saveHomeNote=function(){
     }
   },500);
 })();
+
+// ── XP SYSTEM ──
+var XP_LEVELS=[0,100,250,500,1000,2000,4000,7000,11000,16000,25000];
+
+function xpForLevel(lv){return XP_LEVELS[lv]||XP_LEVELS[XP_LEVELS.length-1];}
+
+function getXPData(){
+  return lGet('xp_data')||{xp:0,level:1,log:[]};
+}
+
+function saveXPData(d){
+  lSet('xp_data',d);
+}
+
+function renderXP(){
+  var d=getXPData();
+  var lv=d.level||1;
+  var xp=d.xp||0;
+  var thisLvXP=xpForLevel(lv-1);
+  var nextLvXP=xpForLevel(lv);
+  var pct=nextLvXP>thisLvXP?Math.min(100,Math.round((xp-thisLvXP)/(nextLvXP-thisLvXP)*100)):100;
+
+  var lvEl=document.getElementById('xp-level');
+  var fillEl=document.getElementById('xp-fill');
+  var lblEl=document.getElementById('xp-label');
+
+  if(lvEl) lvEl.textContent='Lv.'+lv;
+  if(fillEl) fillEl.style.width=pct+'%';
+  if(lblEl) lblEl.textContent=xp+' XP';
+}
+
+window._addXP=function(amount,reason){
+  var d=getXPData();
+  d.xp=(d.xp||0)+amount;
+  if(d.xp<0)d.xp=0;
+
+  // Level up check
+  var levelled=false;
+  while(d.level<XP_LEVELS.length-1&&d.xp>=xpForLevel(d.level)){
+    d.level++;
+    levelled=true;
+  }
+
+  // Log entry
+  d.log=d.log||[];
+  d.log.unshift({ts:Date.now(),amount:amount,reason:reason||'',level:d.level});
+  if(d.log.length>100)d.log=d.log.slice(0,100);
+
+  saveXPData(d);
+  renderXP();
+
+  // Level up flash
+  if(levelled){
+    var lvEl=document.getElementById('xp-level');
+    if(lvEl){
+      lvEl.style.color='var(--green)';
+      lvEl.textContent='Lv.'+d.level+' ▲';
+      setTimeout(function(){lvEl.style.color='var(--text3)';lvEl.textContent='Lv.'+d.level;},2000);
+    }
+  }
+};
+
+// Init XP on load
+(function(){setTimeout(renderXP,600);})();
