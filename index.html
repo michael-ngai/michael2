@@ -589,13 +589,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777812234"></script>
-<script defer src="js/shared.js?v=1777812234"></script>
-<script defer src="js/routine.js?v=1777812234"></script>
-<script defer src="js/calendar.js?v=1777812234"></script>
-<script defer src="js/savings.js?v=1777812234"></script>
-<script defer src="js/budget.js?v=1777812234"></script>
-<script defer src="js/init.js?v=1777812234"></script>
+<script type="module" src="js/firebase.js?v=1777816411"></script>
+<script defer src="js/shared.js?v=1777816411"></script>
+<script defer src="js/routine.js?v=1777816411"></script>
+<script defer src="js/calendar.js?v=1777816411"></script>
+<script defer src="js/savings.js?v=1777816411"></script>
+<script defer src="js/budget.js?v=1777816411"></script>
+<script defer src="js/init.js?v=1777816411"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -633,6 +633,7 @@ function saveEdit(){if(window._saveEdit)window._saveEdit();}
 function clrEdit(){if(window._clrEdit)window._clrEdit();}
 function resetTT(){if(window._resetTT)window._resetTT();}
 function tickTT(ds,idx,row){if(window._tickTT)window._tickTT(ds,idx,row);}
+function hideTTItem(ds,idx){if(window._hideTTItem)window._hideTTItem(ds,idx);}
 function switchTab(n){
   if(window._switchTab){window._switchTab(n);return;}
   // Fallback - works before module loads

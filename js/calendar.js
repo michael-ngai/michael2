@@ -609,9 +609,12 @@ async function renderTT(){
   var tickKey='tt_ticks_'+ds;
   var ticks={};
   try{ticks=JSON.parse(localStorage.getItem(tickKey)||'{}');}catch(e){}
+  var hiddenKey='tt_hidden_'+ds;
+  var hidden={};
+  try{hidden=JSON.parse(localStorage.getItem(hiddenKey)||'{}');}catch(e){}
 
   if(sch&&sch.items&&sch.items.length>0){
-    html+=sch.items.map(function(item,idx){
+    html+=sch.items.filter(function(_,i){return !hidden[i];}).map(function(item,idx){
       var ps=getPillStyle(item.c);
       var ticked=!!ticks[idx];
       return '<div class="tt-row" style="display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;'+(ticked?'opacity:0.5;':'')+'" onclick="tickTT(\''+ds+'\','+idx+',this)">'+
@@ -621,6 +624,7 @@ async function renderTT(){
         '<div style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+item.t+'</div>'+
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
+        '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')" title="Hide for today">&#215;</span>'+
       '</div>';
     }).join('');
   } else {
@@ -684,6 +688,9 @@ window._tickTT=function(ds,idx,row){
   var tickKey='tt_ticks_'+ds;
   var ticks={};
   try{ticks=JSON.parse(localStorage.getItem(tickKey)||'{}');}catch(e){}
+  var hiddenKey='tt_hidden_'+ds;
+  var hidden={};
+  try{hidden=JSON.parse(localStorage.getItem(hiddenKey)||'{}');}catch(e){}
   ticks[idx]=!ticks[idx];
   localStorage.setItem(tickKey,JSON.stringify(ticks));
   renderTT();
@@ -692,5 +699,15 @@ window._tickTT=function(ds,idx,row){
 window._resetTT=function(){
   var ds=(typeof ttSelectedDate!=='undefined'?ttSelectedDate:null)||logicalToday;
   localStorage.removeItem('tt_ticks_'+ds);
+  localStorage.removeItem('tt_hidden_'+ds);
+  renderTT();
+};
+
+window._hideTTItem=function(ds,idx){
+  var key='tt_hidden_'+ds;
+  var hidden={};
+  try{hidden=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  hidden[idx]=true;
+  localStorage.setItem(key,JSON.stringify(hidden));
   renderTT();
 };
