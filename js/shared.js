@@ -264,11 +264,13 @@ window._addXP=function(amount,reason){
   d.xp=(d.xp||0)+amount;
   if(d.xp<0)d.xp=0;
 
-  // Level up check
-  var levelled=false;
+  // Level up / level down check
+  var levelled=false,levelledDown=false;
   while(d.level<XP_LEVELS.length-1&&d.xp>=xpForLevel(d.level)){
-    d.level++;
-    levelled=true;
+    d.level++;levelled=true;
+  }
+  while(d.level>1&&d.xp<xpForLevel(d.level-1)){
+    d.level--;levelledDown=true;
   }
 
   // Log entry
@@ -280,13 +282,15 @@ window._addXP=function(amount,reason){
   renderXP();
 
   // Level up flash
-  if(levelled){
-    var lvEl=document.getElementById('xp-level');
-    if(lvEl){
-      lvEl.style.color='var(--green)';
-      lvEl.textContent='Lv.'+d.level+' ▲';
-      setTimeout(function(){lvEl.style.color='var(--text3)';lvEl.textContent='Lv.'+d.level;},2000);
-    }
+  var lvEl=document.getElementById('xp-level');
+  if(levelled&&lvEl){
+    lvEl.style.color='var(--green)';
+    lvEl.textContent='Lv.'+d.level+' ▲';
+    setTimeout(function(){lvEl.style.color='var(--text2)';lvEl.textContent='Lv.'+d.level;},2000);
+  } else if(levelledDown&&lvEl){
+    lvEl.style.color='var(--red)';
+    lvEl.textContent='Lv.'+d.level+' ▼';
+    setTimeout(function(){lvEl.style.color='var(--text2)';lvEl.textContent='Lv.'+d.level;},2000);
   }
 };
 
