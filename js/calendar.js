@@ -630,12 +630,14 @@ async function renderTT(){
   // Show any calendar events for this day
   if(dayEvts.length>0){
     html+='<div style="padding:8px 14px 4px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;">Calendar events</div>';
-    html+=dayEvts.map(function(e){
+    html+=dayEvts.map(function(e,ei){
       var ps=getPillStyle(e.type);
-      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:0.5px solid var(--border);">'+
-        '<div style="min-width:80px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(e.note||'')+'</div>'+
+      return '<div style="display:flex;align-items:center;gap:8px;padding:6px 14px;border-bottom:0.5px solid var(--border);">'+
+        '<div style="min-width:60px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(e.note||'')+'</div>'+
         '<div style="flex:1;font-size:13px;font-weight:500;">'+e.title+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
+        '<button class="editbtn" onclick="editEvt(\''+e.id+'\')">edit</button>'+
+        '<span class="evtdel" onclick="delEvt(\''+e.id+'\')">&#215;</span>'+
       '</div>';
     }).join('');
   }
