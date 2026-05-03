@@ -217,9 +217,18 @@ window._togRoutine = async function(el){
   else                  { key=moKey(selMoY,selMoM); cache=moCache; render=renderMonthly; }
 
   var data = await fbGet('habits', key) || {};
+  var wasTicked = !!data[id];
   data[id] = !data[id];
   cache[key] = data;
   await fbSet('habits', key, data);
+  // XP
+  if(window._addXP){
+    window._addXP(data[id]?10:-10, (data[id]?'✓ ':'✗ ')+id);
+    if(t==='daily'&&data[id]){
+      var doneCount=DAILY_HABITS.filter(function(h){return data[h];}).length;
+      if(doneCount===DAILY_HABITS.length) window._addXP(50,'🔥 Full daily routine!');
+    }
+  }
   render();
 };
 

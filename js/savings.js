@@ -47,6 +47,7 @@ window._logSav=async function(){
   d.entries.push({date:(function(){var n=new Date();var dd=String(n.getDate()).padStart(2,'0');var mm=String(n.getMonth()+1).padStart(2,'0');var yyyy=n.getFullYear();var day=n.toLocaleDateString('en-AU',{weekday:'long'});return dd+'/'+mm+'/'+yyyy+', '+day;})(),acct:a,amount:amt,note:note});
   savCache=d;
   await fbSet('savings','main',d);
+  if(window._addXP)window._addXP(20,'Savings transfer logged');
   document.getElementById('sv-in').value='';document.getElementById('sv-note').value='';
   renderSav();
 };
@@ -150,6 +151,7 @@ window._logEx=async function(){
   exCache=null;
   await fbSet('extra','main',d);
   exCache=d;
+  if(window._addXP)window._addXP(type==='unnecessary'?-10:5,type==='unnecessary'?'Unnecessary expense':'Expense logged');
   document.getElementById('ex-amt').value='';
   document.getElementById('ex-note').value='';
   renderEx();
