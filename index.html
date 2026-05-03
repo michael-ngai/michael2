@@ -23,7 +23,7 @@ body.light{
   --gdim:rgba(29,185,117,0.08);--adim:rgba(245,166,35,0.08);--bdim:rgba(74,158,255,0.08);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:20px 20px 60px;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:20px 20px 60px;overflow-x:hidden;}
 .wrap{max-width:576px;margin:0 auto;}
 .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;padding-bottom:18px;border-bottom:0.5px solid var(--border);}
 .hdr-title{font-size:22px;font-weight:600;letter-spacing:-.5px;}
@@ -58,6 +58,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .hrow.done .htext{text-decoration:line-through;color:var(--text3);}
 .cb{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer;}
 .cb:hover{border-color:var(--green);background:var(--gdim);}
+.tt-row:hover{background:var(--gdim);}
+.tt-cb:hover{border-color:var(--green)!important;background:var(--gdim)!important;}
 .cb.checked{background:var(--green);border-color:var(--green);}
 .cb.checked .ck{display:block;}
 .ck{display:none;}
@@ -216,19 +218,19 @@ select option{background:var(--surface2);}
   <!-- XP Bar - centred -->
   <div id="xp-widget" style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
     <div style="display:flex;align-items:center;gap:6px;">
-      <span id="xp-level" style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;font-weight:600;">Lv.1</span>
-      <div style="width:100px;height:15px;border-radius:8px;border:1px solid var(--border2);overflow:hidden;background:var(--surface2);position:relative;"
-           onmouseenter="this.style.outline='2px solid rgba(29,185,117,0.6)';this.style.outlineOffset='1px'"
-           onmouseleave="this.style.outline='none'">
-        <div id="xp-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#1db975,#25d988);transition:width .5s ease;"></div>
-        <span id="xp-label" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-family:'DM Mono',monospace;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,1);pointer-events:none;">0 XP</span>
+      <span id="xp-level" style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;font-weight:600;flex-shrink:0;">Lv.1</span>
+      <div style="width:100px;height:15px;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);position:relative;flex-shrink:0;transition:outline .15s;"
+           onmouseenter="this.style.outline='2px solid rgba(29,185,117,0.5)';this.style.outlineOffset='2px'"
+           onmouseleave="this.style.outline='none';this.style.outlineOffset='0'">
+        <div id="xp-fill" style="position:absolute;top:0;left:0;height:15px;width:0%;background:linear-gradient(90deg,#1db975,#26e58a);border-radius:8px;transition:width .5s ease;"></div>
+        <span id="xp-label" style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-family:'DM Mono',monospace;color:#fff;font-weight:700;text-shadow:0 0 4px rgba(0,0,0,1);pointer-events:none;z-index:1;">0 XP</span>
       </div>
     </div>
   </div>
       </div>
     </div>
   </div>
-  <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+  <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;">
     <div id="weather-widget" style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;"></div>
     <div class="hdr-date" id="hdr-date"></div>
   </div>
@@ -591,13 +593,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777807443"></script>
-<script defer src="js/shared.js?v=1777807443"></script>
-<script defer src="js/routine.js?v=1777807443"></script>
-<script defer src="js/calendar.js?v=1777807443"></script>
-<script defer src="js/savings.js?v=1777807443"></script>
-<script defer src="js/budget.js?v=1777807443"></script>
-<script defer src="js/init.js?v=1777807443"></script>
+<script type="module" src="js/firebase.js?v=1777807572"></script>
+<script defer src="js/shared.js?v=1777807572"></script>
+<script defer src="js/routine.js?v=1777807572"></script>
+<script defer src="js/calendar.js?v=1777807572"></script>
+<script defer src="js/savings.js?v=1777807572"></script>
+<script defer src="js/budget.js?v=1777807572"></script>
+<script defer src="js/init.js?v=1777807572"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}

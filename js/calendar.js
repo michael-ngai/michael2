@@ -614,8 +614,8 @@ async function renderTT(){
     html+=sch.items.map(function(item,idx){
       var ps=getPillStyle(item.c);
       var ticked=!!ticks[idx];
-      return '<div style="display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;'+(ticked?'opacity:0.5;':'')+'" onclick="tickTT(\''+ds+'\','+idx+',this)">'+
-        '<div class="cb'+(ticked?' checked':'')+'" style="flex-shrink:0;width:18px;height:18px;border-radius:50%;border:1.5px solid '+(ticked?'var(--green)':'var(--border2)')+';background:'+(ticked?'var(--green)':'transparent')+';display:flex;align-items:center;justify-content:center;">'+
+      return '<div class="tt-row" style="display:flex;align-items:center;gap:10px;padding:7px 14px;border-bottom:0.5px solid var(--border);cursor:pointer;'+(ticked?'opacity:0.5;':'')+'" onclick="tickTT(\''+ds+'\','+idx+',this)">'+
+        '<div class="tt-cb cb'+(ticked?' checked':'')+'" style="flex-shrink:0;width:18px;height:18px;border-radius:50%;border:1.5px solid '+(ticked?'var(--green)':'var(--border2)')+';background:'+(ticked?'var(--green)':'transparent')+';display:flex;align-items:center;justify-content:center;transition:all .15s;">'+
           (ticked?'<svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+
         '</div>'+
         '<div style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+item.t+'</div>'+
