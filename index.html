@@ -217,11 +217,11 @@ select option{background:var(--surface2);}
   <div id="xp-widget" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;">
     <div style="display:flex;align-items:center;gap:7px;">
       <span id="xp-level" style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;font-weight:600;white-space:nowrap;">Lv.1</span>
-      <div id="xp-bar" style="width:90px;height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;border:1px solid var(--border);">
+      <div id="xp-bar" style="width:90px;height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;border:1px solid var(--border);position:relative;">
         <div id="xp-fill" style="height:100%;background:var(--green);border-radius:5px;width:0%;transition:width .5s ease;box-shadow:0 0 6px rgba(29,185,117,0.4);"></div>
+        <span id="xp-label" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:7px;font-family:'DM Mono',monospace;color:#fff;font-weight:700;letter-spacing:.3px;pointer-events:none;text-shadow:0 0 3px rgba(0,0,0,0.8);">0 XP</span>
       </div>
     </div>
-    <div id="xp-label" style="font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;">0 XP</div>
   </div>
   <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
     <div id="weather-widget" style="font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;"></div>
@@ -586,13 +586,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777802705"></script>
-<script defer src="js/shared.js?v=1777802705"></script>
-<script defer src="js/routine.js?v=1777802705"></script>
-<script defer src="js/calendar.js?v=1777802705"></script>
-<script defer src="js/savings.js?v=1777802705"></script>
-<script defer src="js/budget.js?v=1777802705"></script>
-<script defer src="js/init.js?v=1777802705"></script>
+<script type="module" src="js/firebase.js?v=1777806669"></script>
+<script defer src="js/shared.js?v=1777806669"></script>
+<script defer src="js/routine.js?v=1777806669"></script>
+<script defer src="js/calendar.js?v=1777806669"></script>
+<script defer src="js/savings.js?v=1777806669"></script>
+<script defer src="js/budget.js?v=1777806669"></script>
+<script defer src="js/init.js?v=1777806669"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
