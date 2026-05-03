@@ -612,6 +612,9 @@ async function renderTT(){
   var hiddenKey='tt_hidden_'+ds;
   var hidden={};
   try{hidden=JSON.parse(localStorage.getItem(hiddenKey)||'{}');}catch(e){}
+  var editsKey='tt_edits_'+ds;
+  var schEdits={};
+  try{schEdits=JSON.parse(localStorage.getItem(editsKey)||'{}');}catch(e){}
 
   if(sch&&sch.items&&sch.items.length>0){
     html+=sch.items.filter(function(_,i){return !hidden[i];}).map(function(item,idx){
@@ -624,6 +627,7 @@ async function renderTT(){
         '<div style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+item.t+'</div>'+
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
+        '<button class="editbtn" onclick="event.stopPropagation();editTTItem(\''+ds+'\','+idx+')" title="Edit label">edit</button>'+
         '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')" title="Hide for today">&#215;</span>'+
       '</div>';
     }).join('');
@@ -691,6 +695,9 @@ window._tickTT=function(ds,idx,row){
   var hiddenKey='tt_hidden_'+ds;
   var hidden={};
   try{hidden=JSON.parse(localStorage.getItem(hiddenKey)||'{}');}catch(e){}
+  var editsKey='tt_edits_'+ds;
+  var schEdits={};
+  try{schEdits=JSON.parse(localStorage.getItem(editsKey)||'{}');}catch(e){}
   ticks[idx]=!ticks[idx];
   localStorage.setItem(tickKey,JSON.stringify(ticks));
   renderTT();
@@ -700,6 +707,7 @@ window._resetTT=function(){
   var ds=(typeof ttSelectedDate!=='undefined'?ttSelectedDate:null)||logicalToday;
   localStorage.removeItem('tt_ticks_'+ds);
   localStorage.removeItem('tt_hidden_'+ds);
+  localStorage.removeItem('tt_edits_'+ds);
   renderTT();
 };
 
@@ -709,5 +717,17 @@ window._hideTTItem=function(ds,idx){
   try{hidden=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
   hidden[idx]=true;
   localStorage.setItem(key,JSON.stringify(hidden));
+  renderTT();
+};
+
+window._editTTItem=function(ds,idx){
+  var editsKey='tt_edits_'+ds;
+  var edits={};
+  try{edits=JSON.parse(localStorage.getItem(editsKey)||'{}');}catch(e){}
+  var current=edits[idx]||'';
+  var newLabel=prompt('Edit schedule item:',current);
+  if(newLabel===null)return;
+  edits[idx]=newLabel;
+  localStorage.setItem(editsKey,JSON.stringify(edits));
   renderTT();
 };
