@@ -232,7 +232,7 @@ window._saveHomeNote=function(){
 // ── XP SYSTEM ──
 var XP_LEVELS=[0,100,250,500,1000,2000,4000,7000,11000,16000,25000];
 
-function xpForLevel(lv){return XP_LEVELS[lv]||XP_LEVELS[XP_LEVELS.length-1];}
+function xpForLevel(lv){return XP_LEVELS[lv]!==undefined?XP_LEVELS[lv]:XP_LEVELS[XP_LEVELS.length-1];}
 
 function getXPData(){
   return lGet('xp_data')||{xp:0,level:1,log:[]};
@@ -248,7 +248,7 @@ function renderXP(){
   var xp=d.xp||0;
   var thisLvXP=xpForLevel(lv-1);
   var nextLvXP=xpForLevel(lv);
-  var pct=nextLvXP>thisLvXP?Math.min(100,Math.round((xp-thisLvXP)/(nextLvXP-thisLvXP)*100)):100;
+  var pct=nextLvXP>thisLvXP?Math.min(100,Math.max(0,Math.round((xp-thisLvXP)/(nextLvXP-thisLvXP)*100))):100;
 
   var lvEl=document.getElementById('xp-level');
   var fillEl=document.getElementById('xp-fill');
