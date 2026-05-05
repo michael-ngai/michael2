@@ -624,7 +624,7 @@ async function renderTT(){
         '<div class="tt-cb cb'+(ticked?' checked':'')+'" style="flex-shrink:0;width:18px;height:18px;border-radius:50%;border:1.5px solid '+(ticked?'var(--green)':'var(--border2)')+';background:'+(ticked?'var(--green)':'transparent')+';display:flex;align-items:center;justify-content:center;transition:all .15s;">'+
           (ticked?'<svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+
         '</div>'+
-        '<div style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+item.t+'</div>'+
+        '<div style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(schEdits[idx+'_time']||item.t)+'</div>'+
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
         '<button class="editbtn" onclick="event.stopPropagation();editTTItem(\''+ds+'\','+idx+')" title="Edit label">edit</button>'+
@@ -721,13 +721,24 @@ window._hideTTItem=function(ds,idx){
 };
 
 window._editTTItem=function(ds,idx){
+  // Get current SCH item to find existing time
+  var d=new Date(ds+'T00:00:00');
+  var dow=d.getDay();
+  var sch=SCH[dow];
+  var items=sch&&sch.items?sch.items.filter(function(_,i){
+    var hiddenKey='tt_hidden_'+ds;
+    var hidden={};
+    try{hidden=JSON.parse(localStorage.getItem(hiddenKey)||'{}');}catch(e){}
+    return !hidden[i];
+  }):[];
+  var item=items[idx]||{};
   var editsKey='tt_edits_'+ds;
   var edits={};
   try{edits=JSON.parse(localStorage.getItem(editsKey)||'{}');}catch(e){}
-  var current=edits[idx]||'';
-  var newLabel=prompt('Edit schedule item:',current);
-  if(newLabel===null)return;
-  edits[idx]=newLabel;
+  var currentTime=edits[idx+'_time']||item.t||'';
+  var newTime=prompt('Change time:',currentTime);
+  if(newTime===null)return;
+  edits[idx+'_time']=newTime;
   localStorage.setItem(editsKey,JSON.stringify(edits));
   renderTT();
 };
