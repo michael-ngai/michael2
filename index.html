@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Michael 2.0</title>
@@ -589,13 +592,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777994256"></script>
-<script defer src="js/shared.js?v=1777994256"></script>
-<script defer src="js/routine.js?v=1777994256"></script>
-<script defer src="js/calendar2.js?v=1777994362"></script>
-<script defer src="js/savings.js?v=1777994256"></script>
-<script defer src="js/budget.js?v=1777994256"></script>
-<script defer src="js/init.js?v=1777994256"></script>
+<script type="module" src="js/firebase.js?v=1777994604"></script>
+<script defer src="js/shared.js?v=1777994604"></script>
+<script defer src="js/routine.js?v=1777994604"></script>
+<script defer src="js/calendar2.js?v=1777994604"></script>
+<script defer src="js/savings.js?v=1777994604"></script>
+<script defer src="js/budget.js?v=1777994604"></script>
+<script defer src="js/init.js?v=1777994604"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -634,8 +637,27 @@ function clrEdit(){if(window._clrEdit)window._clrEdit();}
 function resetTT(){if(window._resetTT)window._resetTT();}
 function tickTT(ds,idx,row){if(window._tickTT)window._tickTT(ds,idx,row);}
 function hideTTItem(ds,idx){if(window._hideTTItem)window._hideTTItem(ds,idx);}
-function editTTItem(ds,idx){}
-function editTTTime(ds,idx){}
+function editTTItem(ds,idx){
+  setTimeout(function(){
+    var rows=document.querySelectorAll('.tt-row');
+    var row=rows[idx];if(!row)return;
+    var td=row.querySelector('.tt-time');if(!td)return;
+    var inp=document.createElement('input');
+    inp.type='text';inp.value=td.textContent;
+    inp.style.cssText='width:78px;font-size:10px;background:var(--surface2);border:1.5px solid var(--green);border-radius:4px;color:var(--text);padding:2px 4px;outline:none;';
+    inp.onclick=function(e){e.stopPropagation();};
+    td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();
+    function sv(){
+      var k='tt_edits_'+ds,ed={};
+      try{ed=JSON.parse(localStorage.getItem(k)||'{}');}catch(ex){}
+      ed[idx+'_time']=inp.value;localStorage.setItem(k,JSON.stringify(ed));
+      if(window.renderTT)window.renderTT();else if(window._switchCalSub)window._switchCalSub('timetable');
+    }
+    inp.onblur=sv;
+    inp.onkeydown=function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape')sv();};
+  },0);
+}
+function editTTTime(ds,idx){editTTItem(ds,idx);}
 function switchTab(n){
   if(window._switchTab){window._switchTab(n);return;}
   // Fallback - works before module loads
