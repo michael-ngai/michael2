@@ -1,3 +1,20 @@
+window.doTTEdit_1777994103=function(btn,ds,idx){
+  var row=btn.closest('.tt-row');if(!row)return;
+  var td=row.querySelector('.tt-time');if(!td)return;
+  var inp=document.createElement('input');
+  inp.type='text';inp.value=td.textContent;
+  inp.style.cssText='width:78px;font-size:10px;background:var(--surface2);border:1.5px solid var(--green);border-radius:4px;color:var(--text);padding:2px 4px;';
+  inp.onclick=function(e){e.stopPropagation();};
+  td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();
+  inp.onblur=function(){
+    var k='tt_edits_'+ds,ed={};
+    try{ed=JSON.parse(localStorage.getItem(k)||'{}');}catch(ex){}
+    ed[idx+'_time']=inp.value;
+    localStorage.setItem(k,JSON.stringify(ed));
+    if(window.renderTT)window.renderTT();
+  };
+  inp.onkeydown=function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape'&&window.renderTT)window.renderTT();};
+};
 // ── CALENDAR ──
 var CS={view:'month',month:new Date(),wstart:null,day:new Date(),sel:null};
 var ECOL_OLD={'tt':'cd-other',gym:'cd-sports',ball:'cd-sports',fun:'cd-michaels',family:'cd-michaels',bday:'cd-michaels',sick:'cd-sports',appt:'cd-personal',shift:'cd-work'};
@@ -627,7 +644,7 @@ async function renderTT(){
         '<div class="tt-time" style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(schEdits[idx+'_time']||item.t)+'</div>'+
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
-        '<button class="editbtn" onclick="event.stopPropagation();editTTTime(\''+ds+'\','+idx+')" title="Edit label">edit</button>'+
+        '<button class="editbtn" onclick="event.stopPropagation();doTTEdit_1777994103(this,\''+ds+'\','+idx+')" title="Edit time">edit</button>'+
         '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')" title="Hide for today">&#215;</span>'+
       '</div>';
     }).join('');
