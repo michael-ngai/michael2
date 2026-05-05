@@ -5,36 +5,41 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <script>
-// Override prompt - intercept timetable edit and do inline instead
-window.prompt = function(msg, val) {
-  if(msg && msg.indexOf('schedule') !== -1) {
-    // Find the active edit button and trigger inline edit
-    setTimeout(function(){
-      var btn = document.activeElement;
-      var row = btn && btn.closest ? btn.closest('.tt-row') : null;
-      if(!row) { var rows = document.querySelectorAll('.tt-row'); row = rows[0]; }
-      if(!row) return;
-      var td = row.querySelector('.tt-time');
-      if(!td) return;
-      var inp = document.createElement('input');
-      inp.type='text'; inp.value = val||td.textContent;
-      inp.style.cssText='width:78px;font-size:10px;background:var(--surface2);border:1.5px solid var(--green);border-radius:4px;color:var(--text);padding:2px 4px;outline:none;';
-      inp.onclick=function(e){e.stopPropagation();};
-      td.innerHTML=''; td.appendChild(inp); inp.focus(); inp.select();
-      inp.onblur=function(){
-        // Extract ds and idx from row's onclick
-        var onc = row.getAttribute('onclick')||'';
-        var m1 = onc.match(/tickTT\('([^']+)',(\d+)/);
-        var ds = m1?m1[1]:''; var idx = m1?parseInt(m1[2]):0;
-        var k='tt_edits_'+ds, ed={};
-        try{ed=JSON.parse(localStorage.getItem(k)||'{}');}catch(ex){}
-        ed[idx+'_time']=inp.value; localStorage.setItem(k,JSON.stringify(ed));
-        if(window.renderTT)window.renderTT();
-      };
-      inp.onkeydown=function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape'&&window.renderTT)window.renderTT();};
-    },50);
-    return null;
+window._ttEditRow = null;
+// Track clicks on edit buttons so we know which row to edit
+document.addEventListener('click', function(e){
+  var btn = e.target.closest ? e.target.closest('.editbtn') : null;
+  if(btn){
+    var row = btn.closest ? btn.closest('.tt-row') : null;
+    if(row) window._ttEditRow = row;
   }
+}, true);
+
+window.prompt = function(msg, val){
+  var row = window._ttEditRow;
+  window._ttEditRow = null;
+  if(!row){ row = document.querySelector('.tt-row'); }
+  if(!row) return null;
+  var td = row.querySelector('.tt-time');
+  if(!td) return null;
+  var inp = document.createElement('input');
+  inp.type='text'; inp.value = val||td.textContent;
+  inp.style.cssText='width:78px;font-size:10px;background:var(--surface2);border:1.5px solid var(--green);border-radius:4px;color:var(--text);padding:2px 4px;outline:none;';
+  inp.onclick=function(e){e.stopPropagation();};
+  td.innerHTML=''; td.appendChild(inp); inp.focus(); inp.select();
+  inp.onblur=function(){
+    var onc = row.getAttribute('onclick')||'';
+    var m = onc.match(/tickTT[^']*'([^']+)',\s*(\d+)/);
+    if(!m){ m = onc.match(/'([0-9\-]+)',\s*(\d+)/); }
+    var ds=m?m[1]:''; var idx=m?parseInt(m[2]):0;
+    if(ds){
+      var k='tt_edits_'+ds, ed={};
+      try{ed=JSON.parse(localStorage.getItem(k)||'{}');}catch(ex){}
+      ed[idx+'_time']=inp.value; localStorage.setItem(k,JSON.stringify(ed));
+    }
+    if(window.renderTT)window.renderTT();
+  };
+  inp.onkeydown=function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape'&&window.renderTT)window.renderTT();};
   return null;
 };
 </script>
@@ -626,13 +631,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777996035"></script>
-<script defer src="js/shared.js?v=1777996035"></script>
-<script defer src="js/routine.js?v=1777996035"></script>
-<script defer src="js/calendar2.js?v=1777996035"></script>
-<script defer src="js/savings.js?v=1777996035"></script>
-<script defer src="js/budget.js?v=1777996035"></script>
-<script defer src="js/init.js?v=1777996035"></script>
+<script type="module" src="js/firebase.js?v=1777996091"></script>
+<script defer src="js/shared.js?v=1777996091"></script>
+<script defer src="js/routine.js?v=1777996091"></script>
+<script defer src="js/calendar2.js?v=1777996091"></script>
+<script defer src="js/savings.js?v=1777996091"></script>
+<script defer src="js/budget.js?v=1777996091"></script>
+<script defer src="js/init.js?v=1777996091"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
