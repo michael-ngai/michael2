@@ -737,30 +737,3 @@ window._hideTTItem=function(ds,idx){
   renderTT();
 };
 
-window._editTTTime=function(ds,idx){
-  // Find the time div in the row and replace with inline input
-  var rows=document.querySelectorAll('.tt-row');
-  var row=rows[idx];
-  if(!row)return;
-  var timeDiv=row.querySelector('.tt-time');
-  if(!timeDiv)return;
-  var current=timeDiv.textContent;
-  var inp=document.createElement('input');
-  inp.type='text';
-  inp.value=current;
-  inp.style.cssText='width:80px;font-size:10px;font-family:DM Mono,monospace;background:var(--surface2);border:1px solid var(--green);border-radius:4px;color:var(--text);padding:2px 4px;';
-  inp.onclick=function(e){e.stopPropagation();};
-  timeDiv.innerHTML='';
-  timeDiv.appendChild(inp);
-  inp.focus();inp.select();
-  function save(){
-    var editsKey='tt_edits_'+ds;
-    var edits={};
-    try{edits=JSON.parse(localStorage.getItem(editsKey)||'{}');}catch(e){}
-    edits[idx+'_time']=inp.value;
-    localStorage.setItem(editsKey,JSON.stringify(edits));
-    renderTT();
-  }
-  inp.onblur=save;
-  inp.onkeydown=function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape'){renderTT();}};
-};
