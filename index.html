@@ -589,13 +589,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777993679"></script>
-<script defer src="js/shared.js?v=1777993679"></script>
-<script defer src="js/routine.js?v=1777993679"></script>
-<script defer src="js/calendar.js?v=1777993679"></script>
-<script defer src="js/savings.js?v=1777993679"></script>
-<script defer src="js/budget.js?v=1777993679"></script>
-<script defer src="js/init.js?v=1777993679"></script>
+<script type="module" src="js/firebase.js?v=1777994001"></script>
+<script defer src="js/shared.js?v=1777994001"></script>
+<script defer src="js/routine.js?v=1777994001"></script>
+<script defer src="js/calendar.js?v=1777994001"></script>
+<script defer src="js/savings.js?v=1777994001"></script>
+<script defer src="js/budget.js?v=1777994001"></script>
+<script defer src="js/init.js?v=1777994001"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -634,8 +634,30 @@ function clrEdit(){if(window._clrEdit)window._clrEdit();}
 function resetTT(){if(window._resetTT)window._resetTT();}
 function tickTT(ds,idx,row){if(window._tickTT)window._tickTT(ds,idx,row);}
 function hideTTItem(ds,idx){if(window._hideTTItem)window._hideTTItem(ds,idx);}
-function editTTTime(ds,idx){if(window._editTTTime)window._editTTTime(ds,idx);}
-function editTTItem(ds,idx){if(window._editTTTime)window._editTTTime(ds,idx);}
+function editTTItem(ds,idx){
+  var rows=document.querySelectorAll('.tt-row');
+  var row=rows[idx];
+  if(!row)return;
+  var timeDiv=row.querySelector('.tt-time');
+  if(!timeDiv)return;
+  var cur=timeDiv.textContent;
+  var inp=document.createElement('input');
+  inp.type='text';inp.value=cur;
+  inp.style.cssText='width:80px;font-size:10px;font-family:DM Mono,monospace;background:var(--surface2);border:1px solid var(--green);border-radius:4px;color:var(--text);padding:2px 4px;';
+  inp.onclick=function(e){e.stopPropagation();};
+  timeDiv.innerHTML='';timeDiv.appendChild(inp);
+  inp.focus();inp.select();
+  function save(){
+    var key='tt_edits_'+ds,ed={};
+    try{ed=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+    ed[idx+'_time']=inp.value;
+    localStorage.setItem(key,JSON.stringify(ed));
+    if(window.renderTT)renderTT();
+  }
+  inp.onblur=save;
+  inp.onkeydown=function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape'&&window.renderTT)renderTT();};
+}
+function editTTTime(ds,idx){editTTItem(ds,idx);}
 function switchTab(n){
   if(window._switchTab){window._switchTab(n);return;}
   // Fallback - works before module loads
