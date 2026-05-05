@@ -627,7 +627,7 @@ async function renderTT(){
         '<div class="tt-time" style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(schEdits[idx+'_time']||item.t)+'</div>'+
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
-        '<button class="editbtn" onclick="event.stopPropagation();editTTItem(\''+ds+'\','+idx+')" title="Edit label">edit</button>'+
+        '<button class="editbtn" onclick="event.stopPropagation();editTTTime(\''+ds+'\','+idx+')" title="Edit label">edit</button>'+
         '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')" title="Hide for today">&#215;</span>'+
       '</div>';
     }).join('');
@@ -720,7 +720,7 @@ window._hideTTItem=function(ds,idx){
   renderTT();
 };
 
-window._editTTItem=function(ds,idx){
+window._editTTTime=function(ds,idx){
   // Find the time div in the row and replace with inline input
   var rows=document.querySelectorAll('.tt-row');
   var row=rows[idx];
