@@ -4,6 +4,17 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<script>
+// Override prompt to prevent any cached code from showing dialogs
+var _origPrompt = window.prompt;
+window.prompt = function(msg, val) {
+  if(msg && msg.indexOf('schedule') !== -1) {
+    // Intercept timetable edit - find and activate inline edit instead
+    return null; // cancel - no dialog
+  }
+  return _origPrompt ? _origPrompt.call(window, msg, val) : null;
+};
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Michael 2.0</title>
@@ -592,13 +603,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1777994984"></script>
-<script defer src="js/shared.js?v=1777994984"></script>
-<script defer src="js/routine.js?v=1777994984"></script>
-<script defer src="js/calendar2.js?v=1777994984"></script>
-<script defer src="js/savings.js?v=1777994984"></script>
-<script defer src="js/budget.js?v=1777994984"></script>
-<script defer src="js/init.js?v=1777994984"></script>
+<script type="module" src="js/firebase.js?v=1777995971"></script>
+<script defer src="js/shared.js?v=1777995971"></script>
+<script defer src="js/routine.js?v=1777995971"></script>
+<script defer src="js/calendar2.js?v=1777995971"></script>
+<script defer src="js/savings.js?v=1777995971"></script>
+<script defer src="js/budget.js?v=1777995971"></script>
+<script defer src="js/init.js?v=1777995971"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
