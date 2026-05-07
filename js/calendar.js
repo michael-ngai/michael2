@@ -660,8 +660,8 @@ async function renderTT(){
         '<div style="min-width:60px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(e.note||'')+'</div>'+
         '<div style="flex:1;font-size:13px;font-weight:500;">'+e.title+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
-        '<button class="editbtn" onclick="editEvt(\''+e.id+'\')">edit</button>'+
         '<span class="evtdel" onclick="delEvt(\''+e.id+'\')">&#215;</span>'+
+        '<button class="editbtn" style="color:var(--blue);border-color:var(--blue);" onmouseenter="this.style.color=\'var(--amber)\';this.style.borderColor=\'var(--amber)\';" onmouseleave="this.style.color=\'var(--blue)\';this.style.borderColor=\'var(--blue)\';" onclick="editEvt(\''+e.id+'\')">edit</button>'+
       '</div>';
     }).join('');
   }
