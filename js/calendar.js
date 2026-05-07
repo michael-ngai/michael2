@@ -644,6 +644,7 @@ async function renderTT(){
         '<div class="tt-time" style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(schEdits[idx+'_time']||item.t)+'</div>'+
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+(schEdits[idx+'_note']?'<span style="display:block;font-size:10px;color:var(--accent);margin-top:2px;">'+schEdits[idx+'_note']+'</span>':'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
+        '<button onclick="event.stopPropagation();editTTTime(\''+ds+'\','+idx+')" class="tt-editbtn" style="font-size:10px;padding:2px 7px;height:auto;border-radius:4px;border:1px solid var(--amber);color:var(--amber);background:transparent;cursor:pointer;margin-right:4px;">edit</button>'+
         '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')" title="Hide for today">&#215;</span>'+'<button class="editbtn" onclick="event.stopPropagation();editTTItem(\''+ds+'\',' + idx + ')" style="margin-left:4px;padding:1px 7px;border:1px solid #4caf50;border-radius:4px;background:transparent;color:#4caf50;font-size:10px;cursor:pointer;">edit</button>'+
       '</div>';
     }).join('');
