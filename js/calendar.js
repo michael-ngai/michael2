@@ -642,9 +642,9 @@ async function renderTT(){
           (ticked?'<svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#0e0e0f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+
         '</div>'+
         '<div class="tt-time" style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(schEdits[idx+'_time']||item.t)+'</div>'+
-        '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+'</div>'+
+        '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+(schEdits[idx+'_note']?'<span style="display:block;font-size:10px;color:var(--accent);margin-top:2px;">'+schEdits[idx+'_note']+'</span>':'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
-        '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')" title="Hide for today">&#215;</span>'+
+        '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')" title="Hide for today">&#215;</span>'+'<button class="editbtn" onclick="event.stopPropagation();editTTItem(\''+ds+'\',' + idx + ')" style="margin-left:4px;padding:1px 7px;border:1px solid #4caf50;border-radius:4px;background:transparent;color:#4caf50;font-size:10px;cursor:pointer;">edit</button>'+
       '</div>';
     }).join('');
   } else {
@@ -660,8 +660,8 @@ async function renderTT(){
         '<div style="min-width:60px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(e.note||'')+'</div>'+
         '<div style="flex:1;font-size:13px;font-weight:500;">'+e.title+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
+        '<button class="editbtn" onclick="editEvt(\''+e.id+'\')">edit</button>'+
         '<span class="evtdel" onclick="delEvt(\''+e.id+'\')">&#215;</span>'+
-        '<button class="editbtn" style="color:var(--blue);border-color:var(--blue);" onmouseenter="this.style.color=\'var(--amber)\';this.style.borderColor=\'var(--amber)\';" onmouseleave="this.style.color=\'var(--blue)\';this.style.borderColor=\'var(--blue)\';" onclick="editEvt(\''+e.id+'\')">edit</button>'+
       '</div>';
     }).join('');
   }
