@@ -718,14 +718,20 @@ window._tickTT=async function(ds,idx,row){
   try{schEdits=JSON.parse(localStorage.getItem(editsKey)||'{}');}catch(e){}
 
   var nowTicked=!ticks[idx];
+  console.log('[A] nowTicked='+nowTicked+' ticks='+JSON.stringify(ticks));
   ticks[idx]=nowTicked;
   localStorage.setItem(tickKey,JSON.stringify(ticks));
+  console.log('[B] localStorage saved');
 
   // Auto-log to calendar
   try{
+    console.log('[C] entering try');
     var dow=new Date(ds+'T00:00:00').getDay();
-    var sch=SCH[dow];
+    console.log('[D] dow='+dow);
+    var sch=typeof SCH!=='undefined'?SCH[dow]:null;
+    console.log('[E] sch='+JSON.stringify(sch&&sch.note));
     var visItems=sch&&sch.items?sch.items.filter(function(_,i){return !hidden[i];}):[];
+    console.log('[F] visItems.length='+visItems.length+' idx='+idx);
     var item=visItems[idx];
     console.log('[tickTT] item=',item,'nowTicked=',nowTicked);
     if(item){
