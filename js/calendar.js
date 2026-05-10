@@ -645,6 +645,7 @@ async function renderTT(){
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+(schEdits[idx+'_note']?'<span style="display:block;font-size:10px;color:var(--accent);margin-top:2px;">'+schEdits[idx+'_note']+'</span>':'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
         '<button onclick="event.stopPropagation();editTTTime(\''+ds+'\','+idx+')" class="editbtn">edit</button>'+
+        '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')">&#215;</span>'+
       '</div>';
     }).join('');
   } else {
