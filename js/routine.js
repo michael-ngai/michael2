@@ -205,6 +205,23 @@ async function renderMonthly(){
 }
 
 // ── TOGGLE ──
+var HABIT_CAL_MAP={
+  sleep:    {type:'sleep',    label:'Slept 7.5–8 hours'},
+  workout:  {type:'sports',   label:'Worked out / basketball'},
+  meal:     {type:'meal',     label:'Ate home-cooked'},
+  duolingo: {type:'learning', label:'Duolingo — Japanese'},
+  ai:       {type:'learning', label:'Used AI productively'},
+  journal:  {type:'learning', label:'Wrote journal in English'},
+  podcast:  {type:'learning', label:'Listened to English podcast'},
+  logdash:  {type:'personal', label:'Logged dashboard'},
+  nospend:  {type:'personal', label:'No unnecessary spending'},
+  mealprep: {type:'meal',     label:'Sunday meal prep done'},
+  pcs:      {type:'work',     label:'PCS social post published'},
+  savings:  {type:'personal', label:'Payday savings transferred'},
+  anthro:   {type:'learning', label:'Anthropic Academy — 1hr'},
+  housework:{type:'personal', label:'House work — laundry & vacuum'}
+};
+
 window._togRoutine = async function(el){
   var id  = el.dataset.id;
   var tab = (document.querySelector('#rtn-subtabs .subtab.active')||{}).dataset||{};
@@ -227,6 +244,22 @@ window._togRoutine = async function(el){
     if(t==='daily'&&data[id]){
       var doneCount=DAILY_HABITS.filter(function(h){return data[h];}).length;
       if(doneCount===DAILY_HABITS.length) window._addXP(50,'🔥 Full daily routine!');
+    }
+  }
+  // Auto-log to calendar (daily tab only)
+  if(t==='daily'){
+    var map=HABIT_CAL_MAP[id];
+    if(map){
+      var evtDate=(typeof logicalDate==='function')?logicalDate(new Date()):selDate;
+      var evts=await fbGetCol('events');
+      var existing=evts.find(function(e){return e.date===evtDate&&e.title===map.label;});
+      if(data[id]&&!existing){
+        await fbAddDoc('events',{date:evtDate,type:map.type,title:map.label,note:''});
+        if(window.evtCache!==undefined)window.evtCache=null;
+      } else if(!data[id]&&existing){
+        await fbDelDoc('events',existing.id);
+        if(window.evtCache!==undefined)window.evtCache=null;
+      }
     }
   }
   render();
