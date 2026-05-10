@@ -57,49 +57,41 @@ var DH=['sleep','workout','meal','logdash','duolingo','ai','journal','podcast','
 var AH=['sleep','workout','meal','logdash','duolingo','ai','journal','podcast','nospend','mealprep','pcs','savings','anthro','housework'];
 
 var SCH={
-  1:{note:'PPRC + PCYC · gym after',items:[
-    {t:'1:00am–8:30am',l:'Sleep',c:'sleep'},{t:'8:30–9:00am',l:'Travel to PPRC · podcast',c:'travel'},
-    {t:'9:00am–1:15pm',l:'PPRC shift',c:'work'},{t:'1:15–2:00pm',l:'Travel PPRC→PCYC · podcast',c:'travel'},
-    {t:'2:00–10:00pm',l:'PCYC shift · 30min break',c:'work'},{t:'10:00–11:00pm',l:'Gym at PCYC',c:'gym'},
-    {t:'11:00–11:40pm',l:'Shower (40min)',c:'travel'},{t:'11:40pm–12:10am',l:'Travel home · podcast',c:'travel'},
-    {t:'12:10–12:30am',l:'Switch / Netflix / Duolingo',c:'fun'},{t:'12:30am',l:'Bed',c:'sleep'}]},
-  2:{note:'PPRC + PCYC · basketball game night',items:[
-    {t:'1:00am–8:30am',l:'Sleep',c:'sleep'},{t:'8:30–9:00am',l:'Travel to PPRC · podcast',c:'travel'},
-    {t:'9:00am–1:15pm',l:'PPRC shift',c:'work'},{t:'1:15–2:00pm',l:'Travel PPRC→PCYC · podcast',c:'travel'},
-    {t:'2:00–7:50pm',l:'PCYC shift',c:'work'},{t:'7:50–8:50pm',l:'Basketball game',c:'ball'},{t:'10:00–10:40pm',l:'Shower (40min)',c:'travel'},
-    {t:'10:40–11:10pm',l:'Travel home · podcast',c:'travel'},{t:'11:10pm–12am',l:'Switch / Netflix / Duolingo',c:'fun'},
-    {t:'12:00am',l:'Bed',c:'sleep'}]},
-  3:{note:'PCYC 12–8pm · gym after · free morning',items:[
-    {t:'1:00am–8:30am',l:'Sleep',c:'sleep'},{t:'8:30–11:30am',l:'Free morning · AI · Japanese',c:'personal'},
-    {t:'11:30am–12pm',l:'Travel to PCYC · podcast',c:'travel'},{t:'12:00–8:00pm',l:'PCYC shift · 30min break',c:'work'},
-    {t:'8:00–9:00pm',l:'Gym at PCYC',c:'gym'},{t:'9:00–9:40pm',l:'Shower (40min)',c:'travel'},
-    {t:'9:40–10:10pm',l:'Travel home · podcast',c:'travel'},{t:'10:10–11:00pm',l:'Dinner · Duolingo',c:'meal'},
-    {t:'11:00pm–12am',l:'Switch / Netflix',c:'fun'},{t:'12:00am',l:'Bed',c:'sleep'}]},
-  4:{note:'PCYC 1:30–9:30pm · gym after · free morning',items:[
-    {t:'1:00am–8:30am',l:'Sleep',c:'sleep'},{t:'8:30am–12:30pm',l:'Free morning · AI · Japanese',c:'personal'},
-    {t:'12:30–1:00pm',l:'Travel to PCYC · podcast',c:'travel'},{t:'1:30–9:30pm',l:'PCYC shift · 30min break',c:'work'},
-    {t:'9:30–10:30pm',l:'Gym at PCYC',c:'gym'},{t:'10:30–11:10pm',l:'Shower (40min)',c:'travel'},
-    {t:'11:10–11:40pm',l:'Travel home · podcast',c:'travel'},{t:'11:40pm–12:30am',l:'Switch / Netflix / Duolingo',c:'fun'},
-    {t:'12:30am',l:'Bed',c:'sleep'}]},
-  5:{note:'PCYC 1:30–10pm · basketball practice 10pm–1am',items:[
-    {t:'1:30am–9:00am',l:'Sleep',c:'sleep'},{t:'9:00am–12:30pm',l:'Free morning · Switch / Netflix',c:'fun'},
-    {t:'12:30–1:00pm',l:'Travel to PCYC · podcast',c:'travel'},{t:'1:30–10:00pm',l:'PCYC shift · 30min break',c:'work'},
-    {t:'10:00pm–1:00am',l:'Basketball practice — your court',c:'ball'},{t:'1:00–1:40am',l:'Shower (40min)',c:'travel'},
-    {t:'1:40–2:10am',l:'Travel home · podcast',c:'travel'},{t:'2:10am',l:'Bed',c:'sleep'}]},
-  6:{note:'Sometimes PPRC · groceries · maybe family dinner',items:[
-    {t:'2:10am–10:00am',l:'Sleep in — recover from Friday',c:'sleep'},
-    {t:'10:00–10:30am',l:'Travel to PPRC · podcast (if rostered)',c:'travel'},
-    {t:'7:15am–2:15pm',l:'PPRC shift (if rostered)',c:'work'},
-    {t:'2:15–2:45pm',l:'Travel home · podcast',c:'travel'},
-    {t:'3:00–4:00pm',l:'Grocery shopping near home',c:'meal'},
-    {t:'4:00–5:30pm',l:'Free time · Switch / Netflix',c:'fun'},
-    {t:'5:30–6:00pm',l:"PCS social post (every 2 weeks)",c:'personal'},
-    {t:'6:00–10:00pm',l:"Dinner with sister's family (if Saturday)",c:'family'},
-    {t:'10:30pm',l:'Bed',c:'sleep'}]},
-  0:{note:'Full rest day — your day',items:[
+  1:{note:'PCYC 11:15am–7:15pm',items:[
+    {t:'Sleep',l:'Sleep',c:'sleep'},
+    {t:'11:15am–7:15pm',l:'PCYC shift',c:'work'},
+    {t:'Evening',l:'Dinner · Duolingo · Switch',c:'fun'},
+    {t:'Night',l:'Bed',c:'sleep'}]},
+  2:{note:'PCYC 11:15am–7:15pm',items:[
+    {t:'Sleep',l:'Sleep',c:'sleep'},
+    {t:'11:15am–7:15pm',l:'PCYC shift',c:'work'},
+    {t:'Evening',l:'Dinner · Duolingo · Switch',c:'fun'},
+    {t:'Night',l:'Bed',c:'sleep'}]},
+  3:{note:'PCYC 11:15am–7:15pm',items:[
+    {t:'Sleep',l:'Sleep',c:'sleep'},
+    {t:'11:15am–7:15pm',l:'PCYC shift',c:'work'},
+    {t:'Evening',l:'Dinner · Duolingo · Switch',c:'fun'},
+    {t:'Night',l:'Bed',c:'sleep'}]},
+  4:{note:'PCYC 10:00am–6:00pm',items:[
+    {t:'Sleep',l:'Sleep',c:'sleep'},
+    {t:'10:00am–6:00pm',l:'PCYC shift',c:'work'},
+    {t:'Evening',l:'Dinner · Duolingo · Switch',c:'fun'},
+    {t:'Night',l:'Bed',c:'sleep'}]},
+  5:{note:'PCYC 12:00pm–8:30pm',items:[
+    {t:'Sleep',l:'Sleep',c:'sleep'},
+    {t:'12:00pm–8:30pm',l:'PCYC shift',c:'work'},
+    {t:'Evening',l:'Dinner · Duolingo · Switch',c:'fun'},
+    {t:'Night',l:'Bed',c:'sleep'}]},
+  6:{note:'PPRC 7:15am–4:15pm',items:[
+    {t:'7:15am–4:15pm',l:'PPRC shift',c:'work'},
+    {t:'Afternoon',l:'Grocery shopping',c:'meal'},
+    {t:'Afternoon',l:'Free time · Switch / Netflix',c:'fun'},
+    {t:'Evening',l:"Dinner with sister's family (if Saturday)",c:'family'},
+    {t:'Night',l:'Bed',c:'sleep'}]},
+  0:{note:'Rest day · PCS coaching 2:30–4pm',items:[
     {t:'Morning',l:'Sleep in — no alarm',c:'sleep'},
-    {t:'Morning',l:'Meal prep — 2 batches',c:'meal'},
-    {t:'2:30–4:00pm',l:'PCS — basketball coaching',c:'work'},
+    {t:'Morning',l:'Meal prep',c:'meal'},
+    {t:'2:30pm–4:00pm',l:'PCS — basketball coaching',c:'work'},
     {t:'Afternoon',l:'AI learning · Japanese · free',c:'personal'},
     {t:'Afternoon',l:'Switch / Netflix — enjoy',c:'fun'},
     {t:'Evening',l:'Family dinner (if Sunday)',c:'family'},
