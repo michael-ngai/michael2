@@ -722,24 +722,30 @@ window._tickTT=async function(ds,idx,row){
   localStorage.setItem(tickKey,JSON.stringify(ticks));
 
   // Auto-log to calendar
-  var dow=new Date(ds+'T00:00:00').getDay();
-  var sch=SCH[dow];
-  var visItems=sch&&sch.items?sch.items.filter(function(_,i){return !hidden[i];}):[];
-  var item=visItems[idx];
-  if(item){
-    var label=schEdits[idx]||item.l||'';
-    var timeStr=schEdits[idx+'_time']||item.t||'';
-    var evtTitle=timeStr?timeStr+' · '+label:label;
-    var evts=await loadEvts();
-    var existing=evts.find(function(e){return e.date===ds&&e.title===evtTitle;});
-    if(nowTicked&&!existing){
-      await fbAddDoc('events',{date:ds,type:item.c,title:evtTitle,note:''});
-      evtCache=null;
-    } else if(!nowTicked&&existing){
-      await fbDelDoc('events',existing.id);
-      evtCache=null;
+  try{
+    var dow=new Date(ds+'T00:00:00').getDay();
+    var sch=SCH[dow];
+    var visItems=sch&&sch.items?sch.items.filter(function(_,i){return !hidden[i];}):[];
+    var item=visItems[idx];
+    console.log('[tickTT] item=',item,'nowTicked=',nowTicked);
+    if(item){
+      var label=schEdits[idx]||item.l||'';
+      var timeStr=schEdits[idx+'_time']||item.t||'';
+      var evtTitle=timeStr?timeStr+' · '+label:label;
+      var evts=await loadEvts();
+      var existing=evts.find(function(e){return e.date===ds&&e.title===evtTitle;});
+      console.log('[tickTT] evtTitle=',evtTitle,'existing=',existing);
+      if(nowTicked&&!existing){
+        await fbAddDoc('events',{date:ds,type:item.c,title:evtTitle,note:''});
+        evtCache=null;
+        console.log('[tickTT] event created');
+      } else if(!nowTicked&&existing){
+        await fbDelDoc('events',existing.id);
+        evtCache=null;
+        console.log('[tickTT] event deleted');
+      }
     }
-  }
+  }catch(err){console.error('[tickTT] auto-log error:',err);}
 
   renderTT();
 };
