@@ -706,6 +706,7 @@ window._jumpTTDay=function(ds){
 };
 
 window._tickTT=async function(ds,idx,row){
+  console.log("[tickTT] ds="+ds+" idx="+idx);
   var tickKey='tt_ticks_'+ds;
   var ticks={};
   try{ticks=JSON.parse(localStorage.getItem(tickKey)||'{}');}catch(e){}
