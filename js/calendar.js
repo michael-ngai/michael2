@@ -644,28 +644,16 @@ async function renderTT(){
         '<div class="tt-time" style="min-width:76px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(schEdits[idx+'_time']||item.t)+'</div>'+
         '<div style="flex:1;font-size:13px;'+(ticked?'text-decoration:line-through;color:var(--text3);':'')+'">'+(item.l||'')+(schEdits[idx+'_note']?'<span style="display:block;font-size:10px;color:var(--accent);margin-top:2px;">'+schEdits[idx+'_note']+'</span>':'')+'</div>'+
         '<span style="font-size:9px;padding:2px 6px;border-radius:20px;white-space:nowrap;'+ps+'">'+item.c+'</span>'+
-        '<button onclick="event.stopPropagation();editTTTime(\''+ds+'\','+idx+')" class="editbtn">edit</button>'+
+        '<button onclick="event.stopPropagation();openTTEdit(\''+ds+'\','+idx+')" class="editbtn">'+(window._ttEditId===ds+'_'+idx?'close':'edit')+'</button>'+
         '<span class="evtdel" onclick="event.stopPropagation();hideTTItem(\''+ds+'\','+idx+')">&#215;</span>'+
-      '</div>';
+      '</div>'+
+      buildTTEditPanel(ds,idx,item,schEdits);
     }).join('');
   } else {
     html+='<div class="empty" style="padding:12px;">No schedule for this day</div>';
   }
 
-  // Show any calendar events for this day
-  if(dayEvts.length>0){
-    html+='<div style="padding:8px 14px 4px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;">Calendar events</div>';
-    html+=dayEvts.map(function(e,ei){
-      var ps=getPillStyle(e.type);
-      return '<div style="display:flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid transparent;border-radius:4px;margin:1px 2px;transition:border-color .15s;" onmouseenter="this.style.borderColor=\'var(--green)\'" onmouseleave="this.style.borderColor=\'transparent\'">'+
-        '<div style="min-width:60px;font-size:10px;color:var(--text3);font-family:\'DM Mono\',monospace;flex-shrink:0;">'+(e.note||'')+'</div>'+
-        '<div style="flex:1;font-size:13px;font-weight:500;">'+e.title+'</div>'+
-        '<span style="font-size:9px;padding:2px 6px;border-radius:20px;'+ps+'">'+e.type+'</span>'+
-        '<button class="editbtn" onclick="editEvt(\''+e.id+'\')">edit</button>'+
-        '<span class="evtdel" onclick="delEvt(\''+e.id+'\')">&#215;</span>'+
-      '</div>';
-    }).join('');
-  }
+  // Calendar events hidden from timetable view (shown in Calendar tab instead)
 
   list.innerHTML=html;
 
@@ -773,3 +761,52 @@ window._hideTTItem=function(ds,idx){
   renderTT();
 };
 
+
+window._openTTEdit=function(ds,idx){
+  // Toggle edit mode - store which item is being edited
+  window._ttEditId=(window._ttEditId===ds+'_'+idx)?null:(ds+'_'+idx);
+  renderTT();
+};
+
+window._saveTTEdit=function(ds,idx){
+  var typeEl=document.getElementById('tt-edit-type');
+  var titleEl=document.getElementById('tt-edit-title');
+  var startEl=document.getElementById('tt-edit-start');
+  var endEl=null; // time handled by tt-edit-time-inp
+  if(!titleEl)return;
+  var newTitle=titleEl.value.trim();
+  var newType=typeEl?typeEl.value:'';
+  var start=''; var end='';
+  var timeInp=document.getElementById('tt-edit-time-inp');
+  var newTime=timeInp?timeInp.value:'';
+  var editsKey='tt_edits_'+ds;
+  var edits={};
+  try{edits=JSON.parse(localStorage.getItem(editsKey)||'{}');}catch(e){}
+  if(newTitle) edits[idx]=newTitle;
+  if(newTime) edits[idx+'_time']=newTime;
+  if(newType) edits[idx+'_type']=newType;
+  localStorage.setItem(editsKey,JSON.stringify(edits));
+  window._ttEditId=null;
+  renderTT();
+};
+
+function buildTTEditPanel(ds,idx,item,schEdits){
+  if(window._ttEditId!==ds+'_'+idx) return '';
+  var curType=schEdits[idx+'_type']||item.c||'work';
+  var curLabel=schEdits[idx]||item.l||'';
+  var curTime=schEdits[idx+'_time']||item.t||'';
+  var types=[['work','🟢 Work'],['sleep','🟣 Sleep'],['sports','🔴 Sports'],['personal','🔵 Personal'],['learning','🟡 Learning'],['meal','🟠 Meal / food'],['michaels',"🌸 Michael's time"],['travel','🔘 Travel'],['other','⚪ Other']];
+  var opts=types.map(function(t){return '<option value="'+t[0]+'"'+(curType===t[0]?' selected':'')+'>'+t[1]+'</option>';}).join('');
+  return '<div style="padding:10px 14px 12px;border-top:0.5px solid var(--border);background:var(--surface2);margin:0 2px 4px;border-radius:0 0 6px 6px;">'+
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Type</div>'+
+    '<select id="tt-edit-type" style="margin-bottom:8px;">'+opts+'</select>'+
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Label</div>'+
+    '<input type="text" id="tt-edit-title" value="'+curLabel.replace(/"/g,"&quot;")+'" style="margin-bottom:8px;"/>'+
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Time</div>'+
+    '<input type="text" id="tt-edit-time-inp" placeholder="e.g. 11:15am–7:15pm" value="'+curTime.replace(/"/g,"&quot;")+'" style="margin-bottom:12px;"/>'+
+    '<div style="display:flex;gap:8px;">'+
+      '<button class="btn p" style="flex:1;" onclick="saveTTEdit(\\\'' +ds+ '\\\','+idx+')">Save</button>'+
+      '<button class="btn" onclick="openTTEdit(\\\'' +ds+ '\\\','+idx+')">Cancel</button>'+
+    '</div>'+
+  '</div>';
+}

@@ -631,13 +631,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1778421237"></script>
-<script defer src="js/shared.js?v=1778421237"></script>
-<script defer src="js/routine.js?v=1778421237"></script>
-<script defer src="js/calendar2.js?v=1778421237"></script>
-<script defer src="js/savings.js?v=1778421237"></script>
-<script defer src="js/budget.js?v=1778421237"></script>
-<script defer src="js/init.js?v=1778421237"></script>
+<script type="module" src="js/firebase.js?v=1778499497"></script>
+<script defer src="js/shared.js?v=1778499497"></script>
+<script defer src="js/routine.js?v=1778499497"></script>
+<script defer src="js/calendar2.js?v=1778499497"></script>
+<script defer src="js/savings.js?v=1778499497"></script>
+<script defer src="js/budget.js?v=1778499497"></script>
+<script defer src="js/init.js?v=1778499497"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -714,6 +714,8 @@ function _saveTTEdit(){
   if(window.renderTT)window.renderTT();
 }
 function editTTTime(ds,idx){editTTItem(ds,idx);}
+function openTTEdit(ds,idx){if(window._openTTEdit)window._openTTEdit(ds,idx);}
+function saveTTEdit(ds,idx){if(window._saveTTEdit)window._saveTTEdit(ds,idx);}
 function switchTab(n){
   if(window._switchTab){window._switchTab(n);return;}
   // Fallback - works before module loads
