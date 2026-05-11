@@ -727,10 +727,10 @@ window._tickTT=async function(ds,idx,row){
       var timeStr=schEdits[idx+'_time']||item.t||'';
       var evtTitle=timeStr?timeStr+' · '+label:label;
       var evts=await loadEvts();
-      var existing=evts.find(function(e){return e.date===ds&&e.title===evtTitle;});
+      var existing=evts.find(function(e){return e.date===ds&&(e.title===evtTitle||e.title===label);});
       console.log('[tickTT] evtTitle=',evtTitle,'existing=',existing);
       if(nowTicked&&!existing){
-        await fbAddDoc('events',{date:ds,type:item.c,title:evtTitle,note:''});
+        await fbAddDoc('events',{date:ds,type:item.c,title:label,note:timeStr});
         evtCache=null;
         console.log('[tickTT] event created');
       } else if(!nowTicked&&existing){

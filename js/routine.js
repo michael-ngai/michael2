@@ -246,22 +246,7 @@ window._togRoutine = async function(el){
       if(doneCount===DAILY_HABITS.length) window._addXP(50,'🔥 Full daily routine!');
     }
   }
-  // Auto-log to calendar (daily tab only)
-  if(t==='daily'){
-    var map=HABIT_CAL_MAP[id];
-    if(map){
-      var evtDate=(typeof logicalDate==='function')?logicalDate(new Date()):selDate;
-      var evts=await fbGetCol('events');
-      var existing=evts.find(function(e){return e.date===evtDate&&e.title===map.label;});
-      if(data[id]&&!existing){
-        await fbAddDoc('events',{date:evtDate,type:map.type,title:map.label,note:''});
-        if(window.evtCache!==undefined)window.evtCache=null;
-      } else if(!data[id]&&existing){
-        await fbDelDoc('events',existing.id);
-        if(window.evtCache!==undefined)window.evtCache=null;
-      }
-    }
-  }
+  // Auto-log removed: only timetable ticks log to calendar
   render();
 };
 
