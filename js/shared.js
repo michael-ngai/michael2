@@ -276,16 +276,22 @@ var XP_LEVELS=[0,100,250,500,1000,2000,4000,7000,11000,16000,25000];
 
 function xpForLevel(lv){return XP_LEVELS[lv]!==undefined?XP_LEVELS[lv]:XP_LEVELS[XP_LEVELS.length-1];}
 
-function getXPData(){
+async function getXPData(){
+  // Try Firebase first, fall back to localStorage
+  try{
+    var d=await fbGet('xp','main');
+    if(d&&typeof d.xp==='number') return d;
+  }catch(e){}
   return lGet('xp_data')||{xp:0,level:1,log:[]};
 }
 
-function saveXPData(d){
-  lSet('xp_data',d);
+async function saveXPData(d){
+  lSet('xp_data',d); // keep local copy too
+  try{ await fbSet('xp','main',d); }catch(e){}
 }
 
-function renderXP(){
-  var d=getXPData();
+async function renderXP(){
+  var d=await getXPData();
   var lv=d.level||1;
   var xp=d.xp||0;
   var thisLvXP=xpForLevel(lv-1);
@@ -301,8 +307,8 @@ function renderXP(){
   if(lblEl) lblEl.textContent=xp+' XP';
 }
 
-window._addXP=function(amount,reason){
-  var d=getXPData();
+window._addXP=async function(amount,reason){
+  var d=await getXPData();
   d.xp=(d.xp||0)+amount;
   if(d.xp<0)d.xp=0;
 
@@ -320,7 +326,7 @@ window._addXP=function(amount,reason){
   d.log.unshift({ts:Date.now(),amount:amount,reason:reason||'',level:d.level});
   if(d.log.length>100)d.log=d.log.slice(0,100);
 
-  saveXPData(d);
+  await saveXPData(d);
   renderXP();
 
   // Level up flash
@@ -337,4 +343,4 @@ window._addXP=function(amount,reason){
 };
 
 // Init XP on load
-(function(){setTimeout(renderXP,600);})();
+(function(){setTimeout(function(){renderXP();},600);})();
