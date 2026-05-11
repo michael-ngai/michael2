@@ -805,8 +805,8 @@ function buildTTEditPanel(ds,idx,item,schEdits){
     '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Time</div>'+
     '<input type="text" id="tt-edit-time-inp" placeholder="e.g. 11:15am–7:15pm" value="'+curTime.replace(/"/g,"&quot;")+'" style="margin-bottom:12px;"/>'+
     '<div style="display:flex;gap:8px;">'+
-      '<button class="btn p" style="flex:1;" onclick="saveTTEdit(\\\'' +ds+ '\\\','+idx+')">Save</button>'+
-      '<button class="btn" onclick="openTTEdit(\\\'' +ds+ '\\\','+idx+')">Cancel</button>'+
+      '<button class="btn p" style="flex:1;" onclick="saveTTEdit(&quot;'+ds+'&quot;,'+idx+')">Save</button>'+
+      '<button class="btn" onclick="openTTEdit(&quot;'+ds+'&quot;,'+idx+')">Cancel</button>'+
     '</div>'+
   '</div>';
 }
