@@ -631,13 +631,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1778499661"></script>
-<script defer src="js/shared.js?v=1778499661"></script>
-<script defer src="js/routine.js?v=1778499661"></script>
-<script defer src="js/calendar2.js?v=1778499661"></script>
-<script defer src="js/savings.js?v=1778499661"></script>
-<script defer src="js/budget.js?v=1778499661"></script>
-<script defer src="js/init.js?v=1778499661"></script>
+<script type="module" src="js/firebase.js?v=1778499807"></script>
+<script defer src="js/shared.js?v=1778499807"></script>
+<script defer src="js/routine.js?v=1778499807"></script>
+<script defer src="js/calendar2.js?v=1778499807"></script>
+<script defer src="js/savings.js?v=1778499807"></script>
+<script defer src="js/budget.js?v=1778499807"></script>
+<script defer src="js/init.js?v=1778499807"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
@@ -698,21 +698,7 @@ function editTTItem(ds,idx){
   document.getElementById('tt-em-note').value=note;
   document.getElementById('tt-edit-modal').style.display='flex';
 }
-function _closeTTEdit(){document.getElementById('tt-edit-modal').style.display='none';}
-function _saveTTEdit(){
-  var startT=document.getElementById('tt-em-start').value;
-  var noEnd=document.getElementById('tt-em-noend').checked;
-  var endT=noEnd?'':document.getElementById('tt-em-end').value;
-  var note=document.getElementById('tt-em-note').value.trim();
-  var timeStr=noEnd?startT:(startT+'-'+endT);
-  var k='tt_edits_'+window._ttEditDs,ed={};
-  try{ed=JSON.parse(localStorage.getItem(k)||'{}');}catch(e){}
-  ed[window._ttEditIdx+'_time']=timeStr;
-  if(note)ed[window._ttEditIdx+'_note']=note;else delete ed[window._ttEditIdx+'_note'];
-  localStorage.setItem(k,JSON.stringify(ed));
-  _closeTTEdit();
-  if(window.renderTT)window.renderTT();
-}
+// tt edit handled by calendar2.js
 function editTTTime(ds,idx){editTTItem(ds,idx);}
 function openTTEdit(ds,idx){if(window._openTTEdit)window._openTTEdit(ds,idx);}
 function saveTTEdit(ds,idx){if(window._saveTTEdit)window._saveTTEdit(ds,idx);}
