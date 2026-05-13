@@ -228,6 +228,8 @@ async function loadEvts(){
   function logicalSortTime(note){
     var t=parseStartTime(note);
     if(t===9999)return 9999;
+    // 5am boundary: times before 5am (0–299) belong to end of day
+    if(t>=0&&t<300)return 1440+t;
     return t;
   }
   list.sort(function(a,b){
