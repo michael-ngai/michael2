@@ -235,6 +235,10 @@ async function loadEvts(){
   list.sort(function(a,b){
     var dateCmp=(a.date||'').localeCompare(b.date||'');
     if(dateCmp!==0)return dateCmp;
+    // Sort by timetable SCH order first
+    var ai=getTTIndex(a), bi=getTTIndex(b);
+    if(ai!==999||bi!==999) return ai-bi;
+    // Fallback: logical time with 5am boundary
     return logicalSortTime(a.note)-logicalSortTime(b.note);
   });
   // Remove duplicates - same date+title, keep newest
