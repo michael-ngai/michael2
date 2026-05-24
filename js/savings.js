@@ -132,7 +132,7 @@ async function loadEx(){
 window._showOtherField=function(){};
 
 
-window._logEx=async function(){
+window._logEx=async function(){try{
   var type=document.getElementById('ex-type')?document.getElementById('ex-type').value:'regular';
   var amt=parseFloat(document.getElementById('ex-amt').value);
   var note=document.getElementById('ex-note').value.trim();
@@ -155,6 +155,7 @@ window._logEx=async function(){
   document.getElementById('ex-amt').value='';
   document.getElementById('ex-note').value='';
   renderEx();
+  }catch(err){console.error('[logEx] error:',err);alert('Error logging expense: '+err.message);}
 };
 
 window._clrEx=async function(){
