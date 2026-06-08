@@ -1,5 +1,5 @@
 // ── ROUTINE — 4 SUBTABS ──
-var DAILY_HABITS  = ['sleep','workout','meal','duolingo','ai','journal','podcast','logdash','nospend'];
+var DAILY_HABITS  = ['sleep','workout','meal','duolingo','ai','podcast','logdash','nospend'];
 var WEEKLY_HABITS = ['mealprep','groceries','sister','housework','anthro','rent'];
 var FN_HABITS     = ['pcs','savings','atm','fuel'];
 var MO_HABITS     = ['bedsheet','mop','haircut'];
@@ -80,7 +80,6 @@ async function renderDaily(){
     hrow('meal',    'Ate home-cooked — no dining out',           'Meal',     'to'),
     hrow('duolingo','Duolingo — at least 1 lesson',              'Learning', 'ta'),
     hrow('ai',      'Used AI for something useful',              'Learning', 'ta'),
-    hrow('journal', 'Wrote daily journal entry in English',      'Learning', 'ta'),
     hrow('podcast', 'Listened to English podcast',               'Learning', 'ta'),
     hrow('logdash', 'Logged everything on the dashboard',        'Personal', 'tb'),
     hrow('nospend', 'No unnecessary spending today',             'Personal', 'tb'),
@@ -211,7 +210,6 @@ var HABIT_CAL_MAP={
   meal:     {type:'meal',     label:'Ate home-cooked'},
   duolingo: {type:'learning', label:'Duolingo — Japanese'},
   ai:       {type:'learning', label:'Used AI productively'},
-  journal:  {type:'learning', label:'Wrote journal in English'},
   podcast:  {type:'learning', label:'Listened to English podcast'},
   logdash:  {type:'personal', label:'Logged dashboard'},
   nospend:  {type:'personal', label:'No unnecessary spending'},
