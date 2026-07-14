@@ -1,5 +1,5 @@
 // ── ROUTINE — 4 SUBTABS ──
-var DAILY_HABITS  = ['sleep','workout','meal','duolingo','ai','podcast','logdash','nospend'];
+var DAILY_HABITS  = ['sleep','workout','meal','ai','podcast','logdash','nospend'];
 var WEEKLY_HABITS = ['mealprep','groceries','sister','housework','anthro','rent'];
 var FN_HABITS     = ['pcs','savings','atm','fuel'];
 var MO_HABITS     = ['bedsheet','mop','haircut'];
@@ -78,7 +78,6 @@ async function renderDaily(){
     hrow('sleep',   'Slept 7.5–8 hours',                        'Sleep',    'tp'),
     hrow('workout', 'Worked out / played basketball',            'Sports',   'ta'),
     hrow('meal',    'Ate home-cooked — no dining out',           'Meal',     'to'),
-    hrow('duolingo','Duolingo — at least 1 lesson',              'Learning', 'ta'),
     hrow('ai',      'Used AI for something useful',              'Learning', 'ta'),
     hrow('podcast', 'Listened to English podcast',               'Learning', 'ta'),
     hrow('logdash', 'Logged everything on the dashboard',        'Personal', 'tb'),
@@ -208,7 +207,6 @@ var HABIT_CAL_MAP={
   sleep:    {type:'sleep',    label:'Slept 7.5–8 hours'},
   workout:  {type:'sports',   label:'Worked out / basketball'},
   meal:     {type:'meal',     label:'Ate home-cooked'},
-  duolingo: {type:'learning', label:'Duolingo — Japanese'},
   ai:       {type:'learning', label:'Used AI productively'},
   podcast:  {type:'learning', label:'Listened to English podcast'},
   logdash:  {type:'personal', label:'Logged dashboard'},
