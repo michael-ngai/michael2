@@ -64,7 +64,7 @@ async function renderSav(){
   document.getElementById('sv-dep').textContent=fm(dep);
   document.getElementById('sv-invest').textContent=fm(inv);
   var totalEl=document.getElementById('sv-total');
-  if(totalEl)totalEl.textContent=fm(ef+dep+inv);
+  if(totalEl)totalEl.textContent=fm(emg+dep+inv);
   // pay-next updated after countdown calc below
   var payEl=document.getElementById('pay-amt');
   if(payEl){
