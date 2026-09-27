@@ -86,7 +86,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .card-hdr{padding:10px 14px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--surface2);}
 .card-title{font-size:11px;font-weight:500;color:var(--text);text-transform:uppercase;letter-spacing:.6px;font-family:'DM Mono',monospace;}
 .card-meta{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
 .stat{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--r);padding:11px 13px;}
 .stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;font-family:'DM Mono',monospace;}
 .stat-val{font-size:20px;font-weight:600;font-family:'DM Mono',monospace;color:var(--green);}
@@ -632,13 +632,13 @@ select option{background:var(--surface2);}
 
 
 
-<script type="module" src="js/firebase.js?v=1790482812"></script>
-<script defer src="js/shared.js?v=1790482812"></script>
-<script defer src="js/routine.js?v=1790482812"></script>
-<script defer src="js/calendar2.js?v=1790482812"></script>
-<script defer src="js/savings.js?v=1790482812"></script>
-<script defer src="js/budget.js?v=1790482812"></script>
-<script defer src="js/init.js?v=1790482812"></script>
+<script type="module" src="js/firebase.js?v=1790482881"></script>
+<script defer src="js/shared.js?v=1790482881"></script>
+<script defer src="js/routine.js?v=1790482881"></script>
+<script defer src="js/calendar2.js?v=1790482881"></script>
+<script defer src="js/savings.js?v=1790482881"></script>
+<script defer src="js/budget.js?v=1790482881"></script>
+<script defer src="js/init.js?v=1790482881"></script>
 <script>
 function changeHabitDate(){if(window._changeHabitDate)window._changeHabitDate();}
 function shiftDate(d){if(window._shiftDate)window._shiftDate(d);}
