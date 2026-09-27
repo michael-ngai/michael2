@@ -53,7 +53,7 @@ function renderBudget(){
       '</tr>';
   }
   var html='';
-  html+=row(logo('pcycnsw.org.au')+'Income — PCYC',income.w,income.fn,income.m,income.y,true,'var(--green)');
+  html+=row(logo('cityofsydney.nsw.gov.au')+'Income — COS',income.w,income.fn,income.m,income.y,true,'var(--green)');
   rows.forEach(function(r){html+=row(r.label,r.w,r.fn,r.m,r.y,false,null);});
   html+=row('Total expenses',totalW,totalFn,totalM,totalY,true,'var(--red)');
   html+=rowSub(logo('commbank.com.au')+'CommBank — Emergency fund',50,100,217,2600,'var(--amber)');
