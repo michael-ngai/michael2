@@ -63,13 +63,15 @@ async function renderSav(){
   document.getElementById('sv-emerg').textContent=fm(emg);
   document.getElementById('sv-dep').textContent=fm(dep);
   document.getElementById('sv-invest').textContent=fm(inv);
+  var totalEl=document.getElementById('sv-total');
+  if(totalEl)totalEl.textContent=fm(ef+dep+inv);
   // pay-next updated after countdown calc below
   var payEl=document.getElementById('pay-amt');
   if(payEl){
     if(ef){
       payEl.innerHTML='<span style="color:var(--green);">$900</span><span style="color:var(--text3);"> → deposit+invest</span>';
     } else {
-      payEl.innerHTML='<span style="color:var(--amber);">$100</span><span style="color:var(--text3);"> + </span><span style="color:var(--green);">$500</span><span style="color:var(--text3);"> + </span><span style="color:var(--blue);">$400</span>';
+      payEl.innerHTML='<span style="color:var(--amber);">$100</span><span style="color:var(--text3);"> + </span><span style="color:var(--green);">$500</span><span style="color:var(--text3);"> + </span><span style="color:var(--blue);">$400</span><span style="color:var(--text3);"> = </span><span style="color:var(--red);font-weight:700;">$1,000</span>';
     }
   }
   // Payday countdown
